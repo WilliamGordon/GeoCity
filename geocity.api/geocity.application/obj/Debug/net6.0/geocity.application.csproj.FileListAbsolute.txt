@@ -1,0 +1,17 @@
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.application.deps.json
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.application.dll
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\ref\geocity.application.dll
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.application.pdb
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.GeneratedMSBuildEditorConfig.editorconfig
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.AssemblyInfoInputs.cache
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.AssemblyInfo.cs
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.csproj.CoreCompileInputs.cache
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.dll
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\ref\geocity.application.dll
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.pdb
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.csproj.AssemblyReference.cache
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.domain.dll
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.infrastructure.dll
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.infrastructure.pdb
+C:\dev\GeoCity\geocity.api\geocity.application\bin\Debug\net6.0\geocity.domain.pdb
+C:\dev\GeoCity\geocity.api\geocity.application\obj\Debug\net6.0\geocity.application.csproj.CopyComplete
