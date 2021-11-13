@@ -11,6 +11,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddProfile(new MappingProfile());
 });
 
+builder.Services.AddCors();
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 builder.Services.AddMediatR(AppDomain.CurrentDomain.Load("geocity.application"));
 builder.Services.AddDbContext<GeoCityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("geocity-db")));
@@ -19,6 +20,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseCors(builder => builder
+     .AllowAnyOrigin()
+     .AllowAnyMethod()
+     .AllowAnyHeader());
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

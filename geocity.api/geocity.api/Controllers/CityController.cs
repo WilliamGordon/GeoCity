@@ -12,7 +12,7 @@ namespace geocity.api.Controllers
             return await Mediator.Send(new GetCitiesQuery());
         }
         
-        [HttpGet("Details/{id}")]
+        [HttpGet("{id}")]
         // GET: CityController/Details/5
         public async Task<ActionResult<CityDto>> Details(int id)
         {
