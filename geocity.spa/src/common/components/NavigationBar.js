@@ -11,10 +11,10 @@ import { useLocation } from 'react-router-dom'
 export default function NavigationBar() {
   
   const location = useLocation();
-
+ 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ backgroundColor: "#10377a" }} position="static">
+      <AppBar sx={{ backgroundColor: "#10377a", zIndex:1400 }} position="static" >
         <Toolbar>
           <IconButton
             component={Link}
