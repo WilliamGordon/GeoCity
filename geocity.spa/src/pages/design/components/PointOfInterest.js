@@ -4,28 +4,24 @@ import { Marker, Tooltip } from 'react-leaflet';
 
 export const PointOfInterest = (props) => {
   const [position, setPosition] = useState(props.pointOfInterest.position)
+  const [id] = useState(props.pointOfInterest.key)
   const markerRef = useRef(null)
-
-  useEffect(() => {
-    console.log("RERENDER", props.pointOfInterests)
-  }, [])
 
   const eventHandlers = useMemo(
     () => ({
       dragend() {
-        const marker = markerRef.current
-        if (marker != null) {
-          setPosition(marker.getLatLng())
-          // props.updatePointOfInterest(props.pointOfInterest.key, position);
-
-        }
+        setPosition(markerRef.current.getLatLng())
+        props.updatePointOfInterestFromList({
+          id : id,
+          position : position
+        });
       },
       click() {
         markerRef.current.remove();
-        console.log(position)
-        console.log("HIT");
-        console.log(props.pointOfInterests);
-        // props.removePointOfInterest(props.pointOfInterest.key);
+        props.removePointOfInterestFromList({
+          id : id,
+          position : position
+        });
       }
     }),
     [],
@@ -35,13 +31,13 @@ export const PointOfInterest = (props) => {
     <Marker
       draggable={true}
       eventHandlers={eventHandlers}
-      key={props.pointOfInterest.key}
-      id={props.pointOfInterest.key}
+      key={id}
+      id={id}
       ref={markerRef}
       position={position}
     >
       <Tooltip direction="bottom" offset={[0, 20]} opacity={1} permanent>
-        {props.pointOfInterest.key}
+        {id}
       </Tooltip>
     </Marker>
   )

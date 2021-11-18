@@ -4,13 +4,8 @@ import { useGeoLocation } from '../../../common/hooks/useGeoLocation';
 import PointOfInterestList from './PointOfInterestList'
 
 export const ItinaryMap = (props) => {
-
-  useEffect(() => {
-      console.log("RERENDER", props.pointOfInterests)
-  }, [])
-
   const location = useGeoLocation();
-  
+
   if (location.loaded) {
     return (
       <MapContainer
@@ -19,7 +14,7 @@ export const ItinaryMap = (props) => {
         minZoom={12}
         style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }}
       >
-        <PointOfInterestList sendDataToParent={props.sendDataToParent} pointOfInterests={props.pointOfInterests} />
+        <PointOfInterestList sendDataToParent={props.sendDataToParent} />
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

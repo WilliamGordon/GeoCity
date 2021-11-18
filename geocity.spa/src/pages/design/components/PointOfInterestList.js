@@ -1,62 +1,54 @@
 
-import React, { useState, useEffect } from 'react';
-import { useMapEvents } from 'react-leaflet';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useMapEvents, Marker, Tooltip } from 'react-leaflet';
 import PointOfInterest from './PointOfInterest'
 import nextId from "react-id-generator";
 
 export const PointOfInterestList = (props) => {
+  const [pointOfInterests, setpointOfInterests] = useState([]); // the lifted state
 
   useEffect(() => {
-    console.log("RERENDER", props.pointOfInterests)
-  }, [])
+      console.log("RERENDER", pointOfInterests)
+      props.sendDataToParent(pointOfInterests)
+  })
 
-  const addPointOfInterest = useMapEvents({
+  useMapEvents({
     click(e) {
-      console.log("ADD")
-      console.log(props.pointOfInterests)
-      let _pointOfInterests = props.pointOfInterests;
-      _pointOfInterests.push({ 
-        key: nextId(),
+      console.log("FROM PARENT")
+      console.log("ADD", {
+        id: nextId(),
         position: [e.latlng.lat, e.latlng.lng]
       })
-      console.log(_pointOfInterests)
-      props.sendDataToParent(_pointOfInterests)
+      setpointOfInterests([...pointOfInterests, {
+        id: nextId(),
+        position: [e.latlng.lat, e.latlng.lng]
+      }]);
     },
   })
 
-  const removePointOfInterest = (id) => {
-    console.log("REMOVE")
-    console.log(props.pointOfInterests)
-    let _pointOfInterests = props.pointOfInterests.filter((item) => item.key !== id);
-    console.log(_pointOfInterests)
-    props.sendDataToParent(_pointOfInterests)
-  }
-
-  const updatePointOfInterest = (id, position) => {
-    console.log("UPDATE")
-    
-    let _pointOfInterests = props.pointOfInterests;
-    _pointOfInterests.forEach(poi => {
-      if (poi.key == id) {
-        poi.position = position;
-      }
-    });
-    props.sendDataToParent(_pointOfInterests)
-  }
-
   return (
     <div>
-      { 
-        props.pointOfInterests && 
-        props.pointOfInterests.map((p) => {
-          return <PointOfInterest 
-            key={p.key}
-            pointOfInterest={p}
-            pointOfInterests={props.pointOfInterests}
-            updatePointOfInterest={updatePointOfInterest} 
-            removePointOfInterest={removePointOfInterest} 
-            />
-        })
+      { pointOfInterests &&
+        pointOfInterests.map((p) => (
+          <Marker
+            draggable={true}
+            eventHandlers={{
+              click: (e) => {
+                setpointOfInterests(pointOfInterests.filter(p => p.id !== e.target.options.id));
+              },
+              dragend(e) {
+                setpointOfInterests([...pointOfInterests.filter(p => p.id !== e.target.options.id), { id: e.target.options.id, position: [e.target._latlng.lat, e.target._latlng.lng]}]);
+              },
+            }}
+            key={p.id}
+            id={p.id}
+            position={p.position}
+          >
+            <Tooltip direction="bottom" offset={[0, 20]} opacity={1} permanent>
+              {p.id}
+            </Tooltip>
+          </Marker>
+        ))
       }
     </div>
   )
