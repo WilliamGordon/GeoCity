@@ -39,13 +39,13 @@ export const ItinarySideBar = (props) => {
       <Divider />
       <List>
         {
-          props.pointOfInterests &&
-          props.pointOfInterests.map((p) => {
-            return <ListItem button key={p.key}>
+          props.pointOfInterestList &&
+          props.pointOfInterestList.map((p) => {
+            return <ListItem button key={p.id}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={p.key + "|" + p.position[0].toString().substring(0,5) + "_" + p.position[1].toString().substring(0,5)} />
+              <ListItemText primary={p.id + "|" + p.position[0].toString().substring(0,5) + "_" + p.position[1].toString().substring(0,5)} />
             </ListItem>
           })
         }

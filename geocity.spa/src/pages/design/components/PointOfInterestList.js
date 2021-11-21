@@ -1,48 +1,57 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMapEvents, Marker, Tooltip } from 'react-leaflet';
-import PointOfInterest from './PointOfInterest'
 import nextId from "react-id-generator";
 
 export const PointOfInterestList = (props) => {
-  const [pointOfInterests, setpointOfInterests] = useState([]); // the lifted state
+  const [pointOfInterestList, setPointOfInterestList] = useState([]);
 
   useEffect(() => {
-      console.log("RERENDER", pointOfInterests)
-      props.sendDataToParent(pointOfInterests)
+    console.log("RERENDER POIS", pointOfInterestList)
+    props.sendDataToParent(pointOfInterestList);
   })
+
+  const addMarker = (marker) => {
+    setPointOfInterestList([...pointOfInterestList, marker]);
+  }
+
+  const removeMarker = (id) => {
+    setPointOfInterestList(pointOfInterestList.filter(p => p.id !== id));
+  }
+
+  const updateMarker = (marker) => {
+    setPointOfInterestList([...pointOfInterestList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
+  }
 
   useMapEvents({
     click(e) {
-      console.log("FROM PARENT")
-      console.log("ADD", {
+      addMarker({
         id: nextId(),
         position: [e.latlng.lat, e.latlng.lng]
       })
-      setpointOfInterests([...pointOfInterests, {
-        id: nextId(),
-        position: [e.latlng.lat, e.latlng.lng]
-      }]);
     },
   })
 
   return (
-    <div>
-      { pointOfInterests &&
-        pointOfInterests.map((p) => (
+    <>
+      { 
+        pointOfInterestList.map((p) => (
           <Marker
             draggable={true}
-            eventHandlers={{
-              click: (e) => {
-                setpointOfInterests(pointOfInterests.filter(p => p.id !== e.target.options.id));
-              },
-              dragend(e) {
-                setpointOfInterests([...pointOfInterests.filter(p => p.id !== e.target.options.id), { id: e.target.options.id, position: [e.target._latlng.lat, e.target._latlng.lng]}]);
-              },
-            }}
             key={p.id}
             id={p.id}
             position={p.position}
+            eventHandlers={{
+              click: (e) => {
+                removeMarker(e.target.options.id);
+              },
+              dragend(e) {
+                updateMarker({
+                  id: e.target.options.id,
+                  position: [e.target._latlng.lat, e.target._latlng.lng]
+                })
+              },
+            }}
           >
             <Tooltip direction="bottom" offset={[0, 20]} opacity={1} permanent>
               {p.id}
@@ -50,7 +59,7 @@ export const PointOfInterestList = (props) => {
           </Marker>
         ))
       }
-    </div>
+    </>
   )
 }
 export default PointOfInterestList;

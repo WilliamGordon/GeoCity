@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
-import ItinaryMap from './components/ItinaryMap'
+import Map from './components/Map'
 import ItinarySideBar from './components/ItinarySideBar'
 
 export const Design = () => {
-  const [state, setState] = useState([]); // the lifted state
+  const [pointOfInterestList, setPointOfInterestList] = useState([]);
+
+  useEffect(() => {
+    console.log("RERENDER DESIGN", pointOfInterestList)
+  })
 
   const sendDataToParent = (data) => {
-    setState(data);
+    setPointOfInterestList(data);
   }
 
   return (
     <Box>
       <Grid container justifyContent="center" alignItems="center" >
         <Grid item xs={12}>
-          <ItinarySideBar pointOfInterests={state} />
-          <ItinaryMap sendDataToParent={sendDataToParent} />
+          <ItinarySideBar pointOfInterestList={pointOfInterestList} />
+          <Map sendDataToParent={sendDataToParent} pointOfInterestList={pointOfInterestList}/>
         </Grid>
       </Grid>
     </Box>
