@@ -1,26 +1,31 @@
 
 import React, { useState, useEffect } from 'react';
-import { useMapEvents, Marker, Tooltip } from 'react-leaflet';
+import { useMapEvents, Marker } from 'react-leaflet';
 import nextId from "react-id-generator";
 
 export const PointOfInterestList = (props) => {
   const [pointOfInterestList, setPointOfInterestList] = useState([]);
 
   useEffect(() => {
-    console.log("RERENDER POIS", pointOfInterestList)
     props.sendDataToParent(pointOfInterestList);
   })
 
   const addMarker = (marker) => {
-    setPointOfInterestList([...pointOfInterestList, marker]);
+    if (!props.itinaryIsGenerated) {
+      setPointOfInterestList([...pointOfInterestList, marker]);
+    }
   }
 
   const removeMarker = (id) => {
-    setPointOfInterestList(pointOfInterestList.filter(p => p.id !== id));
+    if (!props.itinaryIsGenerated) {
+      setPointOfInterestList(pointOfInterestList.filter(p => p.id !== id));
+    }
   }
 
   const updateMarker = (marker) => {
-    setPointOfInterestList([...pointOfInterestList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
+    if (!props.itinaryIsGenerated) {
+      setPointOfInterestList([...pointOfInterestList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
+    }
   }
 
   useMapEvents({
@@ -53,9 +58,6 @@ export const PointOfInterestList = (props) => {
               },
             }}
           >
-            <Tooltip direction="bottom" offset={[0, 20]} opacity={1} permanent>
-              {p.id}
-            </Tooltip>
           </Marker>
         ))
       }

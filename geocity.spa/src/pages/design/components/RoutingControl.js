@@ -6,6 +6,9 @@ import 'leaflet-routing-machine/dist/leaflet-routing-machine.css'
 const createRoutineMachineLayer = (props) => {
   const { waypoints } = props;
   const instance = L.Routing.control({
+    show: false,
+    fitSelectedRoutes: false,
+    showAlternatives: false,
     draggableWaypoints: false,
     collapsible: true,
     position: 'topright',
@@ -17,6 +20,7 @@ const createRoutineMachineLayer = (props) => {
       ],
     },
   });
+  console.log(instance)
   return instance;
 };
 

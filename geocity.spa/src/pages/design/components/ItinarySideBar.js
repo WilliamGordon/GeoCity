@@ -13,6 +13,10 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 export const ItinarySideBar = (props) => {
   
+  const generateItinary = () => {
+    props.generateItinary();
+  }
+
   return (
     <Drawer
       elevation={16}
@@ -63,17 +67,21 @@ export const ItinarySideBar = (props) => {
         Add new step
       </Button>
       <Box sx={{ flexGrow: 1 }}></Box>
-      <Button variant="contained" sx={{
-        marginBottom: "15px !important",
-        color: '#9fafce',
-        backgroundColor: "#10377a",
-        width: "90%",
-        margin: "0 auto",
-        '&:hover': {
-          backgroundColor: "#10377a", color: '#ffffff'
-        }
-      }}>
-        Generate Itinary
+      <Button 
+        onClick={generateItinary}
+        variant="contained" 
+        sx={{
+          marginBottom: "15px !important",
+          color: '#9fafce',
+          backgroundColor: "#10377a",
+          width: "90%",
+          margin: "0 auto",
+          '&:hover': {
+            backgroundColor: "#10377a", color: '#ffffff'
+          }
+        }}>
+        {  props.itinaryIsGenerated && <>Reset</> }
+        {  !props.itinaryIsGenerated && <>Generate Itinary</> }
       </Button>
     </Drawer>
   );

@@ -22,27 +22,27 @@ export const Map = (props) => {
   }
 
   useEffect(() => {
-    console.log("RERENDER MAP", points)
-    if (rMachine.current) {
-      console.log(rMachine.current)
-      let pois = [];
-      points.forEach(element => {
-        pois.push(element.position);
-      });
-      rMachine.current.setWaypoints(pois);
+    if (props.itinaryIsGenerated) {
+      if (rMachine.current) {
+        rMachine.current.setWaypoints(points.map(x => x.position));
+      }
+    } else {
+      if (rMachine.current) {
+        rMachine.current.setWaypoints([]);
+      }
     }
-  }, [points, rMachine]);
+  });
 
   if (location.loaded) {
     return (
       <>
         <MapContainer
           center={[location.coordinates.lat, location.coordinates.lng]}
-          zoom={3}
-          minZoom={3}
+          zoom={12}
+          minZoom={13}
           style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }}
         >
-          <PointOfInterestList sendDataToParent={sendDataToParent} />
+          <PointOfInterestList sendDataToParent={sendDataToParent} itinaryIsGenerated={props.itinaryIsGenerated} />
           <RoutingControl ref={rMachine} waypoints={points}/>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
