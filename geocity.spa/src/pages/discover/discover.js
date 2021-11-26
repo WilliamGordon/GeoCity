@@ -9,13 +9,13 @@ import Typography from '@mui/material/Typography';
 export default class Discover extends Component {
   render() {
     return (
-      <Box>
+      <Box sx={{ backgroundColor: "#E8E8E8"}}>
         <Grid
           container
           justifyContent="center"
           alignItems="center"
         >
-          <Grid item xs={10} sx={{ marginTop: "15px"}}>
+          <Grid item xs={10} sx={{ marginTop: "15px" }}>
             <Card sx={{ minWidth: 275, backgroundColor: "#fffff" }}>
               <CardContent>
                 <Typography variant="h5" component="div">

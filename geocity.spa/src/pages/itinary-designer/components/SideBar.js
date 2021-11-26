@@ -11,7 +11,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 
-export const ItinarySideBar = (props) => {
+export const SideBar = (props) => {
   
   const generateItinary = () => {
     props.generateItinary();
@@ -87,4 +87,4 @@ export const ItinarySideBar = (props) => {
   );
 }
 
-export default ItinarySideBar;
+export default SideBar;

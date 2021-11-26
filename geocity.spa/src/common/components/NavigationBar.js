@@ -43,10 +43,10 @@ export default function NavigationBar() {
             </Button>
           <Button 
             component={Link}
-            to="/design"
+            to="/itinary-form"
             sx = {{ 
               width: "150px", 
-              color: location.pathname.includes("design") ? "#ffffff" : "#9fafce",
+              color: location.pathname.includes("itinary-form") ? "#ffffff" : "#9fafce",
               '&:hover': { 
                 color: '#ffffff' } 
               }} 

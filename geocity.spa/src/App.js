@@ -4,7 +4,8 @@ import {
 } from "react-router-dom";
 import NavigationBar from './common/components/NavigationBar';
 import Discover from './pages/discover/discover' 
-import Design from './pages/design/design' 
+import { ItinaryForm } from './pages/itinary-form/ItinaryForm' 
+import { ItinaryDesigner } from './pages/itinary-designer/ItinaryDesigner'  
 import Login from './pages/login/login' 
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Navigate to="/discover" />} />
           <Route exact path="/discover" element={<Discover />} />
-          <Route exact path="/design" element={<Design />} />
+          <Route exact path="/itinary-form" element={<ItinaryForm />} />
+          <Route exact path="/itinary-designer" element={<ItinaryDesigner />} />
           <Route exact path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>

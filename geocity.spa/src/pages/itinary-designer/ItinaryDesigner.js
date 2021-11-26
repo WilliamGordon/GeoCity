@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Map from './components/Map'
-import ItinarySideBar from './components/ItinarySideBar'
+import SideBar from './components/SideBar'
 
-export const Design = (props) => {
+export const ItinaryDesigner = (props) => {
   const [pointOfInterestList, setPointOfInterestList] = useState([]);
   const [itinaryIsGenerated, setItinaryIsGenerated] = useState(false);
 
@@ -24,7 +24,7 @@ export const Design = (props) => {
     <Box>
       <Grid container justifyContent="center" alignItems="center" >
         <Grid item xs={12}>
-          <ItinarySideBar pointOfInterestList={pointOfInterestList} generateItinary={generateItinary} itinaryIsGenerated={itinaryIsGenerated}/>
+          <SideBar pointOfInterestList={pointOfInterestList} generateItinary={generateItinary} itinaryIsGenerated={itinaryIsGenerated}/>
           <Map sendDataToParent={sendDataToParent} pointOfInterestList={pointOfInterestList} itinaryIsGenerated={itinaryIsGenerated}/>
         </Grid>
       </Grid>
@@ -32,4 +32,4 @@ export const Design = (props) => {
   );
 }
 
-export default Design;
+export default ItinaryDesigner;

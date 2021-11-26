@@ -1,5 +1,6 @@
 import Discover from '../pages/discover';
-import Design from '../pages/design';
+import ItinaryForm from '../pages/itinary-form';
+import ItinaryDesigner from '../pages/itinary-designer';
 
 const Routes = [
   {
@@ -8,9 +9,14 @@ const Routes = [
     component: Discover
   },
   {
-    path: '/design',
-    sidebarName: 'create',
-    component: Design
+    path: '/itinary-form',
+    sidebarName: 'itinary-form',
+    component: ItinaryForm
+  },
+  {
+    path: '/itinary-designer',
+    sidebarName: 'itinary-designer',
+    component: ItinaryDesigner
   },
 ];
 
