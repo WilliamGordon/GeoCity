@@ -19,11 +19,37 @@ const provider = new OpenStreetMapProvider({
 export const ItinaryForm = () => {
   const [formValues, setFormValues] = useState(defaultValues)
   const [options, setOptions] = useState([])
+  const [typingTimeout, setTypingTimeout] = useState(0)
 
   const onInputChange = async (event, values) => {
     
-    setOptions(await provider.search({ query: values }));
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    setTypingTimeout(setTimeout(async function () {
+      let res = await provider.search({ query: values })
+      let optionsData = [];
+
+      res.forEach(city => {
+        optionsData.push({
+          value: JSON.stringify(city),
+          label: city.label,
+        })
+      });
+
+      setOptions(optionsData);
+      console.log(optionsData);
+    }, 1000));
     
+    let selectedCityData = ""
+
+    options.forEach(element => {
+      if (element.label == values) {
+        selectedCityData = element.value
+      }
+    });
+
     setFormValues({
       ...formValues,
       ["city"]: values,
@@ -70,6 +96,9 @@ export const ItinaryForm = () => {
               required
               fullWidth
               value={formValues.city}
+              onChange={(e) => {
+                console.log(e);
+              }}
               onInputChange={onInputChange}
               options={options}
               renderInput={(params) => <TextField {...params} label="City" />}
