@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using geocity.application.Cities.Queries;
+using geocity.application.Itinary.Queries;
 using geocity.domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace geocity.application.Common
         public MappingProfile()
         {
             CreateMap<City, CityDto>();
+            CreateMap<CityDto, City>();
+            CreateMap<geocity.domain.Entities.Itinary, ItinaryDto>();
+            CreateMap<ItinaryDto, geocity.domain.Entities.Itinary>();
         }
     }
 }
