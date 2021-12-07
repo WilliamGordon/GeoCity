@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace geocity.domain.Entities
+namespace geocity.application.Trip.Queries
 {
-    public class Coordinate
+    public class TripDto
     {
         public int Id { get; set; }
-        public decimal lat { get; set; }
-        public decimal lng { get; set; }
+
     }
 }

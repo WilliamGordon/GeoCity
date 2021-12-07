@@ -52,7 +52,6 @@ C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.GeneratedMSB
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.AssemblyInfoInputs.cache
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.AssemblyInfo.cs
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.csproj.CoreCompileInputs.cache
-C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.MvcApplicationPartsAssemblyInfo.cs
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.MvcApplicationPartsAssemblyInfo.cache
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\staticwebassets.build.json
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\staticwebassets.development.json

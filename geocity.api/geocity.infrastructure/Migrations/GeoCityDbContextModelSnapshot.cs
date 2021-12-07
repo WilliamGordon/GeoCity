@@ -29,6 +29,12 @@ namespace geocity.infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -36,25 +42,6 @@ namespace geocity.infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("geocity.domain.Entities.Coordinate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("lat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("lng")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Coordinates");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
@@ -65,28 +52,27 @@ namespace geocity.infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("CityLat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("CityLng")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPublished")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("Distance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TripId");
 
                     b.ToTable("Itinaries");
                 });
@@ -119,13 +105,70 @@ namespace geocity.infrastructure.Migrations
                     b.ToTable("ItinaryPlaces");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.ItinaryUser", b =>
+            modelBuilder.Entity("geocity.domain.Entities.Place", b =>
                 {
-                    b.Property<int>("ItinaryId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("latitude")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Places");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Description")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NbDays")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Trips");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUser", b =>
+                {
+                    b.Property<int>("TripId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -142,33 +185,11 @@ namespace geocity.infrastructure.Migrations
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ItinaryId", "UserId");
+                    b.HasKey("TripId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ItinaryUsers");
-                });
-
-            modelBuilder.Entity("geocity.domain.Entities.Place", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PositionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("Places");
+                    b.ToTable("TripUsers");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.User", b =>
@@ -196,6 +217,17 @@ namespace geocity.infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Trip", "Trip")
+                        .WithMany("Itinaries")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
+                });
+
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPlace", b =>
                 {
                     b.HasOne("geocity.domain.Entities.Itinary", "Itinary")
@@ -215,41 +247,44 @@ namespace geocity.infrastructure.Migrations
                     b.Navigation("Place");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.ItinaryUser", b =>
+            modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
                 {
-                    b.HasOne("geocity.domain.Entities.Itinary", "Itinary")
-                        .WithMany("ItinaryUsers")
-                        .HasForeignKey("ItinaryId")
+                    b.HasOne("geocity.domain.Entities.City", "City")
+                        .WithMany("Trips")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUser", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Trip", "Trip")
+                        .WithMany("TripUsers")
+                        .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("geocity.domain.Entities.User", "User")
-                        .WithMany("ItinaryUsers")
+                        .WithMany("TripUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Itinary");
+                    b.Navigation("Trip");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.Place", b =>
+            modelBuilder.Entity("geocity.domain.Entities.City", b =>
                 {
-                    b.HasOne("geocity.domain.Entities.Coordinate", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Position");
+                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
                 {
                     b.Navigation("ItinaryPlaces");
-
-                    b.Navigation("ItinaryUsers");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Place", b =>
@@ -257,9 +292,16 @@ namespace geocity.infrastructure.Migrations
                     b.Navigation("ItinaryPlaces");
                 });
 
+            modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
+                {
+                    b.Navigation("Itinaries");
+
+                    b.Navigation("TripUsers");
+                });
+
             modelBuilder.Entity("geocity.domain.Entities.User", b =>
                 {
-                    b.Navigation("ItinaryUsers");
+                    b.Navigation("TripUsers");
                 });
 #pragma warning restore 612, 618
         }

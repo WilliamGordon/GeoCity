@@ -11,11 +11,10 @@ namespace geocity.domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string CityName { get; set; }
-        public decimal CityLat { get; set; }
-        public decimal CityLng { get; set; }
-        public bool IsPublished { get; set; }
-        public virtual ICollection<ItinaryUser> ItinaryUsers { get; set; }
+        public decimal Distance { get; set; }
+        public string Duration { get; set; }
+        public int Day { get; set; }
+        public Trip Trip { get; set; }
         public virtual ICollection<ItinaryPlace> ItinaryPlaces { get; set; }
     }
 }
