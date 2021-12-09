@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Box, Typography, Autocomplete, Card, CardContent, Button } from '@mui/material';
+import { TextField, Box, Typography, Autocomplete, Card, CardContent, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { useNavigate } from "react-router-dom";
 
@@ -19,23 +19,37 @@ export const ItinaryForm = () => {
   const [typingTimeout, setTypingTimeout] = useState(0)
 
   // Name input
-  const [itinaryName, setItinaryName] = useState("")
-  
+  const [tripName, setTripName] = useState("")
+
   // Description input
-  const [itinaryDescription, setItinaryDescription] = useState("")
+  const [tripNbDays, setTripNbDays] = useState("")
+
+  // Description input
+  const [tripDescription, setTripDescription] = useState("")
 
   const navigate = useNavigate();
 
   const submitForm = () => {
-    
-    if (selectedCityOption && itinaryName && itinaryDescription) {
-      let formData = {
-        itinaryCitName: selectedCityOption.label,
-        itinaryCityPosition: [JSON.parse(selectedCityOption.value).y, JSON.parse(selectedCityOption.value).x],
-        itinaryName: itinaryName,
-        itinaryDescription: itinaryDescription,
-      }
-      navigate("/itinary-designer");
+
+    if (selectedCityOption && tripName && tripNbDays) {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Name: tripName,
+          Description: tripDescription,
+          NbDays: tripNbDays,
+          CityName: selectedCityOption.label,
+          CityLatitude: JSON.parse(selectedCityOption.value).y,
+          CityLongitude: JSON.parse(selectedCityOption.value).x,
+        })
+      };
+      fetch('https://localhost:44396/api/Trip', requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          navigate("/itinary-designer");
+        });
     }
   }
 
@@ -58,9 +72,9 @@ export const ItinaryForm = () => {
                 marginBottom: 4,
                 textAlign: "center",
               }}>
-              <b>Create your own itinary</b>
+              <b>Create your own Trip</b>
             </Typography>
-            <Autocomplete 
+            <Autocomplete
               id="city-input"
               name="city"
               label="City"
@@ -91,40 +105,66 @@ export const ItinaryForm = () => {
               }}
               options={options}
               getOptionLabel={(option) => option.label || ""}
-              renderInput={(params) => <TextField {...params} label="City" />}
+              renderInput={(params) => <TextField required {...params} label="City" />}
               sx={{
                 marginBottom: 4,
               }}
             />
             <TextField
-              id="itinaryName-input"
-              name="itinaryName"
+              id="tripName-input"
+              name="tripName"
               label="Name"
               type="text"
               autoComplete='off'
-              value={itinaryName}
+              value={tripName}
               onChange={(event) => {
-                setItinaryName(event.target.value);
+                setTripName(event.target.value);
               }}
+              error
+              helperText="Incorrect entry."
               required
               fullWidth
               sx={{
                 marginBottom: 4,
               }}
             />
+            <FormControl
+              required
+              fullWidth
+              sx={{
+                marginBottom: 4,
+              }}
+            >
+              <InputLabel id="demo-simple-select-label">Number of days</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={tripNbDays}
+                label="Number of days"
+                onChange={(event) => {
+                  setTripNbDays(event.target.value);
+                }}
+
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               multiline
               rows={5}
-              id="itinaryDescription-input"
-              name="itinaryDescription"
+              id="tripDescription-input"
+              name="tripDescription"
               label="Description"
               type="text"
               autoComplete='off'
-              value={itinaryDescription}
+              value={tripDescription}
               onChange={(event) => {
-                setItinaryDescription(event.target.value);
+                setTripDescription(event.target.value);
               }}
-              required
               fullWidth
               sx={{
                 marginBottom: 4,

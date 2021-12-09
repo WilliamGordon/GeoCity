@@ -31,7 +31,8 @@ namespace geocity.api.Controllers
             // Second create the Trip itself
             var tripId = await Mediator.Send(new CreateTripCommand
             {
-                Name = tripData.Name, 
+                CityId = cityId,
+                Name = tripData.Name,
                 Description = tripData.Description,
                 NbDays = tripData.NbDays,
             });
@@ -41,6 +42,7 @@ namespace geocity.api.Controllers
             {
                 await Mediator.Send(new CreateItinaryCommand
                 {
+                    TripId = tripId,
                     Day = i,
                 });
             }
