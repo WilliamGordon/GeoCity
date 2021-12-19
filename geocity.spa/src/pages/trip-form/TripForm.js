@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Box, Typography, Autocomplete, Card, CardContent, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { TextField, Box, Typography, Autocomplete, Card, CardContent, Button, Select, MenuItem, InputLabel, FormControl, FormHelperText, Backdrop, CircularProgress, Alert } from '@mui/material';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { useNavigate } from "react-router-dom";
 
@@ -11,18 +11,24 @@ const provider = new OpenStreetMapProvider({
   },
 });
 
-export const ItinaryForm = () => {
+export const TripForm = () => {
+  const [apiErrorMsg, setApiErrorMsg] = useState("")
+  const [open, setOpen] = React.useState(false);
+
   // City input
   const [selectedCityOption, setSelectedCityOption] = useState([]);
   const [citySearchBoxValue, setCitySearchBoxValue] = useState('');
   const [options, setOptions] = useState([])
   const [typingTimeout, setTypingTimeout] = useState(0)
+  const [selectedCityError, setSelectedCityError] = useState("")
 
   // Name input
   const [tripName, setTripName] = useState("")
+  const [tripNameError, setTripNameError] = useState("")
 
   // Description input
   const [tripNbDays, setTripNbDays] = useState("")
+  const [tripNbDaysError, setTripNbDaysError] = useState("")
 
   // Description input
   const [tripDescription, setTripDescription] = useState("")
@@ -30,8 +36,28 @@ export const ItinaryForm = () => {
   const navigate = useNavigate();
 
   const submitForm = () => {
+    setApiErrorMsg("") 
+    
+    if (selectedCityOption.label == "" || selectedCityOption.label == undefined) {
+      setSelectedCityError("Please provide a name for your trip");
+    } else {
+      setSelectedCityError("");
+    }
+
+    if (tripName == "") {
+      setTripNameError("Please provide a name for your trip");
+    } else {
+      setTripNameError("");
+    }
+
+    if (tripNbDays == "") {
+      setTripNbDaysError("Please provide a name for your trip");
+    } else {
+      setTripNbDaysError("");
+    }
 
     if (selectedCityOption && tripName && tripNbDays) {
+      setOpen(true);
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,9 +72,14 @@ export const ItinaryForm = () => {
       };
       fetch('https://localhost:44396/api/Trip', requestOptions)
         .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          navigate("/itinary-designer");
+        .then(tripId => {
+          console.log(tripId);
+          setOpen(false);
+          navigate("/trip-designer/" + tripId);
+        }).catch(rejected => {
+          setOpen(false);
+          console.log(rejected);
+          setApiErrorMsg("ERROR FROM API")
         });
     }
   }
@@ -74,6 +105,12 @@ export const ItinaryForm = () => {
               }}>
               <b>Create your own Trip</b>
             </Typography>
+            {
+              apiErrorMsg && 
+              <Alert severity="error" sx={{
+                marginBottom: 4,
+                }}>{apiErrorMsg}</Alert>
+            }
             <Autocomplete
               id="city-input"
               name="city"
@@ -87,9 +124,17 @@ export const ItinaryForm = () => {
                   setSelectedCityOption(value);
                 }
               }}
+              onBlur={(event) => {
+                console.log(event)
+                if (event.target.value == "") {
+                  setSelectedCityError("Please provide a name for your trip");
+                } else {
+                  setSelectedCityError("");
+                }
+              }}
               inputValue={citySearchBoxValue}
               onInputChange={async (event, newInputValue) => {
-                console.log("TYPED", newInputValue)
+                setSelectedCityError("");
                 if (typingTimeout) {
                   clearTimeout(typingTimeout);
                 }
@@ -105,7 +150,12 @@ export const ItinaryForm = () => {
               }}
               options={options}
               getOptionLabel={(option) => option.label || ""}
-              renderInput={(params) => <TextField required {...params} label="City" />}
+              renderInput={(params) => <TextField 
+                required 
+                error={selectedCityError ? true : false}
+                helperText={selectedCityError} 
+                {...params} 
+                label="City" />}
               sx={{
                 marginBottom: 4,
               }}
@@ -117,11 +167,19 @@ export const ItinaryForm = () => {
               type="text"
               autoComplete='off'
               value={tripName}
+              error={tripNameError ? true : false}
+              helperText={tripNameError}
               onChange={(event) => {
+                setTripNameError("");
                 setTripName(event.target.value);
               }}
-              error
-              helperText="Incorrect entry."
+              onBlur={(event) => {
+                if (event.target.value == "") {
+                  setTripNameError("Please provide a name for your trip");
+                } else {
+                  setTripNameError("");
+                }
+              }}
               required
               fullWidth
               sx={{
@@ -143,8 +201,20 @@ export const ItinaryForm = () => {
                 label="Number of days"
                 onChange={(event) => {
                   setTripNbDays(event.target.value);
+                  if (event.target.value == "") {
+                    setTripNbDaysError("Please provide a name for your trip");
+                  } else {
+                    setTripNbDaysError("");
+                  }
                 }}
-
+                onBlur={(event) => {
+                  if (event.target.value == "") {
+                    setTripNbDaysError("Please provide a name for your trip");
+                  } else {
+                    setTripNbDaysError("");
+                  }
+                }}
+                error={tripNbDaysError ? true : false}
               >
                 <MenuItem value={1}>1</MenuItem>
                 <MenuItem value={2}>2</MenuItem>
@@ -152,6 +222,7 @@ export const ItinaryForm = () => {
                 <MenuItem value={4}>4</MenuItem>
                 <MenuItem value={5}>5</MenuItem>
               </Select>
+              <FormHelperText>{tripNbDaysError}</FormHelperText>
             </FormControl>
             <TextField
               multiline
@@ -189,8 +260,14 @@ export const ItinaryForm = () => {
           </CardContent>
         </Card>
       </Box>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }
 
-export default ItinaryForm;
+export default TripForm;

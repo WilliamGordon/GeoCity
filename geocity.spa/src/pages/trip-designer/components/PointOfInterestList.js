@@ -11,19 +11,19 @@ export const PointOfInterestList = (props) => {
   })
 
   const addMarker = (marker) => {
-    if (!props.itinaryIsGenerated) {
+    if (!props.tripIsGenerated) {
       setPointOfInterestList([...pointOfInterestList, marker]);
     }
   }
 
   const removeMarker = (id) => {
-    if (!props.itinaryIsGenerated) {
+    if (!props.tripIsGenerated) {
       setPointOfInterestList(pointOfInterestList.filter(p => p.id !== id));
     }
   }
 
   const updateMarker = (marker) => {
-    if (!props.itinaryIsGenerated) {
+    if (!props.tripIsGenerated) {
       setPointOfInterestList([...pointOfInterestList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
     }
   }

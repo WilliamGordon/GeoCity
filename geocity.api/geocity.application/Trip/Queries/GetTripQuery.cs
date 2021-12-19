@@ -28,7 +28,9 @@ namespace geocity.application.Trip.Queries
 
         public async Task<TripDto> Handle(GetTripQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<TripDto>(await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.Id));
+            var trip = await _context.Trips.Include(t => t.Itinaries).Include(t => t.City).SingleOrDefaultAsync(x => x.Id == request.Id);
+            var tripDto = _mapper.Map<TripDto>(trip);
+            return tripDto;
         }
     }
 }

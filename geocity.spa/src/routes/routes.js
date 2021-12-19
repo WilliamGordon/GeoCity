@@ -1,6 +1,7 @@
 import Discover from '../pages/discover';
-import ItinaryForm from '../pages/itinary-form';
-import ItinaryDesigner from '../pages/itinary-designer';
+import TripForm from '../pages/trip-form';
+import TripDesigner from '../pages/trip-designer';
+import TripManager from '../pages/trips-manager';
 
 const Routes = [
   {
@@ -9,14 +10,19 @@ const Routes = [
     component: Discover
   },
   {
-    path: '/itinary-form',
-    sidebarName: 'itinary-form',
-    component: ItinaryForm
+    path: '/trip-form',
+    sidebarName: 'trip-form',
+    component: TripForm
   },
   {
-    path: '/itinary-designer',
-    sidebarName: 'itinary-designer',
-    component: ItinaryDesigner
+    path: '/trip-designer/:tripId',
+    sidebarName: 'trip-designer',
+    component: TripDesigner
+  },
+  {
+    path: '/trips-manager',
+    sidebarName: 'trips-manager',
+    component: TripManager
   },
 ];
 

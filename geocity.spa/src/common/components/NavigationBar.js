@@ -43,10 +43,10 @@ export default function NavigationBar() {
             </Button>
           <Button 
             component={Link}
-            to="/itinary-form"
+            to="/trip-form"
             sx = {{ 
               width: "150px", 
-              color: location.pathname.includes("itinary-form") ? "#ffffff" : "#9fafce",
+              color: location.pathname.includes("trip-form") ? "#ffffff" : "#9fafce",
               '&:hover': { 
                 color: '#ffffff' } 
               }} 
@@ -56,6 +56,20 @@ export default function NavigationBar() {
             Create
           </Button>
           <Box sx={{ flexGrow: 1 }}></Box>
+          <Button 
+            component={Link}
+            to="/trips-manager"
+            sx = {{ 
+              color: location.pathname.includes("my-trips") ? "#ffffff" : "#9fafce",
+              marginRight: "15px", 
+              '&:hover': { 
+                color: '#ffffff' } 
+              }} 
+            size="small" 
+            color="inherit" 
+            variant="outlined">
+            My Trips
+          </Button>
           <Button 
             component={Link}
             to="/login"

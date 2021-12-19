@@ -25,13 +25,13 @@ const style = {
   p: 4,
 };
 
-export const SideBar = (props) => {
+export const MapSideBar = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const generateItinary = () => {
-    props.generateItinary();
+  const generateTrip = () => {
+    props.generateTrip();
   }
 
   return (
@@ -54,7 +54,7 @@ export const SideBar = (props) => {
     >
       <Toolbar>
         <Typography variant="overline" display="block" gutterBottom align="center" component="div" sx={{ fontSize: "initial", width: "80%", margin: "0 auto" }}>
-          Create your itinary
+          Create your trip
         </Typography>
       </Toolbar>
       <Divider />
@@ -85,7 +85,7 @@ export const SideBar = (props) => {
       </Button>
       <Box sx={{ flexGrow: 1 }}></Box>
       <Button
-        onClick={generateItinary}
+        onClick={generateTrip}
         variant="contained"
         sx={{
           marginBottom: "15px !important",
@@ -97,8 +97,8 @@ export const SideBar = (props) => {
             backgroundColor: "#10377a", color: '#ffffff'
           }
         }}>
-        {props.itinaryIsGenerated && <>Reset</>}
-        {!props.itinaryIsGenerated && <>Generate Itinary</>}
+        {props.tripIsGenerated && <>Reset</>}
+        {!props.tripIsGenerated && <>Generate Trip</>}
       </Button>
       <Modal
         open={open}
@@ -114,8 +114,8 @@ export const SideBar = (props) => {
             Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
           </Typography>
           <TextField
-              id="itinaryName-input"
-              name="itinaryName"
+              id="tripName-input"
+              name="tripName"
               label="Name"
               type="text"
               autoComplete='off'
@@ -127,8 +127,8 @@ export const SideBar = (props) => {
               }}
             />
             <TextField
-              id="itinaryName-input"
-              name="itinaryName"
+              id="tripName-input"
+              name="tripName"
               label="Price"
               type="text"
               autoComplete='off'
@@ -139,8 +139,8 @@ export const SideBar = (props) => {
               }}
             />
             <TextField
-              id="itinaryName-input"
-              name="itinaryName"
+              id="tripName-input"
+              name="tripName"
               label="Duration"
               type="text"
               autoComplete='off'
@@ -153,8 +153,8 @@ export const SideBar = (props) => {
             <TextField
               multiline
               rows={5}
-              id="itinaryDescription-input"
-              name="itinaryDescription"
+              id="tripDescription-input"
+              name="tripDescription"
               label="Description"
               type="text"
               autoComplete='off'
@@ -170,4 +170,4 @@ export const SideBar = (props) => {
   );
 }
 
-export default SideBar;
+export default MapSideBar;
