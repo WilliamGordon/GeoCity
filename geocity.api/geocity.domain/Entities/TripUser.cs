@@ -17,6 +17,6 @@ namespace geocity.domain.Entities
         public bool IsParticipant { get; set; }
         public bool IsFavorite { get; set; }
         public decimal Rating { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
     }
 }

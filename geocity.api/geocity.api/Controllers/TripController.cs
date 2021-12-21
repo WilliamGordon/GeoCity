@@ -3,6 +3,7 @@ using geocity.application.Composit;
 using geocity.application.Itinary.Commands.CreateItinary;
 using geocity.application.Trip.Commands.CreateTrip;
 using geocity.application.Trip.Queries;
+using geocity.application.TripUser.Commands.CreateTripUser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,12 @@ namespace geocity.api.Controllers
         public async Task<ActionResult<TripDto>> Details(int id)
         {
             return await Mediator.Send(new GetTripQuery { Id = id });
+        }
+
+        [HttpGet("GetTripsForUser/{userid}")]
+        public async Task<ActionResult<List<TripDto>>> Get(string userid)
+        {
+            return await Mediator.Send(new GetTripsForUserQuery { UserId = userid });
         }
 
         [HttpPost]
@@ -46,6 +53,16 @@ namespace geocity.api.Controllers
                     Day = i,
                 });
             }
+
+            // Thirs create the TripUser
+            await Mediator.Send(new CreateTripUserCommand
+            {
+                UserId = tripData.UserId,
+                TripId = tripId,
+                IsFavorite = false,
+                IsParticipant = true,
+                IsOwner = true,
+            });
 
             return tripId;
         }

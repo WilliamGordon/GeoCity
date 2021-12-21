@@ -68,6 +68,7 @@ export const TripForm = () => {
           CityName: selectedCityOption.label,
           CityLatitude: JSON.parse(selectedCityOption.value).y,
           CityLongitude: JSON.parse(selectedCityOption.value).x,
+          UserId: 1,
         })
       };
       fetch('https://localhost:44396/api/Trip', requestOptions)

@@ -14,5 +14,6 @@ namespace geocity.application.Composit
         public string CityName { get; set; }
         public decimal CityLatitude { get; set; }
         public decimal CityLongitude { get; set; }
+        public int UserId { get; set; }
     }
 }
