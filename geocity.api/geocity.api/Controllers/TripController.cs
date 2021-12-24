@@ -4,6 +4,7 @@ using geocity.application.Itinary.Commands.CreateItinary;
 using geocity.application.Trip.Commands.CreateTrip;
 using geocity.application.Trip.Queries;
 using geocity.application.TripUser.Commands.CreateTripUser;
+using geocity.application.TripUser.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +19,22 @@ namespace geocity.api.Controllers
             return await Mediator.Send(new GetTripQuery { Id = id });
         }
 
-        [HttpGet("GetTripsForUser/{userid}")]
-        public async Task<ActionResult<List<TripDto>>> Get(string userid)
+        [HttpGet("GetTripsUser/owner/{userid}")]
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserOwner(int userid)
         {
-            return await Mediator.Send(new GetTripsForUserQuery { UserId = userid });
+            return await Mediator.Send(new GetTripsUserOwnerQuery { UserId = userid });
+        }
+
+        [HttpGet("GetTripsUser/participant/{userid}")]
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserParticipant(int userid)
+        {
+            return await Mediator.Send(new GetTripsUserParticipantQuery { UserId = userid });
+        }
+
+        [HttpGet("GetTripsUser/favorite/{userid}")]
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserFavorite(int userid)
+        {
+            return await Mediator.Send(new GetTripsUserFavoriteQuery { UserId = userid });
         }
 
         [HttpPost]

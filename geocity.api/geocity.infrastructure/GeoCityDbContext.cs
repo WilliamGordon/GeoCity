@@ -1,5 +1,6 @@
 ﻿using geocity.domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace geocity.infrastructure
 {
@@ -25,7 +26,10 @@ namespace geocity.infrastructure
                .WithOne(e => e.Trip);
 
             modelBuilder.Entity<ItinaryPlace>()
-                .HasKey(bc => new { bc.ItinaryId, bc.PlaceId });
+                .HasKey(bc => bc.Id);
+            modelBuilder.Entity<ItinaryPlace>()
+               .Property(bc => bc.Id)
+               .ValueGeneratedOnAdd();
             modelBuilder.Entity<ItinaryPlace>()
                 .HasOne(bc => bc.Itinary)
                 .WithMany(b => b.ItinaryPlaces)
@@ -36,7 +40,10 @@ namespace geocity.infrastructure
                 .HasForeignKey(bc => bc.PlaceId);
 
             modelBuilder.Entity<TripUser>()
-                .HasKey(bc => new { bc.TripId, bc.UserId });
+                .HasKey(bc => bc.Id);
+            modelBuilder.Entity<TripUser>()
+               .Property(bc => bc.Id)
+               .ValueGeneratedOnAdd();
             modelBuilder.Entity<TripUser>()
                 .HasOne(bc => bc.Trip)
                 .WithMany(b => b.TripUsers)

@@ -66,7 +66,7 @@ export const MapSideBar = (props) => {
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={p.id + "|" + p.position[0].toString().substring(0, 5) + "_" + p.position[1].toString().substring(0, 5)} />
+              <ListItemText primary={p.id} />
             </ListItem>
           })
         }

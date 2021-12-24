@@ -58,7 +58,7 @@ export default function NavigationBar() {
           <Box sx={{ flexGrow: 1 }}></Box>
           <Button 
             component={Link}
-            to="/trips-manager"
+            to="/trips-manager/owner"
             sx = {{ 
               color: location.pathname.includes("my-trips") ? "#ffffff" : "#9fafce",
               marginRight: "15px", 

@@ -68,4 +68,3 @@ C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.infrastructure.p
 C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.domain.pdb
 C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.application.dll
 C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.application.pdb
-C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.MvcApplicationPartsAssemblyInfo.cs

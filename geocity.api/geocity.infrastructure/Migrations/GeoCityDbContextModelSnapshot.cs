@@ -80,26 +80,30 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPlace", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Duration")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("ItinaryId")
                         .HasColumnType("int");
 
                     b.Property<int>("PlaceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Duration")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("ItinaryId", "PlaceId");
+                    b.HasIndex("ItinaryId");
 
                     b.HasIndex("PlaceId");
 
@@ -114,15 +118,14 @@ namespace geocity.infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("Longitude")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("latitude")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -162,17 +165,14 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.TripUser", b =>
                 {
-                    b.Property<int>("TripId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("bit");
@@ -186,7 +186,15 @@ namespace geocity.infrastructure.Migrations
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("TripId", "UserId");
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TripId");
 
                     b.HasIndex("UserId");
 

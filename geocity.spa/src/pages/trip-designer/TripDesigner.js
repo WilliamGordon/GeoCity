@@ -19,12 +19,11 @@ export const TripDesigner = (props) => {
       .then(response => response.json())
       .then(tripData => {
         setOpen(false);
-        console.log(tripData);
         setTrip(tripData)
+        console.log(tripData)
         setTripIsLoaded(true)
       }).catch(rejected => {
         setOpen(false);
-        console.log(rejected);
       });
   }, []);
 

@@ -11,7 +11,6 @@ namespace geocity.application.TripUser.Commands.CreateTripUser
 {
     public class CreateTripUserCommand : IRequest<int>
     {
-        public int Id { get; set; }
         public int TripId { get; set; }
         public int UserId { get; set; }
         public bool IsOwner { get; set; }

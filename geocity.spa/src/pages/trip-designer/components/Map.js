@@ -53,8 +53,9 @@ export const Map = (props) => {
           style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }}
         >
           <PointOfInterestList 
-            sendDataToParent={sendDataToParent} 
-            tripIsGenerated={props.tripIsGenerated} />
+            sendDataToParent={sendDataToParent}
+            tripIsGenerated={props.tripIsGenerated} 
+            trip={props.trip} />
           <RoutingControl 
             ref={rMachine} 
             waypoints={pointOfInterestList}/>
