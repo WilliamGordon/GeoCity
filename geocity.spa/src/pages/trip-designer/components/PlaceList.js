@@ -1,10 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useMapEvents, Marker } from 'react-leaflet';
-import nextId from "react-id-generator";
 
-export const PointOfInterestList = (props) => {
-  const [pointOfInterestList, setPointOfInterestList] = useState([]);
+export const PlaceList = (props) => {
+  const [placeList, setPlaceList] = useState([]);
 
   useEffect(() => {
     var placesForItinary = []; 
@@ -16,16 +15,14 @@ export const PointOfInterestList = (props) => {
         });
       });
     });
-    setPointOfInterestList(placesForItinary);
-    console.log(placesForItinary);
+    setPlaceList(placesForItinary);
   }, [])
 
   useEffect(() => {
-    props.sendDataToParent(pointOfInterestList);
+    props.sendDataToParent(placeList);
   })
 
   const addMarker = (marker) => {
-    
     if (!props.tripIsGenerated) {
       const requestOptions = {
         method: 'POST',
@@ -43,9 +40,8 @@ export const PointOfInterestList = (props) => {
       fetch('https://localhost:44396/api/ItinaryPlace', requestOptions)
         .then(response => response.json())
         .then(itinaryPlaceId => {
-          console.log(itinaryPlaceId)
           marker.id = itinaryPlaceId;
-          setPointOfInterestList([...pointOfInterestList, marker]);
+          setPlaceList([...placeList, marker]);
         }).catch(rejected => {
           console.log(rejected)
         });
@@ -63,9 +59,7 @@ export const PointOfInterestList = (props) => {
       fetch('https://localhost:44396/api/ItinaryPlace/' + id, requestOptions)
         .then(response => response.json())
         .then(itinaryPlaceId => {
-          console.log("DELETE", id)
-          console.log("DELETE", itinaryPlaceId)
-          setPointOfInterestList(pointOfInterestList.filter(p => p.id !== id));
+          setPlaceList(placeList.filter(p => p.id !== id));
         }).catch(rejected => {
           console.log(rejected)
         });
@@ -74,7 +68,7 @@ export const PointOfInterestList = (props) => {
 
   const updateMarker = (marker) => {
     if (!props.tripIsGenerated) {
-      setPointOfInterestList([...pointOfInterestList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
+      setPlaceList([...placeList.filter(p => p.id !== marker.id), { id: marker.id, position: marker.position }]);
     }
   }
 
@@ -90,7 +84,7 @@ export const PointOfInterestList = (props) => {
   return (
     <>
       { 
-        pointOfInterestList.map((p) => (
+        placeList.map((p) => (
           <Marker
             draggable={true}
             key={p.id}
@@ -114,4 +108,4 @@ export const PointOfInterestList = (props) => {
     </>
   )
 }
-export default PointOfInterestList;
+export default PlaceList;

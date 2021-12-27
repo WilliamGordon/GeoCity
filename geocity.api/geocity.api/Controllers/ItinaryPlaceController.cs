@@ -2,6 +2,7 @@
 using geocity.application.ItinaryPlace.Commands.CreateItinaryPlace;
 using geocity.application.ItinaryPlace.Commands.DeleteItinaryPlace;
 using geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace;
+using geocity.application.ItinaryPlace.Queries;
 using geocity.application.Place.Commands.CreatePlace;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,13 @@ namespace geocity.api.Controllers
 {
     public class ItinaryPlaceController : ApiControllerBase
     {
+        // GET: CityController/Details/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ItinaryPlaceDto>> Details(int id)
+        {
+            return await Mediator.Send(new GetItinaryPlaceQuery { Id = id });
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> PostAsync(AddPlaceToItinaryDto placeData)
         {

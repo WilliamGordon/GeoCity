@@ -1,40 +1,26 @@
 import React, { useEffect, useState, useRef } from "react";
-import MapSideBar from './MapSideBar'
 import { MapContainer, TileLayer } from 'react-leaflet';
-import { useGeoLocation } from '../../../common/hooks/useGeoLocation';
-import PointOfInterestList from "./PointOfInterestList";
-import RoutingControl from './RoutingControl'
-
-const maps = {
-  base: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-};
+import MapSideBar from './MapSideBar'
+import PlaceList from "./PlaceList";
+import RoutingControl from '../routing/RoutingControl'
 
 export const Map = (props) => {
-  const rMachine = useRef();
-  const [pointOfInterestList, setPointOfInterestList] = useState([]);
-  const [tripIsGenerated, setTripIsGenerated] = useState(false);
+  const [placeList, setPlaceList] = useState([]);
+  const [isRouteGenerated, setIsRouteGenerated] = useState(false);
+  const routingMachine = useRef();
   
-  const generateTrip = () => {
-    if (tripIsGenerated) {
-      setTripIsGenerated(false);
-    } else {
-      setTripIsGenerated(true);
-    }
-  }
+  const generateRoute = () => isRouteGenerated ? setIsRouteGenerated(false) : setIsRouteGenerated(true);
 
-  const sendDataToParent = (data) => {
-    setPointOfInterestList(data)
-  }
+  const sendDataToParent = (data) => setPlaceList(data);
 
   useEffect(() => {
-    console.log("RENDER")
-      if (tripIsGenerated) {
-        if (rMachine.current) {
-          rMachine.current.setWaypoints(pointOfInterestList.map(x => x.position));
+      if (isRouteGenerated) {
+        if (routingMachine.current) {
+          routingMachine.current.setWaypoints(placeList.map(x => x.position));
         }
       } else {
-        if (rMachine.current) {
-          rMachine.current.setWaypoints([]);
+        if (routingMachine.current) {
+          routingMachine.current.setWaypoints([]);
         }
       }
   });
@@ -42,27 +28,25 @@ export const Map = (props) => {
     return (
       <>
         <MapSideBar 
-          pointOfInterestList={pointOfInterestList} 
-          generateTrip={generateTrip} 
-          tripIsGenerated={tripIsGenerated}
-          />
+          placeList={placeList} 
+          generateRoute={generateRoute} 
+          isRouteGenerated={isRouteGenerated}
+          trip={props.trip} />
         <MapContainer
           center={[props.trip.city.latitude, props.trip.city.longitude]}
           zoom={12}
           minZoom={8}
-          style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }}
-        >
-          <PointOfInterestList 
+          style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }} >
+          <PlaceList 
             sendDataToParent={sendDataToParent}
-            tripIsGenerated={props.tripIsGenerated} 
+            tripIsGenerated={props.isRouteGenerated} 
             trip={props.trip} />
           <RoutingControl 
-            ref={rMachine} 
-            waypoints={pointOfInterestList}/>
+            ref={routingMachine} 
+            waypoints={placeList}/>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url={maps.base}
-          />
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         </MapContainer>
       </>
     )

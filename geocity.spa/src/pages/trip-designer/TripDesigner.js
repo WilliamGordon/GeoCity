@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Backdrop, CircularProgress } from '@mui/material';
-import Map from './components/Map'
 import { useParams } from 'react-router-dom';
+import Map from './components/Map'
 
 export const TripDesigner = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -20,7 +20,6 @@ export const TripDesigner = (props) => {
       .then(tripData => {
         setOpen(false);
         setTrip(tripData)
-        console.log(tripData)
         setTripIsLoaded(true)
       }).catch(rejected => {
         setOpen(false);
