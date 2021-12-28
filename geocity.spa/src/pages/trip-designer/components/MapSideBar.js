@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import InboxIcon from '@mui/icons-material/Inbox';
 import PlaceEditModal from './PlaceEditModal'
 import {
@@ -12,8 +12,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Modal,
-  TextField,
 } from '@mui/material';
 
 const styleDrawer = {
@@ -30,8 +28,8 @@ const styleDrawer = {
 }
 
 const styleTypography = {
-  fontSize: "initial", 
-  width: "80%", 
+  fontSize: "initial",
+  width: "80%",
   margin: "0 auto",
 }
 
@@ -47,23 +45,12 @@ const styleButton = {
 }
 
 export const MapSideBar = (props) => {
-  const [itinaryPlace, setItinaryPlace] = React.useState(0);
+  const [itinaryPlace, setItinaryPlace] = React.useState({});
   const [open, setOpen] = React.useState(false);
-  
-  const handleOpen = (e) => {
-    setOpen(true);
-    console.log('https://localhost:44396/api/ItinaryPlace/' + e)
-    fetch('https://localhost:44396/api/ItinaryPlace/' + e)
-      .then(response => response.json())
-      .then(tripData => {
-        setItinaryPlace(tripData)
-        console.log(tripData);
-      }).catch(rejected => {
-        console.log(rejected)
-      });
-  }
+
   const handleClose = () => {
     setOpen(false);
+    setItinaryPlace({})
   }
 
   return (
@@ -74,12 +61,12 @@ export const MapSideBar = (props) => {
       anchor="left"
     >
       <Toolbar>
-        <Typography 
-          variant="overline" 
-          display="block" 
-          gutterBottom 
-          align="center" 
-          component="div" 
+        <Typography
+          variant="overline"
+          display="block"
+          gutterBottom
+          align="center"
+          component="div"
           sx={styleTypography}>
           Create your trip
         </Typography>
@@ -89,7 +76,7 @@ export const MapSideBar = (props) => {
         {
           props.placeList &&
           props.placeList.map((p) => {
-            return <ListItem button id={p.id} key={p.id} onClick={(e) => handleOpen(p.id)}>
+            return <ListItem button id={p.id} key={p.id} onClick={(e) => props.handleOpen(p.id)}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
@@ -109,8 +96,8 @@ export const MapSideBar = (props) => {
         {props.isRouteGenerated && <>Reset</>}
         {!props.isRouteGenerated && <>Generate Trip</>}
       </Button>
-      <PlaceEditModal 
-        open={open} 
+      <PlaceEditModal
+        open={open}
         itinaryPlace={itinaryPlace}
         handleClose={handleClose} />
     </Drawer>

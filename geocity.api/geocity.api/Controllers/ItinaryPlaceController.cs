@@ -41,16 +41,15 @@ namespace geocity.api.Controllers
             return itinaryPlaceId;
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<int>> UpdatePlace(int id, UpdateItinaryPlaceCommand command)
         {
             if (id != command.Id)
             {
                 return BadRequest();
             }
-
             await Mediator.Send(command);
-            return NoContent();
+            return id;
         }
 
         [HttpDelete("{id}")]

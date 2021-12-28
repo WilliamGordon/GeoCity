@@ -4,28 +4,38 @@ import {
   Typography,
   Modal,
   TextField,
+  Button,
 } from '@mui/material';
 
 export const PlaceEditModal = (props) => {
+  const [itinaryPlace, setItinaryPlace] = useState(props.itinaryPlace);
 
-  // itinaryPlaceId input
-  const [itinaryPlaceId, setItinaryPlaceId] = useState(props.itinaryPlace.id)
+  useEffect(() => {
+    setItinaryPlace(props.itinaryPlace);
+  }, [props.itinaryPlace])
 
-  // Name input
-  const [name, setName] = useState(props.itinaryPlace.name)
-  const [nameError, setNameError] = useState("")
-
-  // Price input
-  const [price, setPrice] = useState(props.itinaryPlace.price)
-  const [priceError, setPriceError] = useState("")
-
-  // Duration input
-  const [duration, setDuration] = useState(props.itinaryPlace.duration)
-  const [durationError, setDurationError] = useState("")
-  
-  // Description input
-  const [description, setDescription] = useState(props.itinaryPlace.description ? props.itinaryPlace.description : "")
-  const [descriptionError, setDescriptionError] = useState("")
+  const submitForm = () => {
+    console.log(itinaryPlace);
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        Id: itinaryPlace.id,
+        Name: itinaryPlace.name,
+        Description: itinaryPlace.description,
+        Price: itinaryPlace.price,
+        Duration: itinaryPlace.duration,
+      })
+    };
+    fetch('https://localhost:44396/api/ItinaryPlace/' + itinaryPlace.id, requestOptions)
+      .then(response => response.json())
+      .then(tripId => {
+        console.log(tripId)
+        props.handleClose();
+      }).catch(rejected => {
+        console.log(rejected)
+      });
+  }
 
   return (
     <Modal
@@ -46,7 +56,7 @@ export const PlaceEditModal = (props) => {
         p: 4,
       }}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          EDIT PLACE {props.itinaryPlaceId}
+          EDIT PLACE {itinaryPlace.id}
         </Typography>
         <TextField
           id="name"
@@ -54,19 +64,9 @@ export const PlaceEditModal = (props) => {
           label="Name"
           type="text"
           autoComplete='off'
-          value={name}
-          error={nameError ? true : false}
-          helperText={nameError}
+          value={itinaryPlace.name || ''}
           onChange={(event) => {
-            setNameError("");
-            setName(event.target.value);
-          }}
-          onBlur={(event) => {
-            if (event.target.value == "") {
-              setNameError("Please provide a name for your trip");
-            } else {
-              setNameError("");
-            }
+            setItinaryPlace({ ...itinaryPlace, name: event.target.value });
           }}
           required
           fullWidth
@@ -81,19 +81,9 @@ export const PlaceEditModal = (props) => {
           label="Price"
           type="text"
           autoComplete='off'
-          value={price}
-          error={priceError ? true : false}
-          helperText={priceError}
+          value={itinaryPlace.price || ''}
           onChange={(event) => {
-            setPriceError("");
-            setPrice(event.target.value);
-          }}
-          onBlur={(event) => {
-            if (event.target.value == "") {
-              setPriceError("Please provide a name for your trip");
-            } else {
-              setPriceError("");
-            }
+            setItinaryPlace({ ...itinaryPlace, price: event.target.value });
           }}
           required
           fullWidth
@@ -107,19 +97,9 @@ export const PlaceEditModal = (props) => {
           label="Duration"
           type="text"
           autoComplete='off'
-          value={duration}
-          error={durationError ? true : false}
-          helperText={durationError}
+          value={itinaryPlace.duration || ''}
           onChange={(event) => {
-            setDurationError("");
-            setDuration(event.target.value);
-          }}
-          onBlur={(event) => {
-            if (event.target.value == "") {
-              setDurationError("Please provide a name for your trip");
-            } else {
-              setDurationError("");
-            }
+            setItinaryPlace({ ...itinaryPlace, duration: event.target.value });
           }}
           required
           fullWidth
@@ -135,19 +115,9 @@ export const PlaceEditModal = (props) => {
           label="Description"
           type="text"
           autoComplete='off'
-          value={description}
-          error={descriptionError ? true : false}
-          helperText={descriptionError}
+          value={itinaryPlace.description || ''}
           onChange={(event) => {
-            setDescriptionError("");
-            setDescription(event.target.value);
-          }}
-          onBlur={(event) => {
-            if (event.target.value == "") {
-              setDescriptionError("Please provide a name for your trip");
-            } else {
-              setDescriptionError("");
-            }
+            setItinaryPlace({ ...itinaryPlace, description: event.target.value });
           }}
           required
           fullWidth
@@ -155,6 +125,21 @@ export const PlaceEditModal = (props) => {
             marginBottom: 4,
           }}
         />
+        <Button
+          variant="contained"
+          onClick={submitForm}
+          sx={{
+            marginBottom: "15px !important",
+            color: '#9fafce',
+            backgroundColor: "#10377a",
+            width: "100%",
+            margin: "0 auto",
+            '&:hover': {
+              backgroundColor: "#10377a", color: '#ffffff'
+            }
+          }}>
+          Envoyer
+        </Button>
       </Box>
     </Modal>
   );

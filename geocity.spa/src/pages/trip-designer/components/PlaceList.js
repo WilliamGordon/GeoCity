@@ -1,12 +1,28 @@
 
 import React, { useState, useEffect } from 'react';
-import { useMapEvents, Marker } from 'react-leaflet';
+import { useMapEvents, Marker, Popup } from 'react-leaflet';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import {
+  Button,
+} from '@mui/material';
+
+const styleButton = {
+  marginBottom: "15px !important",
+  color: '#9fafce',
+  backgroundColor: "#10377a",
+  margin: "0 auto",
+  '&:hover': {
+    backgroundColor: "#10377a", color: 'red'
+  }
+}
 
 export const PlaceList = (props) => {
   const [placeList, setPlaceList] = useState([]);
 
   useEffect(() => {
-    var placesForItinary = []; 
+    var placesForItinary = [];
     props.trip.itinaries.forEach(itinary => {
       itinary.itinaryPlaces.forEach(itinaryPlace => {
         placesForItinary.push({
@@ -42,6 +58,7 @@ export const PlaceList = (props) => {
         .then(itinaryPlaceId => {
           marker.id = itinaryPlaceId;
           setPlaceList([...placeList, marker]);
+          props.handleOpen(itinaryPlaceId);
         }).catch(rejected => {
           console.log(rejected)
         });
@@ -83,7 +100,7 @@ export const PlaceList = (props) => {
 
   return (
     <>
-      { 
+      {
         placeList.map((p) => (
           <Marker
             draggable={true}
@@ -92,7 +109,7 @@ export const PlaceList = (props) => {
             position={p.position}
             eventHandlers={{
               click: (e) => {
-                removeMarker(e.target.options.id);
+                // removeMarker(e.target.options.id);
               },
               dragend(e) {
                 updateMarker({
@@ -102,6 +119,22 @@ export const PlaceList = (props) => {
               },
             }}
           >
+            <Popup>
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={(e) => props.handleOpen(p.id)}
+                sx={styleButton}>
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={(e) => removeMarker(p.id)}
+                sx={styleButton}>
+                <DeleteIcon fontSize="inherit" />
+              </IconButton>
+            </Popup>
           </Marker>
         ))
       }

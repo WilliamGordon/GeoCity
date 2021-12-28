@@ -8,6 +8,7 @@ using System;
 var builder = WebApplication.CreateBuilder(args);
 var mapperConfig = new MapperConfiguration(mc =>
 {
+    mc.CreateMap<string, string>().ConvertUsing(s => s ?? string.Empty);
     mc.AddProfile(new MappingProfile());
 });
 

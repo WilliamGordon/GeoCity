@@ -11,6 +11,7 @@ namespace geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace
     public class UpdateItinaryPlaceCommand : IRequest
     {
         public int Id { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
         public decimal? Price { get; set; }
         public decimal? Duration { get; set; }
@@ -29,6 +30,7 @@ namespace geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace
         public async Task<Unit> Handle(UpdateItinaryPlaceCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.ItinaryPlaces.FindAsync(request.Id);
+            entity.Name = request.Name;
             entity.Description = request.Description;
             entity.Price = request.Price;
             entity.Duration = request.Duration;

@@ -20,7 +20,6 @@ const createRoutineMachineLayer = (props) => {
       ],
     },
   });
-  console.log(instance)
   return instance;
 };
 

@@ -7,14 +7,11 @@ export const TripDesigner = (props) => {
   const [open, setOpen] = React.useState(false);
   const [trip, setTrip] = useState({});
   const [tripIsLoaded, setTripIsLoaded] = useState(false);
-  
+
   let { tripId } = useParams();
-  console.log(tripId);
 
   useEffect(() => {
     setOpen(true);
-    // Get all data from trip
-    console.log("https://localhost:44396/api/Trip/" + tripId)
     fetch('https://localhost:44396/api/Trip/' + tripId)
       .then(response => response.json())
       .then(tripData => {
@@ -30,7 +27,7 @@ export const TripDesigner = (props) => {
     <Box>
       <Grid container justifyContent="center" alignItems="center" >
         <Grid item xs={12}>
-          { tripIsLoaded && <Map trip={trip}/> }
+          {tripIsLoaded && <Map trip={trip} />}
         </Grid>
       </Grid>
       <Backdrop
