@@ -7,7 +7,7 @@ import {
   Button,
 } from '@mui/material';
 
-export const PlaceEditModal = (props) => {
+export const ItinaryPlaceCreateUpdateModal = (props) => {
   const [itinaryPlace, setItinaryPlace] = useState(props.itinaryPlace);
 
   useEffect(() => {
@@ -16,25 +16,60 @@ export const PlaceEditModal = (props) => {
 
   const submitForm = () => {
     console.log(itinaryPlace);
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        Id: itinaryPlace.id,
-        Name: itinaryPlace.name,
-        Description: itinaryPlace.description,
-        Price: itinaryPlace.price,
-        Duration: itinaryPlace.duration,
-      })
-    };
-    fetch('https://localhost:44396/api/ItinaryPlace/' + itinaryPlace.id, requestOptions)
-      .then(response => response.json())
-      .then(tripId => {
-        console.log(tripId)
-        props.handleClose();
-      }).catch(rejected => {
-        console.log(rejected)
-      });
+
+    if (itinaryPlace.id) {
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Id: itinaryPlace.id,
+          Name: itinaryPlace.name,
+          Description: itinaryPlace.description,
+          Price: itinaryPlace.price,
+          Duration: itinaryPlace.duration,
+        })
+      };
+      fetch('https://localhost:44396/api/ItinaryPlace/' + itinaryPlace.id, requestOptions)
+        .then(response => response.json())
+        .then(tripId => {
+          console.log(tripId)
+          props.handleClose();
+        }).catch(rejected => {
+          console.log(rejected)
+        });
+    } else {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itinaryId: props.trip.itinaries[0].id, // For now just use the first day of the itinary by default
+          name: itinaryPlace.name,
+          description: itinaryPlace.description,
+          price: itinaryPlace.price,
+          duration: itinaryPlace.duration,
+          latitude: itinaryPlace.latitude,
+          longitude: itinaryPlace.longitude,
+        })
+      };
+      console.log(requestOptions);
+      fetch('https://localhost:44396/api/ItinaryPlace', requestOptions)
+        .then(response => response.json())
+        .then(itinaryPlaceId => {
+          // ADDING THE MARKER THROUGH THE MODAL
+          props.addItinaryPlace({
+            id: itinaryPlaceId,
+            name: itinaryPlace.name,
+            description: itinaryPlace.description,
+            price: itinaryPlace.price,
+            duration: itinaryPlace.duration,
+            latitude: itinaryPlace.latitude,
+            longitude: itinaryPlace.longitude,
+          });
+          props.handleClose();
+        }).catch(rejected => {
+          console.log(rejected)
+        });
+    }
   }
 
   return (
@@ -145,4 +180,4 @@ export const PlaceEditModal = (props) => {
   );
 }
 
-export default PlaceEditModal;
+export default ItinaryPlaceCreateUpdateModal;

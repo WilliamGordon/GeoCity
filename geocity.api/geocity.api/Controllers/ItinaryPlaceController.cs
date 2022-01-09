@@ -34,6 +34,8 @@ namespace geocity.api.Controllers
             {
                 PlaceId = placeId,
                 ItinaryId = placeData.ItinaryId,
+                Name = placeData.Name,
+                Description = placeData.Description,
                 Duration = placeData.Duration,
                 Price = placeData.Price
             });

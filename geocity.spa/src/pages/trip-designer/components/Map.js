@@ -3,24 +3,30 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import MapSideBar from './MapSideBar'
 import PlaceList from "./PlaceList";
 import RoutingControl from '../routing/RoutingControl'
-import PlaceEditModal from './PlaceEditModal'
+import ItinaryPlaceCreateUpdateModal from './ItinaryPlaceCreateUpdateModal'
 
 export const Map = (props) => {
-  const [placeList, setPlaceList] = useState([]);
-  const [itinaryPlace, setItinaryPlace] = React.useState({});
+  const [itinaryPlace, setItinaryPlace] = useState({});
+  const [itinaryPlaceList, setItinaryPlaceList] = useState([]);
   const [isRouteGenerated, setIsRouteGenerated] = useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const routingMachine = useRef();
 
   const handleOpen = (e) => {
-    fetch('https://localhost:44396/api/ItinaryPlace/' + e)
-      .then(response => response.json())
-      .then(tripData => {
-        setOpen(true);
-        setItinaryPlace(tripData)
-      }).catch(rejected => {
-        console.log(rejected)
-      });
+    console.log(e.id)
+    if (e.id) {
+      fetch('https://localhost:44396/api/ItinaryPlace/' + e.id)
+        .then(response => response.json())
+        .then(tripData => {
+          setOpen(true);
+          setItinaryPlace(tripData)
+        }).catch(rejected => {
+          console.log(rejected)
+        });
+    } else {
+      setOpen(true);
+      setItinaryPlace(e)
+    }
   }
 
   const handleClose = () => {
@@ -28,14 +34,50 @@ export const Map = (props) => {
     setItinaryPlace({})
   }
 
+  useEffect(() => {
+    var placesForItinary = [];
+    props.trip.itinaries.forEach(itinary => {
+      itinary.itinaryPlaces.forEach(itinaryPlace => {
+        placesForItinary.push({
+          id: itinaryPlace.id,
+          name: itinaryPlace.name,
+          description: itinaryPlace.description,
+          duration: itinaryPlace.duration,
+          price: itinaryPlace.price,
+          latitude: itinaryPlace.place.latitude,
+          longitude: itinaryPlace.place.longitude,
+        });
+      });
+    });
+    console.log(props.trip);
+    console.log(placesForItinary);
+    setItinaryPlaceList(placesForItinary);
+  }, [])
+
+  const removeMarker = (id) => {
+    if (!props.tripIsGenerated) {
+      const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      };
+      fetch('https://localhost:44396/api/ItinaryPlace/' + id, requestOptions)
+        .then(response => response.json())
+        .then(itinaryPlaceId => {
+          setItinaryPlaceList(itinaryPlaceList.filter(p => p.id !== id));
+        }).catch(rejected => {
+          console.log(rejected)
+        });
+    }
+  }
+
   const generateRoute = () => isRouteGenerated ? setIsRouteGenerated(false) : setIsRouteGenerated(true);
 
-  const sendDataToParent = (data) => setPlaceList(data);
+  const addItinaryPlace = (p) => setItinaryPlaceList([...itinaryPlaceList, p]);
 
   useEffect(() => {
     if (isRouteGenerated) {
       if (routingMachine.current) {
-        routingMachine.current.setWaypoints(placeList.map(x => x.position));
+        routingMachine.current.setWaypoints(itinaryPlaceList.map(x => [x.latitude, x.longitude]));
       }
     } else {
       if (routingMachine.current) {
@@ -48,7 +90,7 @@ export const Map = (props) => {
     <>
       <MapSideBar
         handleOpen={handleOpen}
-        placeList={placeList}
+        itinaryPlaceList={itinaryPlaceList}
         generateRoute={generateRoute}
         isRouteGenerated={isRouteGenerated}
         trip={props.trip} />
@@ -58,19 +100,22 @@ export const Map = (props) => {
         minZoom={8}
         style={{ height: '100vh', width: '67%', float: "right", position: "fixed", left: "33%", top: "65px" }} >
         <PlaceList
-          sendDataToParent={sendDataToParent}
+          removeMarker={removeMarker}
           handleOpen={handleOpen}
           tripIsGenerated={props.isRouteGenerated}
+          itinaryPlaceList={itinaryPlaceList}
           trip={props.trip} />
         <RoutingControl
           ref={routingMachine}
-          waypoints={placeList} />
+          waypoints={itinaryPlaceList} />
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       </MapContainer>
-      <PlaceEditModal
+      <ItinaryPlaceCreateUpdateModal
+        addItinaryPlace={addItinaryPlace}
         open={open}
+        trip={props.trip}
         itinaryPlace={itinaryPlace}
         handleClose={handleClose} />
     </>

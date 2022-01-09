@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InboxIcon from '@mui/icons-material/Inbox';
-import PlaceEditModal from './PlaceEditModal'
+import ItinaryPlaceCreateUpdateModal from './ItinaryPlaceCreateUpdateModal'
 import {
   Box,
   Drawer,
@@ -45,8 +45,8 @@ const styleButton = {
 }
 
 export const MapSideBar = (props) => {
-  const [itinaryPlace, setItinaryPlace] = React.useState({});
-  const [open, setOpen] = React.useState(false);
+  const [itinaryPlace, setItinaryPlace] = useState({});
+  const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -74,13 +74,13 @@ export const MapSideBar = (props) => {
       <Divider />
       <List>
         {
-          props.placeList &&
-          props.placeList.map((p) => {
-            return <ListItem button id={p.id} key={p.id} onClick={(e) => props.handleOpen(p.id)}>
+          props.itinaryPlaceList &&
+          props.itinaryPlaceList.map((p) => {
+            return <ListItem button id={p.id} key={p.id} onClick={(e) => props.handleOpen(p)}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={p.id} />
+              <ListItemText primary={p.id + " - " + p.name} />
             </ListItem>
           })
         }
@@ -96,7 +96,7 @@ export const MapSideBar = (props) => {
         {props.isRouteGenerated && <>Reset</>}
         {!props.isRouteGenerated && <>Generate Trip</>}
       </Button>
-      <PlaceEditModal
+      <ItinaryPlaceCreateUpdateModal
         open={open}
         itinaryPlace={itinaryPlace}
         handleClose={handleClose} />

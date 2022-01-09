@@ -13,6 +13,7 @@ namespace geocity.application.ItinaryPlace.Commands.CreateItinaryPlace
     {
         public int ItinaryId { get; set; }
         public int PlaceId { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
         public decimal? Price { get; set; }
         public decimal? Duration { get; set; }
@@ -33,6 +34,7 @@ namespace geocity.application.ItinaryPlace.Commands.CreateItinaryPlace
             var entity = new geocity.domain.Entities.ItinaryPlace();
             entity.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId);
             entity.Place = await _context.Places.SingleOrDefaultAsync(x => x.Id == request.PlaceId);
+            entity.Name = request.Name;
             entity.Description = request.Description;
             entity.Price = request.Price;
             entity.Duration = request.Duration;
