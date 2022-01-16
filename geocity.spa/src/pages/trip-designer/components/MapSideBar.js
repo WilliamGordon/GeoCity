@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InboxIcon from '@mui/icons-material/Inbox';
+import PushPinIcon from '@mui/icons-material/PushPin';
 import ItinaryPlaceCreateUpdateModal from './ItinaryPlaceCreateUpdateModal'
 import {
   Box,
@@ -44,6 +45,30 @@ const styleButton = {
   }
 }
 
+const styleButtonItinary = {
+  marginTop: "5px !important",
+  marginBottom: "2px !important",
+  marginLeft: "10px !important",
+  color: '#9fafce',
+  backgroundColor: "#10377a",
+  width: "10%",
+  margin: "0 auto",
+  '&:hover': {
+    backgroundColor: "#10377a", color: '#ffffff'
+  }
+}
+
+const styleBorder = {
+  margin: "0 auto",
+  width: "90%",
+  marginBottom: "4px !important",
+}
+
+const styleItinaries = {
+  margin: "0 auto",
+  width: "90%",
+}
+
 export const MapSideBar = (props) => {
   const [itinaryPlace, setItinaryPlace] = useState({});
   const [open, setOpen] = useState(false);
@@ -72,13 +97,51 @@ export const MapSideBar = (props) => {
         </Typography>
       </Toolbar>
       <Divider />
+      <List sx={styleItinaries}>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 1
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 2
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 3
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 4
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 1
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 2
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 3
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 4
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 1
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 2
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 3
+        </Button>
+        <Button variant="contained" size="small" sx={styleButtonItinary}>
+          Day 4
+        </Button>
+      </List>
       <List>
         {
           props.itinaryPlaceList &&
           props.itinaryPlaceList.map((p) => {
-            return <ListItem button id={p.id} key={p.id} onClick={(e) => props.handleOpen(p)}>
+            return <ListItem sx={styleBorder} button id={p.id} key={p.id} onClick={(e) => props.handleOpen(p)}>
               <ListItemIcon>
-                <InboxIcon />
+                <PushPinIcon />
               </ListItemIcon>
               <ListItemText primary={p.id + " - " + p.name} />
             </ListItem>

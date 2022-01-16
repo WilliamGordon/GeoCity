@@ -31,8 +31,17 @@ export const ItinaryPlaceCreateUpdateModal = (props) => {
       };
       fetch('https://localhost:44396/api/ItinaryPlace/' + itinaryPlace.id, requestOptions)
         .then(response => response.json())
-        .then(tripId => {
-          console.log(tripId)
+        .then(itinaryPlace => {
+          console.log(itinaryPlace);
+          props.updateItinaryPlace({
+            id: itinaryPlace.id,
+            name: itinaryPlace.name,
+            description: itinaryPlace.description,
+            price: itinaryPlace.price,
+            duration: itinaryPlace.duration,
+            latitude: itinaryPlace.place.latitude,
+            longitude: itinaryPlace.place.longitude,
+          });
           props.handleClose();
         }).catch(rejected => {
           console.log(rejected)

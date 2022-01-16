@@ -1,5 +1,8 @@
-﻿using geocity.infrastructure;
+﻿using AutoMapper;
+using geocity.application.ItinaryPlace.Queries;
+using geocity.infrastructure;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace
 {
-    public class UpdateItinaryPlaceCommand : IRequest
+    public class UpdateItinaryPlaceCommand : IRequest<ItinaryPlaceDto>
     {
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -17,17 +20,20 @@ namespace geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace
         public decimal? Duration { get; set; }
     }
 
-    public class UpdateItinaryPlaceCommandHandler : IRequestHandler<UpdateItinaryPlaceCommand>
+    public class UpdateItinaryPlaceCommandHandler : IRequestHandler<UpdateItinaryPlaceCommand, ItinaryPlaceDto>
     {
         private readonly IMediator _mediator;
         private readonly GeoCityDbContext _context;
-        public UpdateItinaryPlaceCommandHandler(IMediator mediator, GeoCityDbContext context)
+        private readonly IMapper _mapper;
+
+        public UpdateItinaryPlaceCommandHandler(IMediator mediator, GeoCityDbContext context, IMapper mapper)
         {
             _mediator = mediator;
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(UpdateItinaryPlaceCommand request, CancellationToken cancellationToken)
+        public async Task<ItinaryPlaceDto> Handle(UpdateItinaryPlaceCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.ItinaryPlaces.FindAsync(request.Id);
             entity.Name = request.Name;
@@ -35,7 +41,14 @@ namespace geocity.application.ItinaryPlace.Commands.UpdateItinaryPlace
             entity.Price = request.Price;
             entity.Duration = request.Duration;
             await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
+
+            var trip = await _context.ItinaryPlaces
+                .Include(t => t.Place)
+                .SingleOrDefaultAsync(x => x.Id == request.Id);
+
+            var tripDto = _mapper.Map<ItinaryPlaceDto>(trip);
+
+            return tripDto;
         }
     }
 }

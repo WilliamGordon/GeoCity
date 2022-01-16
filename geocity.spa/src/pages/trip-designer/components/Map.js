@@ -73,6 +73,7 @@ export const Map = (props) => {
   const generateRoute = () => isRouteGenerated ? setIsRouteGenerated(false) : setIsRouteGenerated(true);
 
   const addItinaryPlace = (p) => setItinaryPlaceList([...itinaryPlaceList, p]);
+  const updateItinaryPlace = (p) => setItinaryPlaceList([...itinaryPlaceList.filter(x => x.id !== p.id), p]);
 
   useEffect(() => {
     if (isRouteGenerated) {
@@ -114,6 +115,7 @@ export const Map = (props) => {
       </MapContainer>
       <ItinaryPlaceCreateUpdateModal
         addItinaryPlace={addItinaryPlace}
+        updateItinaryPlace={updateItinaryPlace}
         open={open}
         trip={props.trip}
         itinaryPlace={itinaryPlace}
