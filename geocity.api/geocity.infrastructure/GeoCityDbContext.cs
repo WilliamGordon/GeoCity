@@ -17,6 +17,12 @@ namespace geocity.infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Place>()
+                .Property(p => p.Latitude).HasPrecision(38, 18);
+
+            modelBuilder.Entity<Place>()
+                .Property(p => p.Longitude).HasPrecision(38, 18);
+
             modelBuilder.Entity<City>()
                 .HasMany(c => c.Trips)
                 .WithOne(e => e.City);

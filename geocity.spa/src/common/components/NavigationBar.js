@@ -9,12 +9,12 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom'
 
 export default function NavigationBar() {
-  
+
   const location = useLocation();
- 
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ backgroundColor: "#10377a", zIndex:1400 }} position="static" >
+      <AppBar sx={{ backgroundColor: "#10377a", zIndex: 1400 }} position="static" >
         <Toolbar>
           <IconButton
             component={Link}
@@ -22,64 +22,76 @@ export default function NavigationBar() {
             size="large"
             edge="start"
             color="inherit"
-            sx={{ mr: 5, color: "#ffffff"}}
+            sx={{ mr: 5, color: "#ffffff" }}
           >
             <MapIcon />
           </IconButton>
-            <Button 
-              component={Link}
-              to="/discover"
-              sx = {{ 
-                width: "150px", 
-                marginRight: "15px", 
-                color: location.pathname.includes("discover") ? "#ffffff" : "#9fafce", 
-                '&:hover': { 
-                  color: '#ffffff' } 
-                }} 
-              size="small" 
-              color="inherit" 
-              variant="outlined">
-              Discover
-            </Button>
-          <Button 
+          <Button
+            component={Link}
+            to="/discover"
+            sx={{
+              fontSize: "70%",
+              height: "25px",
+              width: "150px",
+              marginRight: "15px",
+              color: location.pathname.includes("discover") ? "#ffffff" : "#9fafce",
+              '&:hover': {
+                color: '#ffffff'
+              }
+            }}
+            size="small"
+            color="inherit"
+            variant="outlined">
+            Discover
+          </Button>
+          <Button
             component={Link}
             to="/trip-form"
-            sx = {{ 
-              width: "150px", 
+            sx={{
+              fontSize: "70%",
+              height: "25px",
+              width: "150px",
               color: location.pathname.includes("trip-form") ? "#ffffff" : "#9fafce",
-              '&:hover': { 
-                color: '#ffffff' } 
-              }} 
-            size="small" 
-            color="inherit" 
+              '&:hover': {
+                color: '#ffffff'
+              }
+            }}
+            size="small"
+            color="inherit"
             variant="outlined">
             Create
           </Button>
           <Box sx={{ flexGrow: 1 }}></Box>
-          <Button 
+          <Button
             component={Link}
             to="/trips-manager/owner"
-            sx = {{ 
+            sx={{
               color: location.pathname.includes("my-trips") ? "#ffffff" : "#9fafce",
-              marginRight: "15px", 
-              '&:hover': { 
-                color: '#ffffff' } 
-              }} 
-            size="small" 
-            color="inherit" 
+              fontSize: "70%",
+              height: "25px",
+              marginRight: "15px",
+              '&:hover': {
+                color: '#ffffff'
+              }
+            }}
+            size="small"
+            color="inherit"
             variant="outlined">
             My Trips
           </Button>
-          <Button 
+          <Button
             component={Link}
             to="/login"
-            sx = {{ 
+            sx={{
+              fontSize: "70%",
+              height: "25px",
               color: location.pathname.includes("login") ? "#ffffff" : "#9fafce",
-              '&:hover': { 
-                color: '#ffffff' } 
-              }} 
-            size="small" 
-            color="inherit" 
+              '&:hover': {
+                color: '#ffffff'
+              }
+            }}
+            size="small"
+            color="inherit"
             variant="outlined">
             Login
           </Button>

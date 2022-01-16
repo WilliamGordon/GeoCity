@@ -51,7 +51,7 @@ export const ItinaryPlaceCreateUpdateModal = (props) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          itinaryId: props.trip.itinaries[0].id, // For now just use the first day of the itinary by default
+          itinaryId: props.itinary.id, // For now just use the first day of the itinary by default
           name: itinaryPlace.name,
           description: itinaryPlace.description,
           price: itinaryPlace.price,
@@ -67,6 +67,7 @@ export const ItinaryPlaceCreateUpdateModal = (props) => {
           // ADDING THE MARKER THROUGH THE MODAL
           props.addItinaryPlace({
             id: itinaryPlaceId,
+            itinaryId: props.itinary.id,
             name: itinaryPlace.name,
             description: itinaryPlace.description,
             price: itinaryPlace.price,

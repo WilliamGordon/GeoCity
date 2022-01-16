@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using geocity.infrastructure;
 
@@ -11,9 +12,10 @@ using geocity.infrastructure;
 namespace geocity.infrastructure.Migrations
 {
     [DbContext(typeof(GeoCityDbContext))]
-    partial class GeoCityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220116164814_correction nb decimal lat lng")]
+    partial class correctionnbdecimallatlng
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

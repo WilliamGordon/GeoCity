@@ -18,6 +18,8 @@ const styleButton = {
 export const PlaceList = (props) => {
   const addMarker = (marker) => {
     // CREATE ItinaryPlace With Modal
+    console.log(marker.position[0]);
+    console.log(marker.position[1]);
     props.handleOpen({
       id: 0,
       latitude: marker.position[0],
@@ -44,41 +46,43 @@ export const PlaceList = (props) => {
     <>
       {
         props.itinaryPlaceList &&
-        props.itinaryPlaceList.map((p) => (
-          <Marker
-            draggable={true}
-            key={p.id}
-            id={p.id}
-            position={[p.latitude, p.longitude]}
-            eventHandlers={{
-              dragend(e) {
-                // updateMarker({
-                //   id: e.target.options.id,
-                //   position: [e.target._latlng.lat, e.target._latlng.lng]
-                // })
-              },
-            }}
-          >
-            <Popup>
-              {p.id}
-              {p.name}
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={(e) => props.handleOpen(p)}
-                sx={styleButton}>
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={(e) => props.removeMarker(p.id)}
-                sx={styleButton}>
-                <DeleteIcon fontSize="inherit" />
-              </IconButton>
-            </Popup>
-          </Marker>
-        ))
+        props.itinaryPlaceList.map((p) => {
+          if (props.itinary.id == p.itinaryId) {
+            return <Marker
+              draggable={true}
+              key={p.id}
+              id={p.id}
+              position={[p.latitude, p.longitude]}
+              eventHandlers={{
+                dragend(e) {
+                  // updateMarker({
+                  //   id: e.target.options.id,
+                  //   position: [e.target._latlng.lat, e.target._latlng.lng]
+                  // })
+                },
+              }}
+            >
+              <Popup>
+                {p.id}
+                {p.name}
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  onClick={(e) => props.handleOpen(p)}
+                  sx={styleButton}>
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  onClick={(e) => props.removeMarker(p.id)}
+                  sx={styleButton}>
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+              </Popup>
+            </Marker>
+          }
+        })
       }
     </>
   )

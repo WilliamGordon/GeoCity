@@ -6,12 +6,62 @@ import RoutingControl from '../routing/RoutingControl'
 import ItinaryPlaceCreateUpdateModal from './ItinaryPlaceCreateUpdateModal'
 
 export const Map = (props) => {
+  const [itinary, setItinary] = useState({});
+  const [itinaryList, setItinaryList] = useState([]);
   const [itinaryPlace, setItinaryPlace] = useState({});
   const [itinaryPlaceList, setItinaryPlaceList] = useState([]);
   const [isRouteGenerated, setIsRouteGenerated] = useState(false);
   const [open, setOpen] = useState(false);
   const routingMachine = useRef();
 
+  useEffect(() => {
+    var itinariesTest = [];
+    var placesForItinary = [];
+    props.trip.itinaries.forEach(itinary => {
+      var i = {
+        id: itinary.id,
+        name: itinary.name,
+        description: itinary.description,
+        distance: itinary.distance,
+        duration: itinary.duration,
+      };
+      itinary.itinaryPlaces.forEach(itinaryPlace => {
+        var ip = {
+          id: itinaryPlace.id,
+          itinaryId: itinary.id,
+          name: itinaryPlace.name,
+          description: itinaryPlace.description,
+          duration: itinaryPlace.duration,
+          price: itinaryPlace.price,
+          latitude: itinaryPlace.place.latitude,
+          longitude: itinaryPlace.place.longitude,
+        }
+        placesForItinary.push(ip);
+      });
+      itinariesTest.push(i);
+    });
+    setItinary(itinariesTest[0]);
+    setItinaryList(itinariesTest);
+    setItinaryPlaceList(placesForItinary);
+  }, [])
+  useEffect(() => {
+    if (isRouteGenerated) {
+      if (routingMachine.current) {
+        var itiplace = [];
+        itinaryPlaceList.forEach(ip => {
+          if (itinary.id == ip.itinaryId) {
+            itiplace.push([ip.latitude, ip.longitude])
+          }
+        });
+
+        routingMachine.current.setWaypoints(itiplace);
+      }
+    } else {
+      if (routingMachine.current) {
+        routingMachine.current.setWaypoints([]);
+      }
+    }
+  });
   const handleOpen = (e) => {
     console.log(e.id)
     if (e.id) {
@@ -28,32 +78,10 @@ export const Map = (props) => {
       setItinaryPlace(e)
     }
   }
-
   const handleClose = () => {
     setOpen(false);
     setItinaryPlace({})
   }
-
-  useEffect(() => {
-    var placesForItinary = [];
-    props.trip.itinaries.forEach(itinary => {
-      itinary.itinaryPlaces.forEach(itinaryPlace => {
-        placesForItinary.push({
-          id: itinaryPlace.id,
-          name: itinaryPlace.name,
-          description: itinaryPlace.description,
-          duration: itinaryPlace.duration,
-          price: itinaryPlace.price,
-          latitude: itinaryPlace.place.latitude,
-          longitude: itinaryPlace.place.longitude,
-        });
-      });
-    });
-    console.log(props.trip);
-    console.log(placesForItinary);
-    setItinaryPlaceList(placesForItinary);
-  }, [])
-
   const removeMarker = (id) => {
     if (!props.tripIsGenerated) {
       const requestOptions = {
@@ -69,32 +97,32 @@ export const Map = (props) => {
         });
     }
   }
-
   const generateRoute = () => isRouteGenerated ? setIsRouteGenerated(false) : setIsRouteGenerated(true);
-
-  const addItinaryPlace = (p) => setItinaryPlaceList([...itinaryPlaceList, p]);
+  const addItinaryPlace = (p) => {
+    setItinaryPlaceList([...itinaryPlaceList, p]);
+  }
   const updateItinaryPlace = (p) => setItinaryPlaceList([...itinaryPlaceList.filter(x => x.id !== p.id), p]);
-
-  useEffect(() => {
-    if (isRouteGenerated) {
-      if (routingMachine.current) {
-        routingMachine.current.setWaypoints(itinaryPlaceList.map(x => [x.latitude, x.longitude]));
+  const toggleItinary = (id) => {
+    itinaryList.forEach(itinary => {
+      console.log(id)
+      if (itinary.id == id) {
+        setItinary(itinary);
+        console.log(itinary)
       }
-    } else {
-      if (routingMachine.current) {
-        routingMachine.current.setWaypoints([]);
-      }
-    }
-  });
-
+    })
+  }
   return (
     <>
       <MapSideBar
         handleOpen={handleOpen}
+        trip={props.trip}
+        itinary={itinary}
+        itinaryList={itinaryList}
         itinaryPlaceList={itinaryPlaceList}
+        switchItinary={toggleItinary}
         generateRoute={generateRoute}
         isRouteGenerated={isRouteGenerated}
-        trip={props.trip} />
+      />
       <MapContainer
         center={[props.trip.city.latitude, props.trip.city.longitude]}
         zoom={12}
@@ -104,10 +132,12 @@ export const Map = (props) => {
           removeMarker={removeMarker}
           handleOpen={handleOpen}
           tripIsGenerated={props.isRouteGenerated}
+          itinary={itinary}
           itinaryPlaceList={itinaryPlaceList}
           trip={props.trip} />
         <RoutingControl
           ref={routingMachine}
+          itinary={itinary}
           waypoints={itinaryPlaceList} />
         <TileLayer
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -118,6 +148,7 @@ export const Map = (props) => {
         updateItinaryPlace={updateItinaryPlace}
         open={open}
         trip={props.trip}
+        itinary={itinary}
         itinaryPlace={itinaryPlace}
         handleClose={handleClose} />
     </>
