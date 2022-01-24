@@ -12,7 +12,7 @@ namespace geocity.application.TripUser.Queries
 {
     public class GetTripsUserOwnerQuery : IRequest<List<TripUserDto>>
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetTripsUsersQueryHandler : IRequestHandler<GetTripsUserOwnerQuery, List<TripUserDto>>

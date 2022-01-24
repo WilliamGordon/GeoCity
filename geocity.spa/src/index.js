@@ -1,10 +1,10 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
 import { Auth0Provider } from "@auth0/auth0-react";
-import history from "./utils/history";
-import { getConfig } from "./config";
+import { getConfig } from "./auth/config";
+import { BrowserRouter } from "react-router-dom";
+import history from "./auth/history";
+import App from "./App";
+import "./index.css";
 
 const onRedirectCallback = (appState) => {
   history.push(
@@ -12,8 +12,6 @@ const onRedirectCallback = (appState) => {
   );
 };
 
-// Please see https://auth0.github.io/auth0-react/interfaces/auth0_provider.auth0provideroptions.html
-// for a full list of the available properties on the provider
 const config = getConfig();
 
 const providerConfig = {
@@ -25,8 +23,10 @@ const providerConfig = {
 };
 
 ReactDOM.render(
-  <Auth0Provider {...providerConfig}>
-    <App />
-  </Auth0Provider>,
+  <BrowserRouter>
+    <Auth0Provider {...providerConfig}>
+      <App />
+    </Auth0Provider>
+  </BrowserRouter>,
   document.getElementById("root")
 );

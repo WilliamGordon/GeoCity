@@ -12,7 +12,7 @@ namespace geocity.application.TripUser.Queries
 {
     public class GetTripsUserFavoriteQuery : IRequest<List<TripUserDto>>
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetTripsUserFavoriteQueryHandler : IRequestHandler<GetTripsUserFavoriteQuery, List<TripUserDto>>

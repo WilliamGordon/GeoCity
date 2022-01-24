@@ -13,7 +13,6 @@ namespace geocity.infrastructure
         public DbSet<Place> Places { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripUser> TripUsers { get; set; }
-        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,10 +53,6 @@ namespace geocity.infrastructure
                 .HasOne(bc => bc.Trip)
                 .WithMany(b => b.TripUsers)
                 .HasForeignKey(bc => bc.TripId);
-            modelBuilder.Entity<TripUser>()
-                .HasOne(bc => bc.User)
-                .WithMany(c => c.TripUsers)
-                .HasForeignKey(bc => bc.UserId);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace geocity.application.TripUser.Commands.CreateTripUser
     public class CreateTripUserCommand : IRequest<int>
     {
         public int TripId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public bool IsOwner { get; set; }
         public bool IsParticipant { get; set; }
         public bool IsFavorite { get; set; }
@@ -36,7 +36,7 @@ namespace geocity.application.TripUser.Commands.CreateTripUser
             {
                 var entity = new geocity.domain.Entities.TripUser();
                 entity.Trip = await _context.Trips.SingleOrDefaultAsync(x => x.Id == request.TripId);
-                entity.User = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserId);
+                entity.UserId = request.UserId;
                 entity.IsOwner = request.IsOwner;
                 entity.IsParticipant = request.IsParticipant;
                 entity.IsFavorite = request.IsFavorite;

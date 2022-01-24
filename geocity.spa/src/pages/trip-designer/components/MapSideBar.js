@@ -4,11 +4,10 @@ import EuroIcon from "@mui/icons-material/Euro";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import WatchIcon from "@mui/icons-material/Watch";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import ItinaryPlaceCreateUpdateModal from "./ItinaryPlaceCreateUpdateModal";
+import ItinaryPlaceCreateUpdateModal from "./Modal/ItinaryPlaceCreateUpdateModal";
 import {
   Box,
   Card,
-  CardActions,
   CardContent,
   Chip,
   Drawer,
@@ -21,7 +20,21 @@ import {
   ListItemIcon,
   Paper,
   Grid,
+  IconButton,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+
+const styleButtonEdit = {
+  marginTop: "10px",
+  marginLeft: "10px",
+  marginBottom: "15px !important",
+  color: "#9fafce",
+  backgroundColor: "#10377a",
+  "&:hover": {
+    backgroundColor: "#10377a",
+    color: "red",
+  },
+};
 
 const styleDrawer = {
   width: "33%",
@@ -58,22 +71,6 @@ const styleButton = {
   },
 };
 
-const styleButtonItinary = {
-  marginTop: "5px !important",
-  marginBottom: "2px !important",
-  marginLeft: "10px !important",
-  color: "#9fafce",
-  backgroundColor: "#10377a",
-  fontSize: "14px",
-  height: "17px",
-  width: "10%",
-  margin: "0 auto",
-  "&:hover": {
-    backgroundColor: "#10377a",
-    color: "#ffffff",
-  },
-};
-
 const styleBorder = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
@@ -94,11 +91,6 @@ const styleItinaries = {
 export const MapSideBar = (props) => {
   const [itinaryPlace, setItinaryPlace] = useState({});
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    console.log("RERENDER MAP SIDE BAR");
-    console.log(props.itinaryPlaceList);
-  });
 
   const handleClose = () => {
     setOpen(false);
@@ -132,8 +124,16 @@ export const MapSideBar = (props) => {
           component="div"
           sx={styleTypography}
         >
-          Create your trip
+          {props.trip.name}
         </Typography>
+        <IconButton
+          aria-label="update"
+          size="small"
+          onClick={(e) => console.log(e)}
+          sx={styleButtonEdit}
+        >
+          <EditIcon fontSize="inherit" />
+        </IconButton>
       </Toolbar>
       <Divider />
       <List sx={styleItinaries}>
@@ -245,12 +245,6 @@ export const MapSideBar = (props) => {
                   Description : {props.itinary.description}
                 </Typography>
               )}
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={10}></Grid>
-            <Grid item xs={2}>
-              <Button size="small">Edit</Button>
             </Grid>
           </Grid>
         </CardContent>

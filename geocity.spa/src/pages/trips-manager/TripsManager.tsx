@@ -15,7 +15,28 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import PeopleIcon from "@mui/icons-material/People";
 import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+
+const tabHeight = "40px"; // default: '48px'
+const useStyles = {
+  grid: {
+    minWidth: "400px",
+    maxWidth: "80%",
+    margin: "auto",
+    marginTop: "10px",
+    marginBottom: "10px",
+  },
+  tabsRoot: {
+    bgcolor: "#ffffff",
+    minHeight: tabHeight,
+    height: tabHeight,
+  },
+  tabRoot: {
+    marginBotttom: "10px",
+    minHeight: tabHeight,
+    height: tabHeight,
+    width: "33%",
+  },
+};
 
 export const TripsManager = (props: {
   component:
@@ -27,8 +48,6 @@ export const TripsManager = (props: {
     | undefined;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [tripIsLoaded, setTripIsLoaded] = React.useState(false);
-  const [tripsUser, setTripsUser] = React.useState({});
   const [value, setValue] = React.useState("/trips-manager/owner");
 
   const handleChange = (
@@ -40,51 +59,50 @@ export const TripsManager = (props: {
 
   return (
     <>
-      <Box sx={{ backgroundColor: "#E8E8E8" }}>
-        <Grid container justifyContent="center" alignItems="center">
-          <Grid item xs={10} sx={{ marginTop: "15px" }}>
-            <Card
-              sx={{
-                backgroundColor: "#ffffff",
-                minWidth: 275,
-                marginBottom: "15px",
-              }}
+      <Grid container>
+        <Grid item xs={12}>
+          <Box sx={useStyles.grid}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="icon label tabs example"
+              centered
+              sx={useStyles.tabsRoot}
             >
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="icon label tabs example"
-              >
-                <Tab
-                  icon={<PersonPinIcon />}
-                  value="/trips-manager/owner"
-                  component={Link}
-                  iconPosition="start"
-                  label="Trips Owner"
-                  to={"/trips-manager/owner"}
-                />
-                <Tab
-                  icon={<PeopleIcon />}
-                  value="/trips-manager/participant"
-                  component={Link}
-                  iconPosition="start"
-                  label="Trips Participant"
-                  to={"/trips-manager/participant"}
-                />
-                <Tab
-                  icon={<FavoriteIcon />}
-                  value="/trips-manager/favorite"
-                  component={Link}
-                  iconPosition="start"
-                  label="Favorites"
-                  to={"/trips-manager/favorite"}
-                />
-              </Tabs>
-            </Card>
-            {props.component}
-          </Grid>
+              <Tab
+                icon={<PersonPinIcon />}
+                value="/trips-manager/owner"
+                component={Link}
+                iconPosition="start"
+                label="Trips Owner"
+                to={"/trips-manager/owner"}
+                sx={useStyles.tabRoot}
+              />
+              <Tab
+                icon={<PeopleIcon />}
+                value="/trips-manager/participant"
+                component={Link}
+                iconPosition="start"
+                label="Trips Participant"
+                to={"/trips-manager/participant"}
+                sx={useStyles.tabRoot}
+              />
+              <Tab
+                icon={<FavoriteIcon />}
+                value="/trips-manager/favorite"
+                component={Link}
+                iconPosition="start"
+                label="Favorites"
+                to={"/trips-manager/favorite"}
+                sx={useStyles.tabRoot}
+              />
+            </Tabs>
+          </Box>
         </Grid>
-      </Box>
+        <Grid item xs={12}>
+          <Box sx={useStyles.grid}>{props.component}</Box>
+        </Grid>
+      </Grid>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}

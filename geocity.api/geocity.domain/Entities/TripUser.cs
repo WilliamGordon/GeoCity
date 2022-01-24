@@ -8,8 +8,7 @@ namespace geocity.domain.Entities
         public int Id { get; set; }
         public int TripId { get; set; }
         public Trip Trip { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public string UserId { get; set; }
         public bool IsOwner { get; set; }
         public bool IsParticipant { get; set; }
         public bool IsFavorite { get; set; }

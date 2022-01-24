@@ -20,19 +20,19 @@ namespace geocity.api.Controllers
         }
 
         [HttpGet("GetTripsUser/owner/{userid}")]
-        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserOwner(int userid)
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserOwner(string userid)
         {
             return await Mediator.Send(new GetTripsUserOwnerQuery { UserId = userid });
         }
 
         [HttpGet("GetTripsUser/participant/{userid}")]
-        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserParticipant(int userid)
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserParticipant(string userid)
         {
             return await Mediator.Send(new GetTripsUserParticipantQuery { UserId = userid });
         }
 
         [HttpGet("GetTripsUser/favorite/{userid}")]
-        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserFavorite(int userid)
+        public async Task<ActionResult<List<TripUserDto>>> GetTripsUserFavorite(string userid)
         {
             return await Mediator.Send(new GetTripsUserFavoriteQuery { UserId = userid });
         }

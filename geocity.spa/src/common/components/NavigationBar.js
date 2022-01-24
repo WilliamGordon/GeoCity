@@ -3,21 +3,28 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import MapIcon from "@mui/icons-material/Map";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
+
+const styleButton = {
+  fontSize: "70%",
+  height: "25px",
+  marginRight: "15px",
+  color: "#ffffff",
+  "&:hover": {
+    color: "#ffffff",
+  },
+};
 
 export default function NavigationBar() {
   const location = useLocation();
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const logoutWithRedirect = () =>
-    logout({
-      returnTo: window.location.origin,
-    });
+
+  console.log(user);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -40,16 +47,11 @@ export default function NavigationBar() {
             component={Link}
             to="/discover"
             sx={{
-              fontSize: "70%",
-              height: "25px",
+              ...styleButton,
               width: "150px",
-              marginRight: "15px",
               color: location.pathname.includes("discover")
                 ? "#ffffff"
                 : "#9fafce",
-              "&:hover": {
-                color: "#ffffff",
-              },
             }}
             size="small"
             color="inherit"
@@ -61,15 +63,11 @@ export default function NavigationBar() {
             component={Link}
             to="/trip-form"
             sx={{
-              fontSize: "70%",
-              height: "25px",
+              ...styleButton,
               width: "150px",
               color: location.pathname.includes("trip-form")
                 ? "#ffffff"
                 : "#9fafce",
-              "&:hover": {
-                color: "#ffffff",
-              },
             }}
             size="small"
             color="inherit"
@@ -78,44 +76,60 @@ export default function NavigationBar() {
             Create
           </Button>
           <Box sx={{ flexGrow: 1 }}></Box>
-          <Button
-            component={Link}
-            to="/trips-manager/owner"
-            sx={{
-              color: location.pathname.includes("my-trips")
-                ? "#ffffff"
-                : "#9fafce",
-              fontSize: "70%",
-              height: "25px",
-              marginRight: "15px",
-              "&:hover": {
-                color: "#ffffff",
-              },
-            }}
-            size="small"
-            color="inherit"
-            variant="outlined"
-          >
-            My Trips
-          </Button>
+          {isAuthenticated && (
+            <Button
+              component={Link}
+              to="/trips-manager/owner"
+              sx={{
+                ...styleButton,
+                color: location.pathname.includes("trips-manager/owner")
+                  ? "#ffffff"
+                  : "#9fafce",
+              }}
+              size="small"
+              color="inherit"
+              variant="outlined"
+            >
+              My Trips
+            </Button>
+          )}
           {!isAuthenticated && (
             <Button
-              id="qsLoginBtn"
-              color="primary"
-              block
-              onClick={() => loginWithRedirect({})}
+              to="/login"
+              sx={{
+                ...styleButton,
+                color: "#9fafce",
+              }}
+              size="small"
+              color="inherit"
+              variant="outlined"
+              onClick={() => loginWithRedirect()}
             >
-              Log in
+              Login
             </Button>
           )}
           {isAuthenticated && (
             <Button
-              to="#"
-              id="qsLogoutBtn"
-              onClick={() => logoutWithRedirect()}
+              to="/login"
+              sx={{
+                ...styleButton,
+                color: "#9fafce",
+              }}
+              size="small"
+              color="inherit"
+              variant="outlined"
+              onClick={() => logout()}
             >
-              Log out
+              Log Out
             </Button>
+          )}
+          {isAuthenticated && (
+            <IconButton component={Link} to="/profile">
+              <Avatar
+                src={user.picture}
+                sx={{ width: 24, height: 24 }}
+              ></Avatar>
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>
