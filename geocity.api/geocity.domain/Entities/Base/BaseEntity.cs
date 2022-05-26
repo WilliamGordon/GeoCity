@@ -12,14 +12,13 @@ namespace geocity.domain.Entities.Base
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Int64 Id { get; set; }
+        public Guid Id { get; set; }
+
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedDate { get; set; }
 
-        public DateTime ModifiedDate { get; private set; }
-
-        public BaseEntity()
-        {
-            this.ModifiedDate = DateTime.Now;
-        }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime ModifiedDate { get; set; }
     }
 }

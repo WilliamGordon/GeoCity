@@ -24,7 +24,22 @@ export default function NavigationBar() {
   const location = useLocation();
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  console.log(user);
+  if (isAuthenticated) {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: user.email,
+        lastname: user.nickname,
+        firstname: user.name,
+        Id: user.sub,
+      }),
+    };
+    fetch("https://localhost:44396/api/User", requestOptions)
+      .then((response) => response.json())
+      .then((userId) => {})
+      .catch((rejected) => {});
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>

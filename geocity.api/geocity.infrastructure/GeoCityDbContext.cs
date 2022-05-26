@@ -9,50 +9,58 @@ namespace geocity.infrastructure
         public GeoCityDbContext(DbContextOptions<GeoCityDbContext> options) : base(options) {}
         public DbSet<City> Cities { get; set; }
         public DbSet<Itinary> Itinaries { get; set; }
-        public DbSet<ItinaryPlace> ItinaryPlaces { get; set; }
-        public DbSet<Place> Places { get; set; }
+        public DbSet<ItinaryPointOfInterest> ItinaryPointOfInterests { get; set; }
+        public DbSet<PointOfCrossing> PointOfCrossing { get; set; }
+        public DbSet<PointOfInterest> PointOfInterest { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripUser> TripUsers { get; set; }
+        public DbSet<TripUserFavorite> TripUserFavorites { get; set; }
+        public DbSet<TripUserRating> TripUserRatings { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Place>()
+            modelBuilder.Entity<City>()
                 .Property(p => p.Latitude).HasPrecision(38, 18);
 
-            modelBuilder.Entity<Place>()
+            modelBuilder.Entity<City>()
                 .Property(p => p.Longitude).HasPrecision(38, 18);
 
-            modelBuilder.Entity<City>()
-                .HasMany(c => c.Trips)
-                .WithOne(e => e.City);
+            modelBuilder.Entity<PointOfCrossing>()
+                .Property(p => p.Latitude).HasPrecision(38, 18);
 
-            modelBuilder.Entity<Trip>()
-               .HasMany(c => c.Itinaries)
-               .WithOne(e => e.Trip);
+            modelBuilder.Entity<PointOfCrossing>()
+                .Property(p => p.Longitude).HasPrecision(38, 18);
 
-            modelBuilder.Entity<ItinaryPlace>()
-                .HasKey(bc => bc.Id);
-            modelBuilder.Entity<ItinaryPlace>()
-               .Property(bc => bc.Id)
-               .ValueGeneratedOnAdd();
-            modelBuilder.Entity<ItinaryPlace>()
-                .HasOne(bc => bc.Itinary)
-                .WithMany(b => b.ItinaryPlaces)
-                .HasForeignKey(bc => bc.ItinaryId);
-            modelBuilder.Entity<ItinaryPlace>()
-                .HasOne(bc => bc.Place)
-                .WithMany(c => c.ItinaryPlaces)
-                .HasForeignKey(bc => bc.PlaceId);
+            modelBuilder.Entity<PointOfInterest>()
+               .Property(p => p.Latitude).HasPrecision(38, 18);
 
-            modelBuilder.Entity<TripUser>()
-                .HasKey(bc => bc.Id);
-            modelBuilder.Entity<TripUser>()
-               .Property(bc => bc.Id)
-               .ValueGeneratedOnAdd();
-            modelBuilder.Entity<TripUser>()
-                .HasOne(bc => bc.Trip)
-                .WithMany(b => b.TripUsers)
-                .HasForeignKey(bc => bc.TripId);
+            modelBuilder.Entity<PointOfInterest>()
+                .Property(p => p.Longitude).HasPrecision(38, 18);
+
+            modelBuilder.Entity<Trip>().Property(x => x.Link).HasDefaultValueSql("NEWID()");
+
+            modelBuilder.Entity<City>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Itinary>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfCrossing>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Trip>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUser>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserFavorite>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserRating>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<User>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+
+            modelBuilder.Entity<City>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Itinary>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfCrossing>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Trip>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUser>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserFavorite>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserRating>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<User>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
         }
     }
 }

@@ -24,17 +24,27 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.City", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<decimal>("Latitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(38, 18)
+                        .HasColumnType("decimal(38,18)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(38, 18)
+                        .HasColumnType("decimal(38,18)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,29 +57,34 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("Day")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal?>("Distance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Duration")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TripId")
+                    b.Property<int?>("Duration")
                         .HasColumnType("int");
+
+                    b.Property<string>("Geodata")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -78,28 +93,33 @@ namespace geocity.infrastructure.Migrations
                     b.ToTable("Itinaries");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.ItinaryPlace", b =>
+            modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Duration")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ItinaryId")
+                    b.Property<int?>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("ItinaryId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PlaceId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid>("PointOfInterestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -108,18 +128,27 @@ namespace geocity.infrastructure.Migrations
 
                     b.HasIndex("ItinaryId");
 
-                    b.HasIndex("PlaceId");
+                    b.HasIndex("PointOfInterestId");
 
-                    b.ToTable("ItinaryPlaces");
+                    b.ToTable("ItinaryPointOfInterests");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.Place", b =>
+            modelBuilder.Entity("geocity.domain.Entities.PointOfCrossing", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ItinaryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Latitude")
                         .HasPrecision(38, 18)
@@ -129,23 +158,82 @@ namespace geocity.infrastructure.Migrations
                         .HasPrecision(38, 18)
                         .HasColumnType("decimal(38,18)");
 
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItinaryId");
+
+                    b.ToTable("PointOfCrossing");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.PointOfInterest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<bool>("IsSuggestion")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(38, 18)
+                        .HasColumnType("decimal(38,18)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(38, 18)
+                        .HasColumnType("decimal(38,18)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OsmId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Places");
+                    b.HasIndex("CityId");
+
+                    b.ToTable("PointOfInterest");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CityId")
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Days")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -154,12 +242,19 @@ namespace geocity.infrastructure.Migrations
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("Link")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NbDays")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -170,39 +265,139 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.TripUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("IsOwner")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsParticipant")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TripId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("TripUsers");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUserFavorite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TripId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TripUserFavorites");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUserRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TripId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TripUserRatings");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lastname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
@@ -216,23 +411,41 @@ namespace geocity.infrastructure.Migrations
                     b.Navigation("Trip");
                 });
 
-            modelBuilder.Entity("geocity.domain.Entities.ItinaryPlace", b =>
+            modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
                 {
                     b.HasOne("geocity.domain.Entities.Itinary", "Itinary")
-                        .WithMany("ItinaryPlaces")
+                        .WithMany("ItinaryPointOfInterest")
                         .HasForeignKey("ItinaryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("geocity.domain.Entities.Place", "Place")
-                        .WithMany("ItinaryPlaces")
-                        .HasForeignKey("PlaceId")
+                    b.HasOne("geocity.domain.Entities.PointOfInterest", "PointOfInterest")
+                        .WithMany()
+                        .HasForeignKey("PointOfInterestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Itinary");
 
-                    b.Navigation("Place");
+                    b.Navigation("PointOfInterest");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.PointOfCrossing", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Itinary", null)
+                        .WithMany("PointOfCrossing")
+                        .HasForeignKey("ItinaryId");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.PointOfInterest", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.City", "City")
+                        .WithMany("PointOfInterest")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
@@ -254,27 +467,85 @@ namespace geocity.infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("geocity.domain.Entities.User", "User")
+                        .WithMany("TripUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Trip");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUserFavorite", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Trip", "Trip")
+                        .WithMany("TripUserFavorites")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("geocity.domain.Entities.User", "User")
+                        .WithMany("TripUserFavorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.TripUserRating", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Trip", "Trip")
+                        .WithMany("TripUserRatings")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("geocity.domain.Entities.User", "User")
+                        .WithMany("TripUserRatings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.City", b =>
                 {
+                    b.Navigation("PointOfInterest");
+
                     b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
                 {
-                    b.Navigation("ItinaryPlaces");
-                });
+                    b.Navigation("ItinaryPointOfInterest");
 
-            modelBuilder.Entity("geocity.domain.Entities.Place", b =>
-                {
-                    b.Navigation("ItinaryPlaces");
+                    b.Navigation("PointOfCrossing");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Trip", b =>
                 {
                     b.Navigation("Itinaries");
+
+                    b.Navigation("TripUserFavorites");
+
+                    b.Navigation("TripUserRatings");
+
+                    b.Navigation("TripUsers");
+                });
+
+            modelBuilder.Entity("geocity.domain.Entities.User", b =>
+                {
+                    b.Navigation("TripUserFavorites");
+
+                    b.Navigation("TripUserRatings");
 
                     b.Navigation("TripUsers");
                 });

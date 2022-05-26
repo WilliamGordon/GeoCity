@@ -34,8 +34,6 @@ export const TripForm = () => {
   const [open, setOpen] = React.useState(false);
   const { user, isAuthenticated } = useAuth0();
 
-  console.log(user.sub.split("|")[1]);
-
   // City input
   const [selectedCityOption, setSelectedCityOption] = useState([]);
   const [citySearchBoxValue, setCitySearchBoxValue] = useState("");
@@ -86,15 +84,16 @@ export const TripForm = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          Name: tripName,
+          TripName: tripName,
           Description: tripDescription,
-          NbDays: tripNbDays,
+          Days: tripNbDays,
           CityName: selectedCityOption.label,
-          CityLatitude: JSON.parse(selectedCityOption.value).y,
-          CityLongitude: JSON.parse(selectedCityOption.value).x,
-          UserId: user.sub.split("|")[1],
+          Latitude: JSON.parse(selectedCityOption.value).y,
+          Longitude: JSON.parse(selectedCityOption.value).x,
+          UserId: user.sub,
         }),
       };
+      console.log(requestOptions);
       fetch("https://localhost:44396/api/Trip", requestOptions)
         .then((response) => response.json())
         .then((tripId) => {
@@ -177,11 +176,13 @@ export const TripForm = () => {
                       let cities = await provider.search({
                         query: newInputValue,
                       });
-                      console.log(cities);
+                      cities = cities.filter(
+                        (city) => city.raw.type === "city"
+                      );
                       setOptions(
                         cities.map((city) => ({
                           value: JSON.stringify(city),
-                          label: city.label,
+                          label: city.label.split(",")[0],
                         }))
                       );
                     }, 1000)

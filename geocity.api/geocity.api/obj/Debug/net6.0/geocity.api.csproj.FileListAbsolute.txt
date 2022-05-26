@@ -69,3 +69,7 @@ C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.domain.pdb
 C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.application.dll
 C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\geocity.application.pdb
 C:\dev\GeoCity\geocity.api\geocity.api\obj\Debug\net6.0\geocity.api.MvcApplicationPartsAssemblyInfo.cs
+C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\Auth0.Core.dll
+C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\Auth0.ManagementApi.dll
+C:\dev\GeoCity\geocity.api\geocity.api\bin\Debug\net6.0\Newtonsoft.Json.dll

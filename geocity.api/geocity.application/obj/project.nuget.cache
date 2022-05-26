@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Q153OvKfHKonZN0Sth4SFLA1ARpiRb/d3J1heL8SJSiAUQSbG6mQtV8J031WfaIMwBjM3s11Sm1SwrFA+fVguQ==",
+  "dgSpecHash": "lyiYA1bqJsgJh/xFPF9W+K0nEgG2S6xHz0D+zr31DO5h3dJ3Xh/eYfisl2KvcqScDpci2B7CmrNLiT7LdGCALg==",
   "success": true,
   "projectFilePath": "C:\\dev\\GeoCity\\geocity.api\\geocity.application\\geocity.application.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\willi\\.nuget\\packages\\auth0.core\\7.16.0\\auth0.core.7.16.0.nupkg.sha512",
+    "C:\\Users\\willi\\.nuget\\packages\\auth0.managementapi\\7.16.0\\auth0.managementapi.7.16.0.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\mediatr\\9.0.0\\mediatr.9.0.0.nupkg.sha512",
@@ -33,6 +35,7 @@
     "C:\\Users\\willi\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\willi\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\system.configuration.configurationmanager\\4.7.0\\system.configuration.configurationmanager.4.7.0.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",

@@ -1,4 +1,5 @@
-﻿using geocity.application.Cities.Queries;
+﻿using geocity.application.Cities.Commands.Create;
+using geocity.application.City.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace geocity.api.Controllers
@@ -14,9 +15,22 @@ namespace geocity.api.Controllers
         
         // GET: CityController/Details/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CityDto>> Details(int id)
+        public async Task<ActionResult<CityDto>> Details(Guid id)
         {
             return await Mediator.Send(new GetCityQuery { Id = id });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Guid>> PostAsync(CreateCityCommand city)
+        {
+            // First create the city if not already
+            var cityId = await Mediator.Send(new CreateCityCommand
+            {
+                Name = city.Name,
+                Latitude = city.Latitude,
+                Longitude = city.Longitude,
+            });
+            return Ok(cityId);
         }
     }
 }
