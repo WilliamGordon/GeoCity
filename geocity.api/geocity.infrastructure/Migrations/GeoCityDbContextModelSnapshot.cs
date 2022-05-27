@@ -93,6 +93,40 @@ namespace geocity.infrastructure.Migrations
                     b.ToTable("Itinaries");
                 });
 
+            modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfCrossing", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ItinaryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid>("PointOfCrossingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItinaryId");
+
+                    b.HasIndex("PointOfCrossingId");
+
+                    b.ToTable("ItinaryPointOfCrossings");
+                });
+
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -139,16 +173,13 @@ namespace geocity.infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ItinaryId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Latitude")
                         .HasPrecision(38, 18)
@@ -165,7 +196,7 @@ namespace geocity.infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItinaryId");
+                    b.HasIndex("CityId");
 
                     b.ToTable("PointOfCrossing");
                 });
@@ -411,6 +442,25 @@ namespace geocity.infrastructure.Migrations
                     b.Navigation("Trip");
                 });
 
+            modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfCrossing", b =>
+                {
+                    b.HasOne("geocity.domain.Entities.Itinary", "Itinary")
+                        .WithMany("ItinaryPointOfCrossing")
+                        .HasForeignKey("ItinaryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("geocity.domain.Entities.PointOfCrossing", "PointOfCrossing")
+                        .WithMany()
+                        .HasForeignKey("PointOfCrossingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Itinary");
+
+                    b.Navigation("PointOfCrossing");
+                });
+
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
                 {
                     b.HasOne("geocity.domain.Entities.Itinary", "Itinary")
@@ -432,9 +482,13 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.PointOfCrossing", b =>
                 {
-                    b.HasOne("geocity.domain.Entities.Itinary", null)
+                    b.HasOne("geocity.domain.Entities.City", "City")
                         .WithMany("PointOfCrossing")
-                        .HasForeignKey("ItinaryId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.PointOfInterest", b =>
@@ -518,6 +572,8 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.City", b =>
                 {
+                    b.Navigation("PointOfCrossing");
+
                     b.Navigation("PointOfInterest");
 
                     b.Navigation("Trips");
@@ -525,9 +581,9 @@ namespace geocity.infrastructure.Migrations
 
             modelBuilder.Entity("geocity.domain.Entities.Itinary", b =>
                 {
-                    b.Navigation("ItinaryPointOfInterest");
+                    b.Navigation("ItinaryPointOfCrossing");
 
-                    b.Navigation("PointOfCrossing");
+                    b.Navigation("ItinaryPointOfInterest");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.Trip", b =>

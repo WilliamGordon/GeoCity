@@ -10,11 +10,16 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Queries
 {
     public class ItinaryPointOfInterestDto : BaseDto
     {
-        public Guid ItinryId { get; set; }
-        public Guid PointOfInterestId { get; set; }
+        
         public decimal? Price { get; set; }
         public int? Duration { get; set; }
         public string? Description { get; set; }
-        public ICollection<PointOfInterestDto> PointOfInterest { get; set; }
+        public string OsmId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public bool IsSuggestion { get; set; }
+        public Guid CityId { get; set; }
     }
 }

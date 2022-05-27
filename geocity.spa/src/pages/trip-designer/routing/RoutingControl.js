@@ -1,21 +1,20 @@
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
-import 'leaflet-routing-machine/dist/leaflet-routing-machine.css'
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 const createRoutineMachineLayer = (props) => {
-  console.log(props.waypoints)
   const instance = L.Routing.control({
     show: false,
     fitSelectedRoutes: false,
     showAlternatives: false,
     draggableWaypoints: false,
     collapsible: true,
-    position: 'topright',
+    position: "topright",
     lineOptions: {
       styles: [
         {
-          color: '#757de8',
+          color: "#757de8",
         },
       ],
     },

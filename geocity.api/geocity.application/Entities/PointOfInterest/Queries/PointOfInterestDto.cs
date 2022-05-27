@@ -15,5 +15,6 @@ namespace geocity.application.Entities.PointOfInterest.Queries
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public bool IsSuggestion { get; set; }
+        public Guid CityId { get; set; }
     }
 }

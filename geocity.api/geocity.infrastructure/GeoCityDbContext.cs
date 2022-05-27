@@ -9,8 +9,9 @@ namespace geocity.infrastructure
         public GeoCityDbContext(DbContextOptions<GeoCityDbContext> options) : base(options) {}
         public DbSet<City> Cities { get; set; }
         public DbSet<Itinary> Itinaries { get; set; }
-        public DbSet<ItinaryPointOfInterest> ItinaryPointOfInterests { get; set; }
+        public DbSet<ItinaryPointOfCrossing> ItinaryPointOfCrossings { get; set; }
         public DbSet<PointOfCrossing> PointOfCrossing { get; set; }
+        public DbSet<ItinaryPointOfInterest> ItinaryPointOfInterests { get; set; }
         public DbSet<PointOfInterest> PointOfInterest { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripUser> TripUsers { get; set; }
@@ -42,8 +43,9 @@ namespace geocity.infrastructure
 
             modelBuilder.Entity<City>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Itinary>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfCrossing>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<PointOfCrossing>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<PointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Trip>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<TripUser>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
@@ -53,9 +55,10 @@ namespace geocity.infrastructure
 
             modelBuilder.Entity<City>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Itinary>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfCrossing>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<PointOfCrossing>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<PointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Trip>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<TripUser>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<TripUserFavorite>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");

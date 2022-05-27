@@ -14,5 +14,6 @@ namespace geocity.domain.Entities
         public decimal Longitude { get; set; }
         public ICollection<Trip>? Trips { get; set; }
         public ICollection<PointOfInterest>? PointOfInterest { get; set; }
+        public ICollection<PointOfCrossing>? PointOfCrossing { get; set; }
     }
 }

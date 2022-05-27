@@ -16,6 +16,6 @@ namespace geocity.domain.Entities
         public Guid TripId { get; set; }
         public Trip Trip { get; set; } =  new Trip();
         public virtual ICollection<ItinaryPointOfInterest> ItinaryPointOfInterest { get; set; }
-        public virtual ICollection<PointOfCrossing> PointOfCrossing { get; set; }
+        public virtual ICollection<ItinaryPointOfCrossing> ItinaryPointOfCrossing { get; set; }
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Update
 {
-    public class UpdateItinaryPointOfInterestCommand : IRequest<ItinaryPointOfInterestDto>
+    public class UpdateItinaryPointOfInterestCommand : IRequest<Guid>
     {
         public Guid Id { get; set; }
         public decimal? Price { get; set; }
@@ -19,34 +19,26 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Update
         public string? Description { get; set; }
     }
 
-    public class UpdateItinaryPointOfInterestCommandHandler : IRequestHandler<UpdateItinaryPointOfInterestCommand, ItinaryPointOfInterestDto>
+    public class UpdateItinaryPointOfInterestCommandHandler : IRequestHandler<UpdateItinaryPointOfInterestCommand, Guid>
     {
-        private readonly IMediator _mediator;
         private readonly GeoCityDbContext _context;
         private readonly IMapper _mapper;
 
         public UpdateItinaryPointOfInterestCommandHandler(IMediator mediator, GeoCityDbContext context, IMapper mapper)
         {
-            _mediator = mediator;
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
         }
 
-        public async Task<ItinaryPointOfInterestDto> Handle(UpdateItinaryPointOfInterestCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(UpdateItinaryPointOfInterestCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ItinaryPointOfInterests.FindAsync(request.Id);
-            entity.Price = request.Price;
-            entity.Duration = request.Duration;
-            entity.Description = request.Description;
+            // UPDATE THE itinary_POI
+            var itinary_POI = await _context.ItinaryPointOfInterests.FindAsync(request.Id);
+            itinary_POI.Price = request.Price;
+            itinary_POI.Duration = request.Duration;
+            itinary_POI.Description = request.Description;
             await _context.SaveChangesAsync(cancellationToken);
-
-            var trip = await _context.ItinaryPointOfInterests
-                .Include(t => t.PointOfInterest)
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
-
-            var tripDto = _mapper.Map<ItinaryPointOfInterestDto>(trip);
-
-            return tripDto;
+            return itinary_POI.Id;
         }
     }
 }

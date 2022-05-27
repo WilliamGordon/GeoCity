@@ -6,31 +6,43 @@ namespace geocity.api.Controllers
 {
     public class CityController : ApiControllerBase
     {
-        // GET: CityController
         [HttpGet]
         public async Task<ActionResult<List<CityDto>>> Index()
         {
-            return await Mediator.Send(new GetCitiesQuery());
+            try
+            {
+                return Ok(await Mediator.Send(new GetCitiesQuery()));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
-        // GET: CityController/Details/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CityDto>> Details(Guid id)
         {
-            return await Mediator.Send(new GetCityQuery { Id = id });
+            try
+            {
+                return Ok(await Mediator.Send(new GetCityQuery { Id = id }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Guid>> PostAsync(CreateCityCommand city)
         {
-            // First create the city if not already
-            var cityId = await Mediator.Send(new CreateCityCommand
+            try
             {
-                Name = city.Name,
-                Latitude = city.Latitude,
-                Longitude = city.Longitude,
-            });
-            return Ok(cityId);
+                return Ok(await Mediator.Send(city));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

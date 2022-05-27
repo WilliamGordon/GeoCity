@@ -10,11 +10,17 @@ namespace geocity.api.Controllers
 {
     public class TripController : ApiControllerBase
     {
-        // GET: CityController/Details/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TripDto>> Details(Guid id)
         {
-            return await Mediator.Send(new GetTripQuery { Id = id });
+            try
+            {
+                return Ok(await Mediator.Send(new GetTripQuery { Id = id }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //[HttpGet("GetTripsUser/owner/{userid}")]

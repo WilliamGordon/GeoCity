@@ -109,7 +109,6 @@ export const MapSideBar = (props) => {
         nbItinaryPlaceForItinary++;
       }
     });
-    console.log(nbItinaryPlaceForItinary);
     return nbItinaryPlaceForItinary;
   };
 

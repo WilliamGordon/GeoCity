@@ -7,9 +7,16 @@ namespace geocity.api.Controllers
     public class UserController : ApiControllerBase 
     {
         [HttpPost]
-        public async Task<ActionResult<string>> PostAsync(CreateUserCommand request)
+        public async Task<ActionResult<string>> PostAsync(CreateUserCommand command)
         {
-            return await Mediator.Send(request);
+            try
+            {
+                return Ok(await Mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

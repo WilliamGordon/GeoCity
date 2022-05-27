@@ -9,28 +9,24 @@ using System.Threading.Tasks;
 
 namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Delete
 {
-    public class DeletePointOfInterestCommand : IRequest
+    public class DeleteItinaryPointOfInterestCommand : IRequest
     {
         public Guid Id { get; set; }
     }
 
-    public class DeletePointOfInterestCommandHandler : IRequestHandler<DeletePointOfInterestCommand>
+    public class DeletePointOfInterestCommandHandler : IRequestHandler<DeleteItinaryPointOfInterestCommand>
     {
-        private readonly IMediator _mediator;
         private readonly GeoCityDbContext _context;
 
         public DeletePointOfInterestCommandHandler(IMediator mediator, GeoCityDbContext context)
         {
-            _mediator = mediator;
             _context = context;
         }
-        public async Task<Unit> Handle(DeletePointOfInterestCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteItinaryPointOfInterestCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ItinaryPointOfInterests
+            _context.ItinaryPointOfInterests.Remove(await _context.ItinaryPointOfInterests
                .Where(b => b.Id == request.Id)
-               .SingleOrDefaultAsync(cancellationToken);
-
-            _context.ItinaryPointOfInterests.Remove(entity);
+               .SingleOrDefaultAsync(cancellationToken));
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

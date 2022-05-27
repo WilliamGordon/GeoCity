@@ -32,6 +32,7 @@ namespace geocity.application.Trip.Queries
             {
                 var trip = await _context.Trips
                 .Include(t => t.Itinaries)
+                .ThenInclude(t => t.ItinaryPointOfCrossing)
                 .ThenInclude(t => t.PointOfCrossing)
                 .Include(t => t.Itinaries)
                 .ThenInclude(t => t.ItinaryPointOfInterest)

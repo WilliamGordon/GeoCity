@@ -15,11 +15,11 @@ namespace geocity.application.Trip.Queries
 {
     public class TripDto : BaseDto
     {
-        public Guid CityId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int Days { get; set; }
         public bool IsPublished { get; set; }
+        public Guid CityId { get; set; }
         public CityDto City { get; set; }
         public ICollection<ItinaryDto> Itinaries { get; set; }
         public ICollection<TripUserDto> TripUsers { get; set; }

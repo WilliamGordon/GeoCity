@@ -10,6 +10,8 @@ using geocity.application.Entities.PointOfCrossing.Queries;
 using geocity.application.Entities.TripUserFavorite.Queries;
 using geocity.application.Entities.TripUserRating.Queries;
 using geocity.application.City.Queries;
+using geocity.application.Entities.ItinaryPointOfCrossing.Queries;
+using geocity.application.DTOs.Composite;
 
 namespace geocity.application.Common
 {
@@ -23,14 +25,17 @@ namespace geocity.application.Common
             CreateMap<geocity.domain.Entities.Itinary, ItinaryDto>();
             CreateMap<ItinaryDto, geocity.domain.Entities.Itinary>();
 
-            CreateMap<geocity.domain.Entities.ItinaryPointOfInterest, ItinaryPointOfInterestDto>();
-            CreateMap<ItinaryPointOfInterestDto, geocity.domain.Entities.ItinaryPointOfInterest>();
+            CreateMap<ItinaryPointOfCrossing, ItinaryPointOfCrossingDto>().IncludeMembers(s => s.PointOfCrossing);
+            CreateMap<PointOfCrossing, ItinaryPointOfCrossingDto>();
 
-            CreateMap<geocity.domain.Entities.PointOfCrossing, PointOfCrossingDto>();
-            CreateMap<PointOfCrossingDto, geocity.domain.Entities.PointOfCrossing>();
+            CreateMap<ItinaryPointOfInterest, ItinaryPointOfInterestDto>().IncludeMembers(s => s.PointOfInterest);
+            CreateMap<PointOfInterest, ItinaryPointOfInterestDto>();
 
-            CreateMap<geocity.domain.Entities.PointOfInterest, PointOfInterestDto>();
-            CreateMap<PointOfInterestDto, geocity.domain.Entities.PointOfInterest>();
+            CreateMap<PointOfCrossing, PointOfCrossingDto>();
+            CreateMap<PointOfCrossingDto, PointOfCrossing>();
+
+            CreateMap<PointOfInterest, PointOfInterestDto>();
+            CreateMap<PointOfInterestDto, PointOfInterest>();
 
             CreateMap<geocity.domain.Entities.Trip, TripDto>();
             CreateMap<TripDto, geocity.domain.Entities.Trip>();

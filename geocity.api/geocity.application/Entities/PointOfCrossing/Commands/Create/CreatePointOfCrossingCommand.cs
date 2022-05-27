@@ -12,7 +12,6 @@ namespace geocity.application.Entities.PointOfCrossing.Commands.Create
     {
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
-        public string? Description { get; set; }
     }
 
     public class CreatePointOfCrossingCommandHandler : IRequestHandler<CreatePointOfCrossingCommand, Guid>
@@ -30,7 +29,6 @@ namespace geocity.application.Entities.PointOfCrossing.Commands.Create
             var entity = new geocity.domain.Entities.PointOfCrossing();
             entity.Latitude = request.Latitude;
             entity.Longitude = request.Longitude;
-            entity.Description = request.Description;
             _context.PointOfCrossing.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
             return entity.Id;
