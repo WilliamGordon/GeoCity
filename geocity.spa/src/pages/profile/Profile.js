@@ -4,8 +4,6 @@ import { Card, Typography, CardContent, Avatar } from "@mui/material";
 const Profile = () => {
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  console.log(user);
-
   return (
     <>
       <Card sx={{ margin: "auto", marginTop: "15px", width: "80%" }}>

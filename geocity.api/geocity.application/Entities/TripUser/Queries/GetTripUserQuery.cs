@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 
 namespace geocity.application.Entities.TripUser.Queries
 {
-    public class GetTripUserQuery : IRequest<List<TripUserDto>>
+    public class GetTripUserQuery : IRequest<TripUserDto>
     {
         public string UserId { get; set; }
+        public Guid TripId { get; set; }
     }
-    public class GetTripUserQueryHandler : IRequestHandler<GetTripUserQuery, List<TripUserDto>>
+    public class GetTripUserQueryHandler : IRequestHandler<GetTripUserQuery, TripUserDto>
     {
         private readonly GeoCityDbContext _context;
         private readonly IMapper _mapper;
@@ -26,15 +27,11 @@ namespace geocity.application.Entities.TripUser.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<TripUserDto>> Handle(GetTripUserQuery request, CancellationToken cancellationToken)
+        public async Task<TripUserDto> Handle(GetTripUserQuery request, CancellationToken cancellationToken)
         {
-            var listoftripuser = await _context.TripUsers
-                .Include(t => t.Trip)
-                .Include(t => t.Trip.City)
-                .Include(t => t.Trip.Itinaries)
-                .Where(x => x.UserId == request.UserId)
-                .ToListAsync(cancellationToken: cancellationToken);
-            return _mapper.Map<List<TripUserDto>>(listoftripuser);
+            var tripUser = await _context.TripUsers
+                .SingleOrDefaultAsync(x => x.UserId == request.UserId && x.TripId == request.TripId);
+            return _mapper.Map<TripUserDto>(tripUser);
         }
     }
 }

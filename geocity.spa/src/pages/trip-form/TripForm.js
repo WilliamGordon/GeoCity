@@ -93,17 +93,14 @@ export const TripForm = () => {
           UserId: user.sub,
         }),
       };
-      console.log(requestOptions);
       fetch("https://localhost:44396/api/Trip", requestOptions)
         .then((response) => response.json())
         .then((tripId) => {
-          console.log(tripId);
           setOpen(false);
           navigate("/trip-designer/" + tripId);
         })
         .catch((rejected) => {
           setOpen(false);
-          console.log(rejected);
           setApiErrorMsg("ERROR FROM API");
         });
     }
@@ -158,7 +155,6 @@ export const TripForm = () => {
                   }
                 }}
                 onBlur={(event) => {
-                  console.log(event);
                   if (event.target.value == "") {
                     setSelectedCityError("Please provide a name for your trip");
                   } else {

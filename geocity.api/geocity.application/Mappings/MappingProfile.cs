@@ -12,6 +12,7 @@ using geocity.application.Entities.TripUserRating.Queries;
 using geocity.application.City.Queries;
 using geocity.application.Entities.ItinaryPointOfCrossing.Queries;
 using geocity.application.DTOs.Composite;
+using geocity.application.Entities.Trip.Queries;
 
 namespace geocity.application.Common
 {
@@ -36,6 +37,9 @@ namespace geocity.application.Common
 
             CreateMap<PointOfInterest, PointOfInterestDto>();
             CreateMap<PointOfInterestDto, PointOfInterest>();
+
+            CreateMap<geocity.domain.Entities.Trip, TripOverviewDto>();
+            CreateMap<TripOverviewDto, geocity.domain.Entities.Trip>();
 
             CreateMap<geocity.domain.Entities.Trip, TripDto>();
             CreateMap<TripDto, geocity.domain.Entities.Trip>();

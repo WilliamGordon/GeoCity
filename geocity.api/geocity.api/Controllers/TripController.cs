@@ -5,6 +5,7 @@ using geocity.application.Trip.Commands.CreateTrip;
 using geocity.application.Trip.Queries;
 using geocity.application.TripUser.Commands.Create;
 using Microsoft.AspNetCore.Mvc;
+using geocity.application.Entities.Trip.Queries;
 
 namespace geocity.api.Controllers
 {
@@ -21,6 +22,12 @@ namespace geocity.api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("GetTripOverview/{link}")]
+        public async Task<ActionResult<TripOverviewDto>> GetTripOverview(Guid link)
+        {
+            return await Mediator.Send(new GetTripOverviewQuery { Link = link });
         }
 
         //[HttpGet("GetTripsUser/owner/{userid}")]

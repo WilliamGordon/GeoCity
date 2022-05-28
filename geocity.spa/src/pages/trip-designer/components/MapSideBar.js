@@ -23,6 +23,11 @@ import {
   IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import ShareIcon from "@mui/icons-material/Share";
+import PublishIcon from "@mui/icons-material/Publish";
+import PublishModal from "./Modal/PublishModal";
+import ShareModal from "./Modal/ShareModal";
+import TripModal from "./Modal/TripModal";
 
 const styleButtonEdit = {
   marginTop: "10px",
@@ -89,20 +94,40 @@ const styleItinaries = {
 };
 
 export const MapSideBar = (props) => {
-  const [itinaryPlace, setItinaryPlace] = useState({});
-  const [open, setOpen] = useState(false);
+  const [openPublishModal, setOpenPublishModal] = React.useState(false);
+  const [openShareModal, setOpenShareModal] = React.useState(false);
+  const [openTripModal, setOpenTripModal] = React.useState(false);
+  const [trip, setTrip] = React.useState({});
+  const [link, setLink] = React.useState({});
 
   useEffect(() => {
     console.log(props.trip);
+    setTrip({ ...props.trip });
   }, [props.trip]);
 
-  const handleClose = () => {
-    setOpen(false);
-    setItinaryPlace({});
+  const handleOpenPublishModal = () => {
+    setOpenPublishModal(true);
+  };
+  const handleOpenShareModal = () => {
+    setOpenShareModal(true);
+    console.log(trip.link);
+    setLink(trip.link);
+  };
+  const handleOpenTripModal = () => {
+    setOpenTripModal(true);
+  };
+
+  const handleClosePublishModal = () => {
+    setOpenPublishModal(false);
+  };
+  const handleCloseShareModal = () => {
+    setOpenShareModal(false);
+  };
+  const handleCloseTripModal = () => {
+    setOpenTripModal(false);
   };
 
   const handleItinary = (e, id) => {
-    // Load all the itinaryPlace For that day
     props.switchItinary(id);
   };
 
@@ -117,194 +142,233 @@ export const MapSideBar = (props) => {
   };
 
   return (
-    <Drawer elevation={16} sx={styleDrawer} variant="permanent" anchor="left">
-      <Toolbar>
-        <Typography
-          variant="overline"
-          display="block"
-          gutterBottom
-          align="center"
-          component="div"
-          sx={styleTypography}
-        >
-          {props.trip.name}
-        </Typography>
-        <IconButton
-          aria-label="update"
-          size="small"
-          onClick={(e) => console.log(e)}
-          sx={styleButtonEdit}
-        >
-          <EditIcon fontSize="inherit" />
-        </IconButton>
-      </Toolbar>
-      <Divider />
-      <List sx={styleItinaries}>
-        {props.itinaries &&
-          props.itinaries.map((p) => {
-            return (
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  marginTop: "5px !important",
-                  marginBottom: "2px !important",
-                  marginLeft: "10px !important",
-                  color: props.itinary.id == p.id ? "#ffffff" : "#9fafce",
-                  backgroundColor: "#10377a",
-                  fontSize: "0.680rem",
-                  height: "17px",
-                  width: "10%",
-                  margin: "0 auto",
-                  "&:hover": {
-                    backgroundColor: "#10377a",
-                    color: "#ffffff",
-                  },
+    <>
+      <Drawer elevation={16} sx={styleDrawer} variant="permanent" anchor="left">
+        <Toolbar>
+          <Typography
+            variant="overline"
+            display="block"
+            gutterBottom
+            align="center"
+            component="div"
+            sx={styleTypography}
+          >
+            {props.trip.name}
+          </Typography>
+          {props.isUserOWner && (
+            <>
+              <IconButton
+                onClick={(e) => {
+                  handleOpenPublishModal();
                 }}
-                key={p.id}
-                id={p.id}
-                onClick={(e) => handleItinary(e, p.id)}
+                aria-label="update"
+                size="small"
+                sx={styleButtonEdit}
               >
-                Day {p.day}
-              </Button>
-            );
-          })}
-      </List>
-      <Card
-        variant="outlined"
-        sx={{
-          overflow: "initial",
-          margin: "0 auto",
-          width: "90%",
-        }}
-      >
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <Typography
-                sx={{
-                  fontSize: "1.180rem",
+                <PublishIcon fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                onClick={(e) => {
+                  handleOpenShareModal();
                 }}
-                gutterBottom
-                variant="h6"
-                component="div"
+                aria-label="share"
+                size="small"
+                sx={styleButtonEdit}
               >
-                Day {}
-              </Typography>
-            </Grid>
-            <Grid item xs={7}>
-              <Chip
-                sx={{
-                  marginRight: "4px",
-                  marginBottom: "4px",
-                  fontSize: "0.7125rem",
-                  width: "65px",
+                <ShareIcon fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                onClick={(e) => {
+                  handleOpenTripModal();
                 }}
+                aria-label="update"
                 size="small"
-                icon={<FormatListNumberedIcon />}
-                label={getNumberOfItinary()}
-              />
-              <Chip
-                sx={{
-                  marginRight: "4px",
-                  marginBottom: "4px",
-                  fontSize: "0.7125rem",
-                  width: "65px",
-                }}
-                size="small"
-                icon={<EuroIcon />}
-                label={props.itinary.price ? props.itinary.price : "0,00"}
-              />
-              <Chip
-                sx={{
-                  marginRight: "4px",
-                  marginBottom: "4px",
-                  fontSize: "0.7125rem",
-                  width: "65px",
-                }}
-                size="small"
-                icon={<WatchIcon />}
-                label={
-                  props.itinary.duration ? props.itinary.duration : "00:00"
-                }
-              />
-              <Chip
-                sx={{
-                  marginRight: "4px",
-                  marginBottom: "4px",
-                  fontSize: "0.7125rem",
-                  width: "65px",
-                }}
-                size="small"
-                icon={<StraightenIcon />}
-                label={props.itinary.price ? props.itinary.price : "0 km"}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {props.itinary.description && (
-                <Typography variant="body2">
-                  Description : {props.itinary.description}
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-      <Paper
-        style={{
-          backgroundColor: "#eceff1",
-          maxHeight: "100%",
-          overflow: "auto",
-          width: "90%",
-          margin: "0 auto",
-          marginTop: "15px",
-        }}
-      >
-        <List>
-          {props.points &&
-            props.points.map((p) => {
+                sx={styleButtonEdit}
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </>
+          )}
+        </Toolbar>
+        <Divider />
+        <List sx={styleItinaries}>
+          {props.itinaries &&
+            props.itinaries.map((p) => {
               return (
-                <ListItem
-                  sx={styleBorder}
-                  button
-                  id={p.id}
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    marginTop: "5px !important",
+                    marginBottom: "2px !important",
+                    marginLeft: "10px !important",
+                    color: props.itinary.id == p.id ? "#ffffff" : "#9fafce",
+                    backgroundColor: "#10377a",
+                    fontSize: "0.680rem",
+                    height: "17px",
+                    width: "10%",
+                    margin: "0 auto",
+                    "&:hover": {
+                      backgroundColor: "#10377a",
+                      color: "#ffffff",
+                    },
+                  }}
                   key={p.id}
-                  onClick={(e) => props.handleUpdate(p)}
+                  id={p.id}
+                  onClick={(e) => handleItinary(e, p.id)}
                 >
-                  <ListItemIcon>
-                    {p.osmId && <ExploreIcon fontSize="small" />}
-                    {!p.osmId && <PushPinIcon fontSize="small" />}
-                  </ListItemIcon>
-                  <Typography
-                    sx={{
-                      paddingTop: "5px",
-                      fontSize: "0.790rem",
-                    }}
-                    variant="body2"
-                    gutterBottom
-                  >
-                    {p.name ? p.name : "Step"}
-                  </Typography>
-                </ListItem>
+                  Day {p.day}
+                </Button>
               );
             })}
         </List>
-      </Paper>
-      <Button variant="contained" sx={styleButton}>
-        Add new step
-      </Button>
-      <Box sx={{ flexGrow: 1 }}></Box>
-      <Button
-        onClick={() => props.generateRoute()}
-        variant="contained"
-        sx={styleButton}
-      >
-        {props.isRouteGenerated && <>Reset</>}
-        {!props.isRouteGenerated && <>Generate Trip</>}
-      </Button>
-    </Drawer>
+        <Card
+          variant="outlined"
+          sx={{
+            overflow: "initial",
+            margin: "0 auto",
+            width: "90%",
+          }}
+        >
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Typography
+                  sx={{
+                    fontSize: "1.180rem",
+                  }}
+                  gutterBottom
+                  variant="h6"
+                  component="div"
+                >
+                  Day {}
+                </Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Chip
+                  sx={{
+                    marginRight: "4px",
+                    marginBottom: "4px",
+                    fontSize: "0.7125rem",
+                    width: "65px",
+                  }}
+                  size="small"
+                  icon={<FormatListNumberedIcon />}
+                  label={getNumberOfItinary()}
+                />
+                <Chip
+                  sx={{
+                    marginRight: "4px",
+                    marginBottom: "4px",
+                    fontSize: "0.7125rem",
+                    width: "65px",
+                  }}
+                  size="small"
+                  icon={<EuroIcon />}
+                  label={props.itinary.price ? props.itinary.price : "0,00"}
+                />
+                <Chip
+                  sx={{
+                    marginRight: "4px",
+                    marginBottom: "4px",
+                    fontSize: "0.7125rem",
+                    width: "65px",
+                  }}
+                  size="small"
+                  icon={<WatchIcon />}
+                  label={
+                    props.itinary.duration ? props.itinary.duration : "00:00"
+                  }
+                />
+                <Chip
+                  sx={{
+                    marginRight: "4px",
+                    marginBottom: "4px",
+                    fontSize: "0.7125rem",
+                    width: "65px",
+                  }}
+                  size="small"
+                  icon={<StraightenIcon />}
+                  label={props.itinary.price ? props.itinary.price : "0 km"}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {props.itinary.description && (
+                  <Typography variant="body2">
+                    Description : {props.itinary.description}
+                  </Typography>
+                )}
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Paper
+          style={{
+            backgroundColor: "#eceff1",
+            maxHeight: "100%",
+            overflow: "auto",
+            width: "90%",
+            margin: "0 auto",
+            marginTop: "15px",
+          }}
+        >
+          <List>
+            {props.points &&
+              props.points.map((p) => {
+                return (
+                  <ListItem
+                    sx={styleBorder}
+                    button
+                    id={p.id}
+                    key={p.id}
+                    onClick={(e) => props.handleUpdate(p)}
+                  >
+                    <ListItemIcon>
+                      {p.osmId && <ExploreIcon fontSize="small" />}
+                      {!p.osmId && <PushPinIcon fontSize="small" />}
+                    </ListItemIcon>
+                    <Typography
+                      sx={{
+                        paddingTop: "5px",
+                        fontSize: "0.790rem",
+                      }}
+                      variant="body2"
+                      gutterBottom
+                    >
+                      {p.name ? p.name : "Step"}
+                    </Typography>
+                  </ListItem>
+                );
+              })}
+          </List>
+        </Paper>
+        <Button variant="contained" sx={styleButton}>
+          Add new step
+        </Button>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <Button
+          onClick={() => props.generateRoute()}
+          variant="contained"
+          sx={styleButton}
+        >
+          {props.isRouteGenerated && <>Reset</>}
+          {!props.isRouteGenerated && <>Generate Trip</>}
+        </Button>
+      </Drawer>
+      <PublishModal
+        tripId={props.trip}
+        open={openPublishModal}
+        close={handleClosePublishModal}
+      />
+      <ShareModal
+        link={link}
+        open={openShareModal}
+        close={handleCloseShareModal}
+      />
+      <TripModal open={openTripModal} close={handleCloseTripModal} />
+    </>
   );
 };
 

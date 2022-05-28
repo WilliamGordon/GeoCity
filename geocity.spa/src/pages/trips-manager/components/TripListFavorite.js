@@ -18,7 +18,6 @@ export const TripListFavorite = (props) => {
   useEffect(() => {
     setOpen(true);
     // Get all data from trip
-    console.log("https://localhost:44396/api/Trip/GetTripsUser/favorite/" + 1);
     fetch("https://localhost:44396/api/Trip/GetTripsUser/favorite/" + 1)
       .then((response) => response.json())
       .then((tripData) => {
@@ -39,7 +38,6 @@ export const TripListFavorite = (props) => {
             <Card sx={{ minWidth: 275, marginBottom: "10px" }} key={x.trip.id}>
               <CardActionArea
                 onClick={(e) => {
-                  console.log(e);
                   navigate("/trip-designer/" + x.trip.id);
                 }}
               >

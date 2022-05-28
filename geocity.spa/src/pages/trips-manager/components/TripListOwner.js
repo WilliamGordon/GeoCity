@@ -39,10 +39,6 @@ export const TripListOwner = (props) => {
   useEffect(() => {
     setOpen(true);
     // Get all data from trip
-    console.log(
-      "https://localhost:44396/api/Trip/GetTripsUser/owner/" +
-        user.sub.split("|")[1]
-    );
     fetch(
       "https://localhost:44396/api/Trip/GetTripsUser/owner/" +
         user.sub.split("|")[1]
@@ -70,7 +66,6 @@ export const TripListOwner = (props) => {
               >
                 <CardActionArea
                   onClick={(e) => {
-                    console.log(e);
                     navigate("/trip-designer/" + x.trip.id);
                   }}
                 >
