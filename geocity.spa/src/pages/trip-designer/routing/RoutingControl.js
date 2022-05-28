@@ -5,12 +5,19 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 const createRoutineMachineLayer = (props) => {
   const instance = L.Routing.control({
+    createMarker: function () {
+      return null;
+    },
     show: false,
     fitSelectedRoutes: false,
     showAlternatives: false,
     draggableWaypoints: false,
     collapsible: true,
     position: "topright",
+    router: L.Routing.mapbox(
+      "pk.eyJ1Ijoid2lsbGlhbWdvcmRvbiIsImEiOiJja3VvOXhua28wZ3BjMnBxcmM1YzcxbTlxIn0.mPwGIRCh7qohRAfTnuzbRQ",
+      { profile: "mapbox/walking" }
+    ),
     lineOptions: {
       styles: [
         {

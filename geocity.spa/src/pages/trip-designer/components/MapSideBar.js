@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import ExploreIcon from "@mui/icons-material/Explore";
 import EuroIcon from "@mui/icons-material/Euro";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import WatchIcon from "@mui/icons-material/Watch";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import ItinaryPlaceCreateUpdateModal from "./Modal/ItinaryPlaceCreateUpdateModal";
 import {
   Box,
   Card,
@@ -92,6 +92,10 @@ export const MapSideBar = (props) => {
   const [itinaryPlace, setItinaryPlace] = useState({});
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    console.log(props.trip);
+  }, [props.trip]);
+
   const handleClose = () => {
     setOpen(false);
     setItinaryPlace({});
@@ -104,7 +108,7 @@ export const MapSideBar = (props) => {
 
   const getNumberOfItinary = () => {
     var nbItinaryPlaceForItinary = 0;
-    props.itinaryPlaceList.forEach((ip) => {
+    props.points.forEach((ip) => {
       if (props.itinary.id == ip.itinaryId) {
         nbItinaryPlaceForItinary++;
       }
@@ -136,8 +140,8 @@ export const MapSideBar = (props) => {
       </Toolbar>
       <Divider />
       <List sx={styleItinaries}>
-        {props.itinaryList &&
-          props.itinaryList.map((p) => {
+        {props.itinaries &&
+          props.itinaries.map((p) => {
             return (
               <Button
                 variant="contained"
@@ -161,7 +165,7 @@ export const MapSideBar = (props) => {
                 id={p.id}
                 onClick={(e) => handleItinary(e, p.id)}
               >
-                Day {props.itinaryList.indexOf(p) + 1}
+                Day {p.day}
               </Button>
             );
           })}
@@ -185,7 +189,7 @@ export const MapSideBar = (props) => {
                 variant="h6"
                 component="div"
               >
-                Day {props.itinaryList.indexOf(props.itinary) + 1}
+                Day {}
               </Typography>
             </Grid>
             <Grid item xs={7}>
@@ -259,33 +263,32 @@ export const MapSideBar = (props) => {
         }}
       >
         <List>
-          {props.itinaryPlaceList &&
-            props.itinaryPlaceList.map((p) => {
-              if (props.itinary.id == p.itinaryId) {
-                return (
-                  <ListItem
-                    sx={styleBorder}
-                    button
-                    id={p.id}
-                    key={p.id}
-                    onClick={(e) => props.handleOpen(p)}
+          {props.points &&
+            props.points.map((p) => {
+              return (
+                <ListItem
+                  sx={styleBorder}
+                  button
+                  id={p.id}
+                  key={p.id}
+                  onClick={(e) => props.handleUpdate(p)}
+                >
+                  <ListItemIcon>
+                    {p.osmId && <ExploreIcon fontSize="small" />}
+                    {!p.osmId && <PushPinIcon fontSize="small" />}
+                  </ListItemIcon>
+                  <Typography
+                    sx={{
+                      paddingTop: "5px",
+                      fontSize: "0.790rem",
+                    }}
+                    variant="body2"
+                    gutterBottom
                   >
-                    <ListItemIcon>
-                      <PushPinIcon fontSize="small" />
-                    </ListItemIcon>
-                    <Typography
-                      sx={{
-                        paddingTop: "5px",
-                        fontSize: "0.790rem",
-                      }}
-                      variant="body2"
-                      gutterBottom
-                    >
-                      {p.id + " - " + p.name}
-                    </Typography>
-                  </ListItem>
-                );
-              }
+                    {p.name ? p.name : "Step"}
+                  </Typography>
+                </ListItem>
+              );
             })}
         </List>
       </Paper>
@@ -301,12 +304,6 @@ export const MapSideBar = (props) => {
         {props.isRouteGenerated && <>Reset</>}
         {!props.isRouteGenerated && <>Generate Trip</>}
       </Button>
-      <ItinaryPlaceCreateUpdateModal
-        open={open}
-        itinary={props.itinary}
-        itinaryPlace={itinaryPlace}
-        handleClose={handleClose}
-      />
     </Drawer>
   );
 };

@@ -3,6 +3,7 @@ import { Marker, Popup } from "react-leaflet";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import L from "leaflet";
 
 const styleButton = {
   marginBottom: "15px !important",
@@ -15,6 +16,14 @@ const styleButton = {
   },
 };
 
+function GetIcon(type) {
+  return L.icon({
+    iconUrl: require("../../../assets/icons/pin-" + type + ".svg").default,
+    iconSize: new L.Point(40, 40),
+    iconAnchor: [19, 41],
+  });
+}
+
 export const Points = (props) => {
   return (
     <>
@@ -22,10 +31,13 @@ export const Points = (props) => {
         props.data.map((p) => {
           // Only show point for the currently selected itinary
           return (
-            <Marker key={p.id} id={p.id} position={[p.latitude, p.longitude]}>
+            <Marker
+              key={p.id}
+              id={p.id}
+              position={[p.latitude, p.longitude]}
+              icon={GetIcon(p.osmId ? "poi" : "poc")}
+            >
               <Popup>
-                {p.id}
-                {p.name}
                 <IconButton
                   aria-label="delete"
                   size="small"
@@ -39,7 +51,7 @@ export const Points = (props) => {
                 <IconButton
                   aria-label="delete"
                   size="small"
-                  onClick={(e) => props.removeMarker(p.id)}
+                  onClick={(e) => props.handleDelete(p)}
                   sx={styleButton}
                 >
                   <DeleteIcon fontSize="inherit" />

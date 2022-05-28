@@ -28,7 +28,14 @@ namespace geocity.application.Itinary.Queries
 
         public async Task<ItinaryDto> Handle(GetItinaryQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<ItinaryDto>(await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.Id));
+            var itinary = await _context.Itinaries
+                .Include(t => t.ItinaryPointOfCrossing)
+                .ThenInclude(t => t.PointOfCrossing)
+                .Include(t => t.ItinaryPointOfInterest)
+                .ThenInclude(t => t.PointOfInterest)
+                .SingleOrDefaultAsync(x => x.Id == request.Id);
+            var itinaryDto = _mapper.Map<ItinaryDto>(itinary);
+            return itinaryDto;
         }
     }
 }
