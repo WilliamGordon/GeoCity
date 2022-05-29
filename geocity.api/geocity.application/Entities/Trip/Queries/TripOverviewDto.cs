@@ -1,4 +1,5 @@
 ﻿using geocity.application.City.Queries;
+using geocity.application.DTOs.Base;
 using geocity.application.TripUser.Queries;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace geocity.application.Entities.Trip.Queries
 {
-    public class TripOverviewDto
+    public class TripOverviewDto : BaseDto
     {
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
