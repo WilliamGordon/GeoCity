@@ -94,10 +94,10 @@ export default function NavigationBar() {
           {isAuthenticated && (
             <Button
               component={Link}
-              to="/trips-manager/owner"
+              to="/trips-manager/participant"
               sx={{
                 ...styleButton,
-                color: location.pathname.includes("trips-manager/owner")
+                color: location.pathname.includes("trips-manager/participant")
                   ? "#ffffff"
                   : "#9fafce",
               }}

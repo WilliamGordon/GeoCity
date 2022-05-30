@@ -26,7 +26,8 @@ builder.Services.AddCors();
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 builder.Services.AddMediatR(AppDomain.CurrentDomain.Load("geocity.application"));
 builder.Services.AddDbContext<GeoCityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("geocity-db")));
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {

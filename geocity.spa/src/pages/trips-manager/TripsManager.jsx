@@ -12,15 +12,14 @@ import {
   Tab,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
 import PeopleIcon from "@mui/icons-material/People";
 import { Link } from "react-router-dom";
 
 const tabHeight = "40px"; // default: '48px'
 const useStyles = {
   grid: {
-    minWidth: "400px",
-    maxWidth: "80%",
+    minWidth: 275,
+    maxWidth: 675,
     margin: "auto",
     marginTop: "10px",
     marginBottom: "10px",
@@ -38,22 +37,11 @@ const useStyles = {
   },
 };
 
-export const TripsManager = (props: {
-  component:
-    | boolean
-    | React.ReactChild
-    | React.ReactFragment
-    | React.ReactPortal
-    | null
-    | undefined;
-}) => {
+export const TripsManager = (props) => {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("/trips-manager/owner");
+  const [value, setValue] = React.useState("/trips-manager/participant");
 
-  const handleChange = (
-    _event: any,
-    newValue: React.SetStateAction<string>
-  ) => {
+  const handleChange = (_event, newValue) => {
     setValue(newValue);
   };
 
@@ -69,15 +57,6 @@ export const TripsManager = (props: {
               centered
               sx={useStyles.tabsRoot}
             >
-              <Tab
-                icon={<PersonPinIcon />}
-                value="/trips-manager/owner"
-                component={Link}
-                iconPosition="start"
-                label="Trips Owner"
-                to={"/trips-manager/owner"}
-                sx={useStyles.tabRoot}
-              />
               <Tab
                 icon={<PeopleIcon />}
                 value="/trips-manager/participant"

@@ -98,15 +98,17 @@ export const MapSideBar = (props) => {
   const [openShareModal, setOpenShareModal] = React.useState(false);
   const [openTripModal, setOpenTripModal] = React.useState(false);
   const [trip, setTrip] = React.useState({});
+  const [tripId, setTripId] = React.useState({});
   const [link, setLink] = React.useState({});
 
   useEffect(() => {
-    console.log(props.trip);
     setTrip({ ...props.trip });
   }, [props.trip]);
 
   const handleOpenPublishModal = () => {
     setOpenPublishModal(true);
+    console.log(trip.id);
+    setTripId(trip.id);
   };
   const handleOpenShareModal = () => {
     setOpenShareModal(true);
@@ -358,7 +360,7 @@ export const MapSideBar = (props) => {
         </Button>
       </Drawer>
       <PublishModal
-        tripId={props.trip}
+        tripId={tripId}
         open={openPublishModal}
         close={handleClosePublishModal}
       />

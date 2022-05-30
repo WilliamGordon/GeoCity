@@ -12,6 +12,7 @@ namespace geocity.application.TripUser.Queries
     public class TripUserDto : BaseDto
     {
         public Guid TripId { get; set; }
+        public TripDto Trip { get; set; }
         public string UserId { get; set; }
         public UserDto User { get; set; }
         public bool IsOwner { get; set; }

@@ -21,6 +21,19 @@ namespace geocity.api.Controllers
             }
         }
 
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<List<TripUserDto>>> Details(string userId)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(new GetAllTripUserQuery { UserId = userId }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Guid>> PostAsync(CreateTripUserCommand command)
         {

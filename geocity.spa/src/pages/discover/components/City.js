@@ -1,20 +1,63 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import bxlImage from '../../../assets/images/bxl.jpg' // relative path to image 
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Avatar,
+  Rating,
+  Button,
+} from "@mui/material";
+
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import { red } from "@mui/material/colors";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+
+const styleButton = {
+  marginBottom: "15px !important",
+  color: "#9fafce",
+  backgroundColor: "#10377a",
+  fontSize: "70%",
+  height: "30px",
+  width: "90%",
+  margin: "0 auto",
+  "&:hover": {
+    backgroundColor: "#10377a",
+    color: "#ffffff",
+  },
+};
+
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+  };
+}
 
 export default function RecipeReviewCard() {
   const [expanded, setExpanded] = React.useState(false);
@@ -24,34 +67,23 @@ export default function RecipeReviewCard() {
   };
 
   return (
-    <Card sx={{ maxWidth: "100%", marginTop:"10px" }}>
+    <Card sx={{ maxWidth: "100%", marginTop: "10px" }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            O
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <Button variant="contained" sx={styleButton}>
+            Explore
+          </Button>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title="Trip name"
+        subheader="Trip created at"
       />
-      <CardMedia
-        component="img"
-        height="100"
-        image={bxlImage}
-        alt="bxl"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
-        </Typography>
-      </CardContent>
+
+      {/* <CardContent></CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
@@ -59,7 +91,10 @@ export default function RecipeReviewCard() {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
-      </CardActions>
+        <IconButton aria-label="share" style={{ flex: 1 }}>
+          <Rating name="read-only" value={4} readOnly />
+        </IconButton>
+      </CardActions> */}
     </Card>
   );
 }

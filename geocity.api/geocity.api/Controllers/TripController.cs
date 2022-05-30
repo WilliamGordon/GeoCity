@@ -6,6 +6,7 @@ using geocity.application.Trip.Queries;
 using geocity.application.TripUser.Commands.Create;
 using Microsoft.AspNetCore.Mvc;
 using geocity.application.Entities.Trip.Queries;
+using geocity.application.Entities.Trip.Commands.UpdateTrip;
 
 namespace geocity.api.Controllers
 {
@@ -30,25 +31,20 @@ namespace geocity.api.Controllers
             return await Mediator.Send(new GetTripOverviewQuery { Link = link });
         }
 
-        //[HttpGet("GetTripsUser/owner/{userid}")]
-        //public async Task<ActionResult<List<TripUserDto>>> GetTripsUserOwner(Guid userId)
-        //{
-        //    return await Mediator.Send(new GetTripsUserOwnerQuery { UserId = userId });
-        //}
+        [HttpPost("PublishTrip")]
+        public async Task<ActionResult<Guid>> PublishTrip(PublishTripCommand command)
+        {
+            try
+            {
+                return await Mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpGet("GetTripsUser/participant/{userid}")]
-        //public async Task<ActionResult<List<TripUserDto>>> GetTripsUserParticipant(string userid)
-        //{
-        //    return await Mediator.Send(new GetTripsUserParticipantQuery { UserId = userid });
-        //}
-
-        //[HttpGet("GetTripsUser/favorite/{userid}")]
-        //public async Task<ActionResult<List<TripUserDto>>> GetTripsUserFavorite(string userid)
-        //{
-        //    return await Mediator.Send(new GetTripsUserFavoriteQuery { UserId = userid });
-        //}
-
-        [HttpPost]
+                [HttpPost]
         public async Task<ActionResult<Guid>> PostAsync(CreateCityTripDto cityTrip)
         {
             try

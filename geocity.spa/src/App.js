@@ -7,7 +7,6 @@ import { TripsManager } from "./pages/trips-manager/TripsManager";
 import NavigationBar from "./common/components/NavigationBar";
 import Discover from "./pages/discover/discover";
 import Profile from "./pages/profile/Profile";
-import TripListOwner from "./pages/trips-manager/components/TripListOwner";
 import TripListParticipant from "./pages/trips-manager/components/TripListParticipant";
 import TripListFavorite from "./pages/trips-manager/components/TripListFavorite";
 
@@ -25,11 +24,6 @@ function App() {
           element={<TripSubscriber />}
         />
         <Route exact path="/trip-designer/:tripId" element={<TripDesigner />} />
-        <Route
-          exact
-          path="/trips-manager/owner"
-          element={<TripsManager component={<TripListOwner />} />}
-        />
         <Route
           exact
           path="/trips-manager/participant"
