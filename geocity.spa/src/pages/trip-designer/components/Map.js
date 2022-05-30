@@ -400,7 +400,7 @@ export const Map = (props) => {
           />
           <MapContainer
             center={[trip.city.latitude, trip.city.longitude]}
-            zoom={12}
+            zoom={14}
             minZoom={8}
             style={styleMapContainer}
           >

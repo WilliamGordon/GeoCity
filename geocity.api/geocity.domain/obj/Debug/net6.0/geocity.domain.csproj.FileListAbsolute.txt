@@ -9,4 +9,3 @@ C:\dev\GeoCity\geocity.api\geocity.domain\obj\Debug\net6.0\geocity.domain.csproj
 C:\dev\GeoCity\geocity.api\geocity.domain\obj\Debug\net6.0\geocity.domain.dll
 C:\dev\GeoCity\geocity.api\geocity.domain\obj\Debug\net6.0\ref\geocity.domain.dll
 C:\dev\GeoCity\geocity.api\geocity.domain\obj\Debug\net6.0\geocity.domain.pdb
-C:\dev\GeoCity\geocity.api\geocity.domain\obj\Debug\net6.0\geocity.domain.csproj.AssemblyReference.cache
