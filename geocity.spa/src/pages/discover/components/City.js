@@ -1,20 +1,6 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
-
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
-  Avatar,
-  Rating,
-  Button,
-} from "@mui/material";
-
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
+import { Card, CardHeader, Avatar, Button } from "@mui/material";
 
 const styleButton = {
   marginBottom: "15px !important",

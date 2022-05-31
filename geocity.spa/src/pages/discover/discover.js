@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import CitiesList from "./components/CitiesList";
+import Trips from "./components/Trips";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
-import FavoriteIcon from "@mui/material/IconButton";
 import {
   Grid,
   Box,
   Button,
-  Typography,
   Paper,
   InputBase,
   Divider,
@@ -19,14 +17,32 @@ import {
   Select,
   MenuItem,
   Rating,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import EuroIcon from "@mui/icons-material/Euro";
 import Slider from "@mui/material/Slider";
 import MuiInput from "@mui/material/Input";
-import VolumeUp from "@mui/icons-material/VolumeUp";
 import { styled } from "@mui/material/styles";
 
 const useStyles = {
+  paper: {
+    p: "2px 4px",
+    display: "flex",
+    alignItems: "center",
+    minWidth: 275,
+    maxWidth: 975,
+    margin: "auto",
+    marginTop: "10px",
+    marginBottom: "10px",
+  },
+  icon: {
+    p: "10px",
+  },
+  divider: {
+    height: 28,
+    m: 0.5,
+  },
   grid: {
     minWidth: 275,
     maxWidth: 975,
@@ -34,17 +50,21 @@ const useStyles = {
     marginTop: "10px",
     marginBottom: "10px",
   },
-};
-
-const styleButton = {
-  margin: "10px !important",
-  color: "#9fafce",
-  backgroundColor: "#10377a",
-  fontSize: "70%",
-  height: "30px",
-  "&:hover": {
+  button: {
+    margin: "10px !important",
+    color: "#9fafce",
     backgroundColor: "#10377a",
-    color: "#ffffff",
+    fontSize: "70%",
+    height: "30px",
+    "&:hover": {
+      backgroundColor: "#10377a",
+      color: "#ffffff",
+    },
+  },
+  searchInput: {
+    ml: 1,
+    flex: 1,
+    fontSize: "80%",
   },
 };
 
@@ -53,31 +73,30 @@ const Input = styled(MuiInput)`
 `;
 
 export const Discover = (props) => {
-  const [expanded, setExpanded] = React.useState(true);
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  // INPUTS STATE
+  const [searchValue, setSearchValue] = React.useState();
   const [value, setValue] = React.useState(30);
   const [valueRating, setValueRating] = React.useState(2);
 
-  const handleSliderChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // RETRIEVED DATA
+  const [trips, setTrips] = React.useState([]);
 
-  const handleInputChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
-  };
+  // COMPONENT HIDE SHOW
+  const [expanded, setExpanded] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
-  };
-
-  const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 100) {
-      setValue(100);
-    }
+  const submit = () => {
+    setLoading(true);
+    fetch("https://localhost:44396/api/Trip/Search=" + searchValue)
+      .then((response) => response.json())
+      .then((tripsData) => {
+        setLoading(false);
+        setTrips([...tripsData]);
+        console.log(tripsData);
+      })
+      .catch((rejected) => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -89,35 +108,32 @@ export const Discover = (props) => {
         sx={useStyles.grid}
       >
         <Grid item xs={10} sx={{ marginTop: "15px" }}>
-          <Paper
-            component="form"
-            sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              minWidth: 275,
-              maxWidth: 975,
-              margin: "auto",
-              marginTop: "10px",
-              marginBottom: "10px",
-            }}
-          >
-            <IconButton sx={{ p: "10px" }} aria-label="menu">
+          <Paper component="form" sx={useStyles.paper}>
+            <IconButton sx={useStyles.icon} aria-label="menu">
               <MenuIcon />
             </IconButton>
             <InputBase
-              sx={{ ml: 1, flex: 1 }}
+              sx={useStyles.searchInput}
               placeholder="Explore your city of choice"
-              inputProps={{ "aria-label": "search google maps" }}
+              value={searchValue ? searchValue : ""}
+              onChange={(event) => {
+                setSearchValue(event.target.value);
+              }}
             />
-            <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
+            <IconButton
+              onClick={submit}
+              sx={useStyles.icon}
+              aria-label="search"
+            >
               <SearchIcon />
             </IconButton>
-            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            <Divider sx={useStyles.divider} orientation="vertical" />
             <Button
               variant="contained"
-              sx={styleButton}
-              onClick={handleExpandClick}
+              sx={useStyles.button}
+              onClick={() => {
+                setExpanded(!expanded);
+              }}
             >
               Advanced search
             </Button>
@@ -135,7 +151,13 @@ export const Discover = (props) => {
                         labelId="demo-simple-select-helper-label"
                         id="demo-simple-select-helper"
                         label="Days"
-                        onChange={handleChange}
+                        onChange={(event, newValue) => {
+                          setValue(
+                            event.target.value === ""
+                              ? ""
+                              : Number(event.target.value)
+                          );
+                        }}
                         sx={{ m: 1, height: 35 }}
                       >
                         <MenuItem value=""></MenuItem>
@@ -160,7 +182,9 @@ export const Discover = (props) => {
                       <Grid item xs>
                         <Slider
                           value={typeof value === "number" ? value : 0}
-                          onChange={handleSliderChange}
+                          onChange={(event, newValue) => {
+                            setValue(newValue);
+                          }}
                           aria-labelledby="input-slider"
                         />
                       </Grid>
@@ -168,8 +192,20 @@ export const Discover = (props) => {
                         <Input
                           value={value}
                           size="small"
-                          onChange={handleInputChange}
-                          onBlur={handleBlur}
+                          onChange={(event, newValue) => {
+                            setValue(
+                              event.target.value === ""
+                                ? ""
+                                : Number(event.target.value)
+                            );
+                          }}
+                          onBlur={() => {
+                            if (value < 0) {
+                              setValue(0);
+                            } else if (value > 100) {
+                              setValue(100);
+                            }
+                          }}
                           inputProps={{
                             step: 10,
                             min: 0,
@@ -186,7 +222,11 @@ export const Discover = (props) => {
                       name="simple-controlled"
                       value={valueRating}
                       onChange={(event, newValue) => {
-                        setValueRating(newValue);
+                        setValue(
+                          event.target.value === ""
+                            ? ""
+                            : Number(event.target.value)
+                        );
                       }}
                     />
                   </Grid>
@@ -194,7 +234,12 @@ export const Discover = (props) => {
               </Box>
             </Collapse>
           </Card>
-          <CitiesList />
+          {loading && (
+            <Box>
+              <CircularProgress />
+            </Box>
+          )}
+          <Trips data={trips} />
         </Grid>
       </Grid>
     </Box>

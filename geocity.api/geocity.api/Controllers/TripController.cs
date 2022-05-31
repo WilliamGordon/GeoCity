@@ -31,6 +31,20 @@ namespace geocity.api.Controllers
             return await Mediator.Send(new GetTripOverviewQuery { Link = link });
         }
 
+        [HttpGet("Search={searchString}")]
+        public async Task<ActionResult<List<TripOverviewDto>>> Details(string searchString)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(new GetAllPublishTripQuery { SearchString = searchString }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost("PublishTrip")]
         public async Task<ActionResult<Guid>> PublishTrip(PublishTripCommand command)
         {
