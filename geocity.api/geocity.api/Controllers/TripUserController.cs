@@ -43,7 +43,6 @@ namespace geocity.api.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
