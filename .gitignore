@@ -1,5 +1,6 @@
 **/appsettings.json
 bin/
+obj/
 
 # Logs
 logs
