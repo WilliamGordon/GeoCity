@@ -163,7 +163,12 @@ export const Map = (props) => {
   // MAP ACTION
   const ZoomInCluster = () => {
     if (map) {
-      map.fitBounds(featureGroupRef.current.getBounds());
+      const isEmpty =
+        Object.keys(featureGroupRef.current.getBounds()).length === 0;
+      if (!isEmpty) {
+        console.log(featureGroupRef.current.getBounds());
+        map.fitBounds(featureGroupRef.current.getBounds());
+      }
     }
   };
   // POINTER OBJECT

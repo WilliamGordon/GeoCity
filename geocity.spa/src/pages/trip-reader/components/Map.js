@@ -91,7 +91,14 @@ export const Map = (props) => {
   };
 
   const ZoomInCluster = () => {
-    map.fitBounds(featureGroupRef.current.getBounds());
+    if (map) {
+      const isEmpty =
+        Object.keys(featureGroupRef.current.getBounds()).length === 0;
+      if (!isEmpty) {
+        console.log(featureGroupRef.current.getBounds());
+        map.fitBounds(featureGroupRef.current.getBounds());
+      }
+    }
   };
 
   return (
