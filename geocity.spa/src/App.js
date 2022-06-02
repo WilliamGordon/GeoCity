@@ -1,6 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { TripForm } from "./pages/trip-form/TripForm";
+import { TripReader } from "./pages/trip-reader/TripReader";
 import { TripSubscriber } from "./pages/trip-subscriber/TripSubscriber";
 import { TripDesigner } from "./pages/trip-designer/TripDesigner";
 import { TripsManager } from "./pages/trips-manager/TripsManager";
@@ -18,6 +19,7 @@ function App() {
         <Route exact path="/discover" element={<Discover />} />
         <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/trip-form" element={<TripForm />} />
+        <Route exact path="/trip-reader/:tripId" element={<TripReader />} />
         <Route
           exact
           path="/trip-subscriber/:linkId"

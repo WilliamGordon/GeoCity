@@ -5,6 +5,7 @@ import {
   useMapEvents,
   Marker,
   Popup,
+  FeatureGroup,
 } from "react-leaflet";
 import {
   Button,
@@ -64,7 +65,8 @@ export const Map = (props) => {
   const [openErrorNotif, setOpenErrorNotif] = React.useState(false);
   const [isUserOWner, setIsUserOWner] = React.useState(false);
   const routingMachine = useRef();
-
+  const [map, setMap] = useState(null);
+  const featureGroupRef = useRef();
   let { tripId } = useParams();
 
   // LIFE CYCLE USE EFFECT METHODS
@@ -135,6 +137,12 @@ export const Map = (props) => {
     }
   }, [itinary]);
   useEffect(() => {
+    // Get all points for itinary
+    if (points.length > 0) {
+      ZoomInCluster();
+    }
+  }, [points]);
+  useEffect(() => {
     if (isRouteGenerated) {
       if (routingMachine.current) {
         var itiplace = [];
@@ -149,6 +157,15 @@ export const Map = (props) => {
       }
     }
   });
+  useEffect(() => {
+    ZoomInCluster();
+  }, [map]);
+  // MAP ACTION
+  const ZoomInCluster = () => {
+    if (map) {
+      map.fitBounds(featureGroupRef.current.getBounds());
+    }
+  };
   // POINTER OBJECT
   const Pointer = () => {
     const [point, setPoint] = useState({});
@@ -316,6 +333,7 @@ export const Map = (props) => {
       if (itinary.id == id) {
         setItinary(itinary);
         console.log(itinary);
+        ZoomInCluster();
       }
     });
   };
@@ -403,13 +421,16 @@ export const Map = (props) => {
             zoom={14}
             minZoom={8}
             style={styleMapContainer}
+            whenCreated={setMap}
           >
             <Pointer />
-            <Points
-              data={points}
-              handleUpdate={handleUpdate}
-              handleDelete={handleDelete}
-            />
+            <FeatureGroup ref={featureGroupRef}>
+              <Points
+                data={points}
+                handleUpdate={handleUpdate}
+                handleDelete={handleDelete}
+              />
+            </FeatureGroup>
             <RoutingControl
               ref={routingMachine}
               itinary={itinary}

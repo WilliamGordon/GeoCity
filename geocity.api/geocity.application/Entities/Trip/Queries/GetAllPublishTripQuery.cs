@@ -32,7 +32,7 @@ namespace geocity.application.Entities.Trip.Queries
             {
                 var trip = await _context.Trips
                     .Include(t => t.City)
-                    .Where(i => i.Name.Contains(request.SearchString) || i.City.Name.Contains(request.SearchString))
+                    .Where(i => (i.Name.Contains(request.SearchString) || i.City.Name.Contains(request.SearchString)) && i.IsPublished ==  true)
                     .ToListAsync(cancellationToken: cancellationToken);
 
                 var tripDto = _mapper.Map<List<TripOverviewDto>>(trip);

@@ -116,6 +116,12 @@ export const Discover = (props) => {
               sx={useStyles.searchInput}
               placeholder="Explore your city of choice"
               value={searchValue ? searchValue : ""}
+              onKeyDown={(e) => {
+                if (e.keyCode == 13) {
+                  e.preventDefault();
+                  submit();
+                }
+              }}
               onChange={(event) => {
                 setSearchValue(event.target.value);
               }}

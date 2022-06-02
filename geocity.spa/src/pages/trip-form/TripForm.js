@@ -25,7 +25,7 @@ const provider = new OpenStreetMapProvider({
   params: {
     "accept-language": "fr", // render results in fr
     extratags: 0,
-    limit: 3,
+    limit: 10,
   },
 });
 
@@ -173,7 +173,9 @@ export const TripForm = () => {
                         query: newInputValue,
                       });
                       cities = cities.filter(
-                        (city) => city.raw.type === "city"
+                        (city) =>
+                          city.raw.type === "city" ||
+                          city.raw.type === "administrative"
                       );
                       setOptions(
                         cities.map((city) => ({

@@ -33,7 +33,7 @@ export const TripCard = (props) => {
             variant="contained"
             sx={styleButton}
             onClick={() => {
-              navigate("/trip-designer/" + props.data.id);
+              navigate("/trip-reader/" + props.data.id);
             }}
           >
             Explore

@@ -6,7 +6,7 @@ export const Trips = (props) => {
     <>
       {props.data &&
         props.data.map((trip) => {
-          return <TripCard data={trip} />;
+          return <TripCard key={trip.id} data={trip} />;
         })}
     </>
   );
