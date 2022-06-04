@@ -16,6 +16,7 @@ function App() {
     <div className="App">
       <NavigationBar />
       <Routes>
+        <Route exact path="/" element={<Discover />} />
         <Route exact path="/discover" element={<Discover />} />
         <Route exact path="/profile" element={<Profile />} />
         <Route exact path="/trip-form" element={<TripForm />} />

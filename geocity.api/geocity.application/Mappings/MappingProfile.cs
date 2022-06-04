@@ -26,10 +26,16 @@ namespace geocity.application.Common
             CreateMap<geocity.domain.Entities.Itinary, ItinaryDto>();
             CreateMap<ItinaryDto, geocity.domain.Entities.Itinary>();
 
-            CreateMap<ItinaryPointOfCrossing, ItinaryPointOfCrossingDto>().IncludeMembers(s => s.PointOfCrossing);
+            CreateMap<ItinaryPointOfCrossing, ItinaryPointOfCrossingDto>()
+                .IncludeMembers(s => s.PointOfCrossing)
+                .ForMember(x => x.UserCreateName, opt => opt.MapFrom(x => x.UserCreate.Firstname))
+                .ForMember(x => x.UserUpdateName, opt => opt.MapFrom(x => x.UserUpdate.Firstname));
             CreateMap<PointOfCrossing, ItinaryPointOfCrossingDto>();
 
-            CreateMap<ItinaryPointOfInterest, ItinaryPointOfInterestDto>().IncludeMembers(s => s.PointOfInterest);
+            CreateMap<ItinaryPointOfInterest, ItinaryPointOfInterestDto>()
+                .IncludeMembers(s => s.PointOfInterest)
+                .ForMember(x => x.UserCreateName, opt => opt.MapFrom(x => x.UserCreate.Firstname))
+                .ForMember(x => x.UserUpdateName, opt => opt.MapFrom(x => x.UserUpdate.Firstname));
             CreateMap<PointOfInterest, ItinaryPointOfInterestDto>();
 
             CreateMap<PointOfCrossing, PointOfCrossingDto>();

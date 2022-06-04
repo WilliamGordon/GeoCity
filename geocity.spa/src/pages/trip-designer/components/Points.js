@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, Tooltip } from "react-leaflet";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import L from "leaflet";
+import "./Map.css";
 
 const styleButton = {
   marginBottom: "15px !important",
@@ -21,6 +22,8 @@ function GetIcon(type) {
     iconUrl: require("../../../assets/icons/pin-" + type + ".svg").default,
     iconSize: new L.Point(40, 40),
     iconAnchor: [19, 41],
+    popupAnchor: [0, -40],
+    tooltipAnchor: [15, -30],
   });
 }
 
@@ -37,7 +40,9 @@ export const Points = (props) => {
               position={[p.latitude, p.longitude]}
               icon={GetIcon(p.osmId ? "poi" : "poc")}
             >
-              <Popup>
+              {p.osmId && <Tooltip>{p.name}</Tooltip>}
+              {!p.osmId && p.description && <Tooltip>{p.description}</Tooltip>}
+              <Popup className="point-popup">
                 <IconButton
                   aria-label="delete"
                   size="small"

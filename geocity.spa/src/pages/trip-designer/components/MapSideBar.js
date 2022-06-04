@@ -28,6 +28,7 @@ import PublishIcon from "@mui/icons-material/Publish";
 import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
 import TripModal from "./Modal/TripModal";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const styleButtonEdit = {
   marginTop: "10px",
@@ -93,6 +94,26 @@ const styleItinaries = {
   width: "90%",
 };
 
+const getListStyle = (isDraggingOver) => ({
+  width: "98%",
+});
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // change background colour if dragging
+  background: isDragging ? "lightgreen" : "grey",
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 export const MapSideBar = (props) => {
   const [openPublishModal, setOpenPublishModal] = React.useState(false);
   const [openShareModal, setOpenShareModal] = React.useState(false);
@@ -100,6 +121,23 @@ export const MapSideBar = (props) => {
   const [trip, setTrip] = React.useState({});
   const [tripId, setTripId] = React.useState({});
   const [link, setLink] = React.useState({});
+
+  const onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      props.points,
+      result.source.index,
+      result.destination.index
+    );
+
+    // this.setState({
+    //   items,
+    // });
+  };
 
   useEffect(() => {
     setTrip({ ...props.trip });
@@ -316,35 +354,62 @@ export const MapSideBar = (props) => {
             marginTop: "15px",
           }}
         >
-          <List>
-            {props.points &&
-              props.points.map((p) => {
-                return (
-                  <ListItem
-                    sx={styleBorder}
-                    button
-                    id={p.id}
-                    key={p.id}
-                    onClick={(e) => props.handleUpdate(p)}
-                  >
-                    <ListItemIcon>
-                      {p.osmId && <ExploreIcon fontSize="small" />}
-                      {!p.osmId && <PushPinIcon fontSize="small" />}
-                    </ListItemIcon>
-                    <Typography
-                      sx={{
-                        paddingTop: "5px",
-                        fontSize: "0.790rem",
-                      }}
-                      variant="body2"
-                      gutterBottom
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {props.points.map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
                     >
-                      {p.name ? p.name : "Step"}
-                    </Typography>
-                  </ListItem>
-                );
-              })}
-          </List>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                        >
+                          {item.content}
+                          <ListItem
+                            sx={styleBorder}
+                            button
+                            id={item.id}
+                            key={item.id}
+                            onClick={(e) => props.handleUpdate(item)}
+                          >
+                            <ListItemIcon>
+                              {item.osmId && <ExploreIcon fontSize="small" />}
+                              {!item.osmId && <PushPinIcon fontSize="small" />}
+                            </ListItemIcon>
+                            <Typography
+                              sx={{
+                                paddingTop: "5px",
+                                fontSize: "0.790rem",
+                              }}
+                              variant="body2"
+                              gutterBottom
+                            >
+                              {item.name ? item.name : "Step"}
+                            </Typography>
+                          </ListItem>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </Paper>
         <Button variant="contained" sx={styleButton}>
           Add new step

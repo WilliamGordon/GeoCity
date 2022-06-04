@@ -30,6 +30,8 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Queries
         {
             var trip = await _context.ItinaryPointOfInterests
                 .Include(t => t.PointOfInterest)
+                .Include(t => t.UserCreate)
+                .Include(t => t.UserUpdate)
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
             var tripDto = _mapper.Map<ItinaryPointOfInterestDto>(trip);
             return tripDto;

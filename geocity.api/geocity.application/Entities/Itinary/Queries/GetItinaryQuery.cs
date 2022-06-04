@@ -31,8 +31,16 @@ namespace geocity.application.Itinary.Queries
             var itinary = await _context.Itinaries
                 .Include(t => t.ItinaryPointOfCrossing)
                 .ThenInclude(t => t.PointOfCrossing)
+                .Include(t => t.ItinaryPointOfCrossing)
+                .ThenInclude(t => t.UserCreate)
+                .Include(t => t.ItinaryPointOfCrossing)
+                .ThenInclude(t => t.UserUpdate)
                 .Include(t => t.ItinaryPointOfInterest)
                 .ThenInclude(t => t.PointOfInterest)
+                .Include(t => t.ItinaryPointOfCrossing)
+                .ThenInclude(t => t.UserCreate)
+                .Include(t => t.ItinaryPointOfCrossing)
+                .ThenInclude(t => t.UserUpdate)
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
             var itinaryDto = _mapper.Map<ItinaryDto>(itinary);
             return itinaryDto;

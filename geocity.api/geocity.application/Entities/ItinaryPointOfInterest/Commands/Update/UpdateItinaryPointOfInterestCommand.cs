@@ -13,6 +13,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Update
 {
     public class UpdateItinaryPointOfInterestCommand : IRequest<Guid>
     {
+        public string UserUpdateId { get; set; }
         public Guid Id { get; set; }
         public decimal? Price { get; set; }
         public int? Duration { get; set; }
@@ -34,6 +35,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Update
         {
             // UPDATE THE itinary_POI
             var itinary_POI = await _context.ItinaryPointOfInterests.FindAsync(request.Id);
+            itinary_POI.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserUpdateId, cancellationToken: cancellationToken);
             itinary_POI.Price = request.Price;
             itinary_POI.Duration = request.Duration;
             itinary_POI.Description = request.Description;

@@ -12,6 +12,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
 {
     public class CreateItinaryPointOfCrossingCommand : IRequest<Guid>
     {
+        public string UserCreateId { get; set; }
         public Guid ItinaryId { get; set; }
         public string? Description { get; set; }
         public PointOfCrossingDto PointOfCrossing { get; set; }
@@ -41,6 +42,8 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var Itinary_POC = new geocity.domain.Entities.ItinaryPointOfCrossing();
+                Itinary_POC.UserCreate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
+                Itinary_POC.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
                 Itinary_POC.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POC.PointOfCrossing = await _context.PointOfCrossing.SingleOrDefaultAsync(x => x.Id == POC.Id);
                 Itinary_POC.Description = request.Description;
@@ -51,6 +54,8 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
             else
             {
                 var Itinary_POC = new geocity.domain.Entities.ItinaryPointOfCrossing();
+                Itinary_POC.UserCreate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
+                Itinary_POC.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
                 Itinary_POC.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POC.PointOfCrossing = POC;
                 Itinary_POC.Description = request.Description;

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace geocity.infrastructure.Migrations
 {
-    public partial class changedUser : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,7 +29,7 @@ namespace geocity.infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Auth0Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     Lastname = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -38,7 +38,29 @@ namespace geocity.infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Auth0Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PointOfCrossing",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Latitude = table.Column<decimal>(type: "decimal(38,18)", precision: 38, scale: 18, nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(38,18)", precision: 38, scale: 18, nullable: false),
+                    CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PointOfCrossing", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PointOfCrossing_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,7 +98,7 @@ namespace geocity.infrastructure.Migrations
                     Days = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsPublished = table.Column<bool>(type: "bit", nullable: false),
-                    Link = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Link = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
@@ -122,8 +144,7 @@ namespace geocity.infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserAuth0Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsOwner = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
@@ -138,10 +159,10 @@ namespace geocity.infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TripUserFavorites_Users_UserAuth0Id",
-                        column: x => x.UserAuth0Id,
+                        name: "FK_TripUserFavorites_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Auth0Id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -151,8 +172,7 @@ namespace geocity.infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserAuth0Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
@@ -167,10 +187,10 @@ namespace geocity.infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TripUserRatings_Users_UserAuth0Id",
-                        column: x => x.UserAuth0Id,
+                        name: "FK_TripUserRatings_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Auth0Id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -180,8 +200,7 @@ namespace geocity.infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserAuth0Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsOwner = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
@@ -196,11 +215,54 @@ namespace geocity.infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TripUsers_Users_UserAuth0Id",
-                        column: x => x.UserAuth0Id,
+                        name: "FK_TripUsers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Auth0Id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItinaryPointOfCrossings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Position = table.Column<int>(type: "int", nullable: false),
+                    UserCreateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserUpdateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ItinaryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PointOfCrossingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItinaryPointOfCrossings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItinaryPointOfCrossings_Itinaries_ItinaryId",
+                        column: x => x.ItinaryId,
+                        principalTable: "Itinaries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ItinaryPointOfCrossings_PointOfCrossing_PointOfCrossingId",
+                        column: x => x.PointOfCrossingId,
+                        principalTable: "PointOfCrossing",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_ItinaryPointOfCrossings_Users_UserCreateId",
+                        column: x => x.UserCreateId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_ItinaryPointOfCrossings_Users_UserUpdateId",
+                        column: x => x.UserUpdateId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,6 +273,9 @@ namespace geocity.infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Duration = table.Column<int>(type: "int", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Position = table.Column<int>(type: "int", nullable: false),
+                    UserCreateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserUpdateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ItinaryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PointOfInterestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -231,34 +296,44 @@ namespace geocity.infrastructure.Migrations
                         principalTable: "PointOfInterest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PointOfCrossing",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Latitude = table.Column<decimal>(type: "decimal(38,18)", precision: 38, scale: 18, nullable: false),
-                    Longitude = table.Column<decimal>(type: "decimal(38,18)", precision: 38, scale: 18, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ItinaryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PointOfCrossing", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PointOfCrossing_Itinaries_ItinaryId",
-                        column: x => x.ItinaryId,
-                        principalTable: "Itinaries",
-                        principalColumn: "Id");
+                        name: "FK_ItinaryPointOfInterests_Users_UserCreateId",
+                        column: x => x.UserCreateId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_ItinaryPointOfInterests_Users_UserUpdateId",
+                        column: x => x.UserUpdateId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Itinaries_TripId",
                 table: "Itinaries",
                 column: "TripId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItinaryPointOfCrossings_ItinaryId",
+                table: "ItinaryPointOfCrossings",
+                column: "ItinaryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItinaryPointOfCrossings_PointOfCrossingId",
+                table: "ItinaryPointOfCrossings",
+                column: "PointOfCrossingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItinaryPointOfCrossings_UserCreateId",
+                table: "ItinaryPointOfCrossings",
+                column: "UserCreateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItinaryPointOfCrossings_UserUpdateId",
+                table: "ItinaryPointOfCrossings",
+                column: "UserUpdateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItinaryPointOfInterests_ItinaryId",
@@ -271,9 +346,19 @@ namespace geocity.infrastructure.Migrations
                 column: "PointOfInterestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PointOfCrossing_ItinaryId",
+                name: "IX_ItinaryPointOfInterests_UserCreateId",
+                table: "ItinaryPointOfInterests",
+                column: "UserCreateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItinaryPointOfInterests_UserUpdateId",
+                table: "ItinaryPointOfInterests",
+                column: "UserUpdateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PointOfCrossing_CityId",
                 table: "PointOfCrossing",
-                column: "ItinaryId");
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PointOfInterest_CityId",
@@ -291,9 +376,9 @@ namespace geocity.infrastructure.Migrations
                 column: "TripId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripUserFavorites_UserAuth0Id",
+                name: "IX_TripUserFavorites_UserId",
                 table: "TripUserFavorites",
-                column: "UserAuth0Id");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TripUserRatings_TripId",
@@ -301,9 +386,9 @@ namespace geocity.infrastructure.Migrations
                 column: "TripId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripUserRatings_UserAuth0Id",
+                name: "IX_TripUserRatings_UserId",
                 table: "TripUserRatings",
-                column: "UserAuth0Id");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TripUsers_TripId",
@@ -311,18 +396,18 @@ namespace geocity.infrastructure.Migrations
                 column: "TripId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripUsers_UserAuth0Id",
+                name: "IX_TripUsers_UserId",
                 table: "TripUsers",
-                column: "UserAuth0Id");
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ItinaryPointOfInterests");
+                name: "ItinaryPointOfCrossings");
 
             migrationBuilder.DropTable(
-                name: "PointOfCrossing");
+                name: "ItinaryPointOfInterests");
 
             migrationBuilder.DropTable(
                 name: "TripUserFavorites");
@@ -334,10 +419,13 @@ namespace geocity.infrastructure.Migrations
                 name: "TripUsers");
 
             migrationBuilder.DropTable(
-                name: "PointOfInterest");
+                name: "PointOfCrossing");
 
             migrationBuilder.DropTable(
                 name: "Itinaries");
+
+            migrationBuilder.DropTable(
+                name: "PointOfInterest");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using geocity.infrastructure;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Update
 {
     public class UpdateItinaryPointOfCrossingCommand : IRequest<Guid>
     {
+        public string UserUpdateId { get; set; }
         public Guid Id { get; set; }
         public string? Description { get; set; }
     }
@@ -30,6 +32,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Update
         {
             // UPDATE THE itinary_POI
             var itinary_POC = await _context.ItinaryPointOfCrossings.FindAsync(request.Id);
+            itinary_POC.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserUpdateId, cancellationToken: cancellationToken);
             itinary_POC.Description = request.Description;
             await _context.SaveChangesAsync(cancellationToken);
             return itinary_POC.Id;

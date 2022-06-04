@@ -1,89 +1,201 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Modal, TextField, Button } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import {
+  Box,
+  Typography,
+  Modal,
+  TextField,
+  Button,
+  InputAdornment,
+} from "@mui/material";
+
+import API from "../../../../common/API/API";
+
+const useStyles = {
+  textField: {},
+  box: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  },
+  button: {
+    marginBottom: "15px !important",
+    color: "#9fafce",
+    backgroundColor: "#10377a",
+    width: "100%",
+    margin: "0 auto",
+    "&:hover": {
+      backgroundColor: "#10377a",
+      color: "#ffffff",
+    },
+  },
+  typography: {
+    marginBottom: "0px !important",
+  },
+};
+
+const getReadableDate = (strDate) => {
+  if (strDate) {
+    var date = strDate.split("T")[0];
+    var year = date.split("-")[0];
+    var month = date.split("-")[1];
+    var day = date.split("-")[2];
+    return `${day}/${month}/${year}`;
+  }
+};
+
+const getReadableTime = (strDate) => {
+  if (strDate) {
+    var Time = strDate.split("T")[1];
+    var hours = Time.split(":")[0];
+    var minutes = Time.split(":")[1];
+    return `${hours}:${minutes}`;
+  }
+};
 
 export const PointModal = (props) => {
   const [point, setPoint] = useState({});
+  const { user } = useAuth0();
   useEffect(() => {
     setPoint({ ...props.point });
+    console.log(props.point);
   }, [props.point]);
 
-  const submitForm = () => {};
+  const submitForm = () => {
+    if (point.osmId) {
+      API.put(`ItinaryPointOfInterest`, {
+        userUpdateId: user.sub,
+        id: point.id,
+        price: point.price,
+        duration: point.duration,
+        description: point.description,
+      })
+        .then((res) => {
+          props.refreshPoints();
+          props.success();
+        })
+        .catch((error) => {
+          console.error("There was an error!", error);
+          props.error();
+        });
+    } else {
+      API.put(`ItinaryPointOfCrossing`, {
+        userUpdateId: user.sub,
+        id: point.id,
+        description: point.description,
+      })
+        .then((res) => {
+          props.refreshPoints();
+          props.success();
+        })
+        .catch((error) => {
+          console.error("There was an error!", error);
+          props.error();
+        });
+    }
+  };
+
   return (
-    <Modal
-      open={props.open}
-      onClose={props.close}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+    <Modal open={props.open} onClose={props.close}>
+      <Box sx={{ ...useStyles.box }}>
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          component="h2"
+          align="center"
+          sx={{
+            marginBottom: "10px",
+          }}
+        >
           EDIT PLACE
         </Typography>
-
         {point.osmId && (
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Name : {point.name}
-          </Typography>
-        )}
-
-        {point.osmId && (
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Category : {point.category}
-          </Typography>
-        )}
-        {point.osmId && (
-          <TextField
-            id="price"
-            name="price"
-            label="Price"
-            type="text"
-            autoComplete="off"
-            value={point.price || ""}
-            onChange={(event) => {
-              setPoint({
-                ...point,
-                price: event.target.value,
-              });
-            }}
-            required
-            fullWidth
-            sx={{
-              marginBottom: 2,
-            }}
-          />
+          <>
+            <Typography
+              sx={{
+                ...useStyles.typography,
+              }}
+            >
+              Name : <b>{point.name}</b>
+            </Typography>
+            <Typography
+              sx={{
+                ...useStyles.typography,
+              }}
+            >
+              Category : <b>{point.category}</b>
+            </Typography>
+          </>
         )}
         {point.osmId && (
-          <TextField
-            id="duration"
-            name="duration"
-            label="Duration"
-            type="text"
-            autoComplete="off"
-            value={point.duration || ""}
-            onChange={(event) => {
-              setPoint({
-                ...point,
-                duration: event.target.value,
-              });
-            }}
-            required
-            fullWidth
-            sx={{
-              marginBottom: 2,
-            }}
-          />
+          <>
+            <TextField
+              id="price"
+              label="Price"
+              type="number"
+              autoComplete="off"
+              value={point.price || ""}
+              onChange={(event) => {
+                setPoint({
+                  ...point,
+                  price: event.target.value,
+                });
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <AttachMoneyIcon />
+                  </InputAdornment>
+                ),
+                style: { fontSize: "90%" },
+                pattern: "[0-9]*",
+              }}
+              fullWidth
+              margin="dense"
+              size="small"
+              sx={{
+                ...useStyles.textField,
+                marginTop: "25px !important",
+              }}
+            />
+            <TextField
+              id="duration"
+              name="duration"
+              label="Duration"
+              type="number"
+              autoComplete="off"
+              value={point.duration || ""}
+              onChange={(event) => {
+                setPoint({
+                  ...point,
+                  duration: event.target.value,
+                });
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <AccessAlarmIcon />
+                  </InputAdornment>
+                ),
+                style: { fontSize: "90%" },
+                pattern: "[0-9]*",
+              }}
+              fullWidth
+              margin="dense"
+              size="small"
+              sx={{
+                ...useStyles.textField,
+              }}
+            />
+          </>
         )}
         <TextField
           multiline
@@ -100,29 +212,37 @@ export const PointModal = (props) => {
               description: event.target.value,
             });
           }}
-          required
+          inputProps={{ style: { fontSize: "90%" } }}
           fullWidth
+          margin="dense"
+          size="small"
           sx={{
-            marginBottom: 2,
+            ...useStyles.textField,
+            marginBottom: "25px !important",
+            fontSize: "40% !important",
           }}
         />
         <Button
           variant="contained"
           onClick={submitForm}
           sx={{
-            marginBottom: "15px !important",
-            color: "#9fafce",
-            backgroundColor: "#10377a",
-            width: "100%",
-            margin: "0 auto",
-            "&:hover": {
-              backgroundColor: "#10377a",
-              color: "#ffffff",
-            },
+            ...useStyles.button,
           }}
         >
           Envoyer
         </Button>
+        <Box sx={{ fontSize: "70%" }}>
+          <Typography sx={{ fontSize: "110%", marginBottom: "2px" }}>
+            Created by <b>{point.userCreateName}</b> the{" "}
+            {getReadableDate(point.createdDate)} at{" "}
+            {getReadableTime(point.createdDate)}
+          </Typography>
+          <Typography sx={{ fontSize: "110%" }}>
+            Last Modified by <b>{point.userUpdateName}</b> the{" "}
+            {getReadableDate(point.modifiedDate)} at{" "}
+            {getReadableTime(point.modifiedDate)}
+          </Typography>
+        </Box>
       </Box>
     </Modal>
   );

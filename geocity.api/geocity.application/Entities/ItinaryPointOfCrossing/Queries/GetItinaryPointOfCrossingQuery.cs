@@ -30,6 +30,8 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Queries
         {
             var Itinary_POC = await _context.ItinaryPointOfCrossings
                 .Include(t => t.PointOfCrossing)
+                .Include(t => t.UserCreate)
+                .Include(t => t.UserUpdate)
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
             var tripDto = _mapper.Map<ItinaryPointOfCrossingDto>(Itinary_POC);
             return tripDto;

@@ -21,6 +21,8 @@ import MapSideBar from "./MapSideBar";
 import Points from "./Points";
 import PointModal from "./Modal/PointModal";
 import L from "leaflet";
+import API from "../../../common/API/API";
+import "./Map.css";
 
 const styleMapContainer = {
   height: "100vh",
@@ -47,6 +49,7 @@ function GetIcon() {
     iconUrl: require("../../../assets/icons/pin.svg").default,
     iconSize: new L.Point(40, 40),
     iconAnchor: [19, 41],
+    popupAnchor: [0, -50],
   });
 }
 
@@ -106,11 +109,9 @@ export const Map = (props) => {
     fetch("https://localhost:44396/api/TripUser/" + user.sub + "/" + tripId)
       .then((response) => response.json())
       .then((tripUser) => {
-        console.log(tripUser);
         setIsUserOWner(tripUser.isOwner);
       })
       .catch((rejected) => {
-        console.log(rejected);
         setOpenBuffer(false);
       });
   }, []);
@@ -120,6 +121,7 @@ export const Map = (props) => {
       setOpenPointModal(true);
     }
   }, [pointForUpdate]);
+
   useEffect(() => {
     // Get all points for itinary
     if (itinary.id) {
@@ -136,12 +138,14 @@ export const Map = (props) => {
         });
     }
   }, [itinary]);
+
   useEffect(() => {
     // Get all points for itinary
     if (points.length > 0) {
       ZoomInCluster();
     }
   }, [points]);
+
   useEffect(() => {
     if (isRouteGenerated) {
       if (routingMachine.current) {
@@ -157,20 +161,37 @@ export const Map = (props) => {
       }
     }
   });
+
   useEffect(() => {
     ZoomInCluster();
   }, [map]);
+
   // MAP ACTION
   const ZoomInCluster = () => {
     if (map) {
       const isEmpty =
         Object.keys(featureGroupRef.current.getBounds()).length === 0;
       if (!isEmpty) {
-        console.log(featureGroupRef.current.getBounds());
-        map.fitBounds(featureGroupRef.current.getBounds());
+        map.fitBounds(featureGroupRef.current.getBounds(), {
+          padding: [100, 100],
+        });
       }
     }
   };
+
+  const refreshPoints = () => {
+    API.get(`Itinary/${itinary.id}`)
+      .then((res) => {
+        setPoints([
+          ...res.data.itinaryPointOfCrossing,
+          ...res.data.itinaryPointOfInterest,
+        ]);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
+
   // POINTER OBJECT
   const Pointer = () => {
     const [point, setPoint] = useState({});
@@ -195,7 +216,7 @@ export const Map = (props) => {
         position={[point.latitude, point.longitude]}
         icon={GetIcon()}
       >
-        <Popup>
+        <Popup className="pointer-popup">
           <Button
             onClick={(e) => {
               AddPointOfInterest({
@@ -224,6 +245,7 @@ export const Map = (props) => {
       </Marker>
     ) : null;
   };
+
   // ADDING POINTS
   const AddPointOfCrossing = (point) => {
     // Call API to create PointOfCrossing
@@ -231,6 +253,7 @@ export const Map = (props) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        userCreateId: user.sub,
         itinaryId: itinary.id,
         pointOfCrossing: {
           cityId: trip.city.id,
@@ -241,20 +264,22 @@ export const Map = (props) => {
     })
       .then((response) => response.json())
       .then((result) => {
-        setPoints((previousState) => [
-          ...previousState,
-          {
-            id: result,
-            latitude: point.latitude,
-            longitude: point.longitude,
-          },
-        ]);
+        refreshPoints();
+        // setPoints((previousState) => [
+        //   ...previousState,
+        //   {
+        //     id: result,
+        //     latitude: point.latitude,
+        //     longitude: point.longitude,
+        //   },
+        // ]);
         setOpenSuccessNotif(true);
       })
       .catch((rejected) => {
         setOpenErrorNotif(true);
       });
   };
+
   const AddPointOfInterest = (point) => {
     fetch(
       "https://nominatim.openstreetmap.org/reverse?lat=" +
@@ -269,6 +294,7 @@ export const Map = (props) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            userCreateId: user.sub,
             itinaryId: itinary.id,
             pointOfInterest: {
               osmId: POI.features[0].properties.osm_id.toString(),
@@ -282,17 +308,7 @@ export const Map = (props) => {
         })
           .then((response) => response.json())
           .then((result) => {
-            setPoints((previousState) => [
-              ...previousState,
-              {
-                id: result,
-                osmId: POI.features[0].properties.osm_id.toString(),
-                name: POI.features[0].properties.name,
-                category: POI.features[0].properties.category,
-                latitude: POI.features[0].geometry.coordinates[1],
-                longitude: POI.features[0].geometry.coordinates[0],
-              },
-            ]);
+            refreshPoints();
             setOpenSuccessNotif(true);
           })
           .catch((rejected) => {
@@ -303,14 +319,17 @@ export const Map = (props) => {
         console.log(rejected);
       });
   };
+
   // UPDATE POINTS
   const handleUpdate = (point) => {
     setPointForUpdate({ ...point });
   };
+
   const handleClosePointModal = () => {
     setOpenPointModal(false);
     setPointForUpdate({});
   };
+
   // DELETE POINTS
   const handleDelete = (point) => {
     const requestOptions = {
@@ -332,16 +351,17 @@ export const Map = (props) => {
         console.log(rejected);
       });
   };
+
   // SWITCH INITINARY
   const toggleItinary = (id) => {
     itinaries.forEach((itinary) => {
       if (itinary.id == id) {
         setItinary(itinary);
-        console.log(itinary);
         ZoomInCluster();
       }
     });
   };
+
   // ROUTING
   const generateRoute = () => {
     if (isRouteGenerated) {
@@ -350,18 +370,22 @@ export const Map = (props) => {
       setIsRouteGenerated(true);
     }
   };
+
   // NOTIFICATIONS
-  const handleCloseSuccessNotif = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  const handleCloseSuccessNotif = () => {
     setOpenSuccessNotif(false);
   };
-  const handleCloseErrorNotif = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+
+  const handleCloseErrorNotif = () => {
     setOpenErrorNotif(false);
+  };
+
+  const handleOpenSuccessNotif = () => {
+    setOpenSuccessNotif(true);
+  };
+
+  const handleOpenErrorNotif = () => {
+    setOpenErrorNotif(true);
   };
 
   return (
@@ -450,6 +474,9 @@ export const Map = (props) => {
             open={openPointModal}
             close={handleClosePointModal}
             point={pointForUpdate}
+            refreshPoints={refreshPoints}
+            success={handleOpenSuccessNotif}
+            error={handleOpenErrorNotif}
           />
         </>
       )}

@@ -12,6 +12,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
 {
     public class CreateItinaryPointOfInterestCommand : IRequest<Guid>
     {
+        public string UserCreateId { get; set; }
         public Guid ItinaryId { get; set; }
         public decimal? Price { get; set; }
         public int? Duration { get; set; }
@@ -47,6 +48,8 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var Itinary_POI = new geocity.domain.Entities.ItinaryPointOfInterest();
+                Itinary_POI.UserCreate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
+                Itinary_POI.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
                 Itinary_POI.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POI.PointOfInterest = await _context.PointOfInterest.SingleOrDefaultAsync(x => x.Id == POI.Id);
                 Itinary_POI.Description = request.Description;
@@ -59,6 +62,8 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
             else
             {
                 var Itinary_POI = new geocity.domain.Entities.ItinaryPointOfInterest();
+                Itinary_POI.UserCreate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
+                Itinary_POI.UserUpdate = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserCreateId, cancellationToken: cancellationToken);
                 Itinary_POI.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POI.PointOfInterest = POI;
                 Itinary_POI.Description = request.Description;

@@ -12,8 +12,8 @@ using geocity.infrastructure;
 namespace geocity.infrastructure.Migrations
 {
     [DbContext(typeof(GeoCityDbContext))]
-    [Migration("20220527070103_ItinaryPointOfCrossing")]
-    partial class ItinaryPointOfCrossing
+    [Migration("20220604091019_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -103,7 +103,8 @@ namespace geocity.infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -113,10 +114,22 @@ namespace geocity.infrastructure.Migrations
 
                     b.Property<DateTime>("ModifiedDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<Guid>("PointOfCrossingId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserCreateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserUpdateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -124,7 +137,11 @@ namespace geocity.infrastructure.Migrations
 
                     b.HasIndex("PointOfCrossingId");
 
-                    b.ToTable("ItinaryPointOfCrossing");
+                    b.HasIndex("UserCreateId");
+
+                    b.HasIndex("UserUpdateId");
+
+                    b.ToTable("ItinaryPointOfCrossings");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
@@ -155,14 +172,29 @@ namespace geocity.infrastructure.Migrations
                     b.Property<Guid>("PointOfInterestId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserCreateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserUpdateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ItinaryId");
 
                     b.HasIndex("PointOfInterestId");
+
+                    b.HasIndex("UserCreateId");
+
+                    b.HasIndex("UserUpdateId");
 
                     b.ToTable("ItinaryPointOfInterests");
                 });
@@ -456,9 +488,25 @@ namespace geocity.infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("geocity.domain.Entities.User", "UserCreate")
+                        .WithMany()
+                        .HasForeignKey("UserCreateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("geocity.domain.Entities.User", "UserUpdate")
+                        .WithMany()
+                        .HasForeignKey("UserUpdateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Itinary");
 
                     b.Navigation("PointOfCrossing");
+
+                    b.Navigation("UserCreate");
+
+                    b.Navigation("UserUpdate");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.ItinaryPointOfInterest", b =>
@@ -475,9 +523,25 @@ namespace geocity.infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("geocity.domain.Entities.User", "UserCreate")
+                        .WithMany()
+                        .HasForeignKey("UserCreateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("geocity.domain.Entities.User", "UserUpdate")
+                        .WithMany()
+                        .HasForeignKey("UserUpdateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Itinary");
 
                     b.Navigation("PointOfInterest");
+
+                    b.Navigation("UserCreate");
+
+                    b.Navigation("UserUpdate");
                 });
 
             modelBuilder.Entity("geocity.domain.Entities.PointOfCrossing", b =>
