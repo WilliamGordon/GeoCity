@@ -33,7 +33,23 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
         {
             // Check if PointOfInterest Is already created
             var POI = await _context.PointOfInterest.SingleOrDefaultAsync(x => x.OsmId == request.PointOfInterest.OsmId);
-            
+
+            // Handle Position
+            // 1. Get list of points for Itinary
+            // 2. Get the latest points
+            // 3. Icrement by one
+            //var POCMaxPosition = _context.ItinaryPointOfCrossings.Where(x => x.ItinaryId == request.ItinaryId).Max(x => (int?)x.Position) ?? 0;
+            //var POIMaxPosition = _context.ItinaryPointOfInterests.Where(x => x.ItinaryId == request.ItinaryId).Max(x => (int?)x.Position) ?? 0;
+            //var position = 0;
+            //if (POCMaxPosition > POIMaxPosition)
+            //{
+            //    position = POCMaxPosition + 1;
+            //}
+            //else
+            //{
+            //    position = POIMaxPosition + 1;
+            //}
+
             if (POI == null)
             {
                 POI = new geocity.domain.Entities.PointOfInterest();
@@ -55,6 +71,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
                 Itinary_POI.Description = request.Description;
                 Itinary_POI.Price = request.Price;
                 Itinary_POI.Duration = request.Duration;
+                //Itinary_POI.Position = position;
                 _context.ItinaryPointOfInterests.Add(Itinary_POI);
                 await _context.SaveChangesAsync(cancellationToken);
                 return Itinary_POI.Id;
@@ -69,6 +86,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
                 Itinary_POI.Description = request.Description;
                 Itinary_POI.Price = request.Price;
                 Itinary_POI.Duration = request.Duration;
+                //Itinary_POI.Position = position;
                 _context.ItinaryPointOfInterests.Add(Itinary_POI);
                 await _context.SaveChangesAsync(cancellationToken);
                 return Itinary_POI.Id;

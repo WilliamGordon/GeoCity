@@ -80,6 +80,13 @@ export const PointModal = (props) => {
       })
         .then((res) => {
           props.refreshPoints();
+          API.get(`ItinaryPointOfInterest/${point.id}`)
+            .then((res) => {
+              setPoint({ ...res.data });
+            })
+            .catch((error) => {
+              console.error("There was an error!", error);
+            });
           props.success();
         })
         .catch((error) => {
@@ -94,6 +101,13 @@ export const PointModal = (props) => {
       })
         .then((res) => {
           props.refreshPoints();
+          API.get(`ItinaryPointOfCrossing/${point.id}`)
+            .then((res) => {
+              setPoint({ ...res.data });
+            })
+            .catch((error) => {
+              console.error("There was an error!", error);
+            });
           props.success();
         })
         .catch((error) => {

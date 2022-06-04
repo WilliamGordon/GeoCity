@@ -21,6 +21,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Queries
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public bool IsSuggestion { get; set; }
+        public int Position { get; set; }
         public string UserCreateId { get; set; }
         public string UserCreateName { get; set; }
         public string UserUpdateId { get; set; }

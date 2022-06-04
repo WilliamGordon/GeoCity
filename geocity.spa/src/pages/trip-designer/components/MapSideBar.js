@@ -29,6 +29,8 @@ import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
 import TripModal from "./Modal/TripModal";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useAuth0 } from "@auth0/auth0-react";
+import API from "../../../common/API/API";
 
 const styleButtonEdit = {
   marginTop: "10px",
@@ -121,6 +123,8 @@ export const MapSideBar = (props) => {
   const [trip, setTrip] = React.useState({});
   const [tripId, setTripId] = React.useState({});
   const [link, setLink] = React.useState({});
+  const [points, setPoints] = useState([]);
+  const { user } = useAuth0();
 
   const onDragEnd = (result) => {
     // dropped outside the list
@@ -128,11 +132,35 @@ export const MapSideBar = (props) => {
       return;
     }
 
-    const items = reorder(
-      props.points,
-      result.source.index,
-      result.destination.index
-    );
+    var pointForPositionUpdate = {
+      userUpdateId: user.sub,
+      id: result.draggableId.split("|")[0],
+      position: result.destination.index,
+    };
+
+    console.log(pointForPositionUpdate);
+
+    if (result.draggableId.split("|")[1] === "undefined") {
+      API.put(`ItinaryPointOfCrossing/UpdatePosition`, pointForPositionUpdate)
+        .then((res) => {})
+
+        .catch((error) => {
+          console.error("There was an error!", error);
+        });
+    } else {
+      API.put(`ItinaryPointOfInterest/UpdatePosition`, pointForPositionUpdate)
+        .then((res) => {})
+
+        .catch((error) => {
+          console.error("There was an error!", error);
+        });
+    }
+    console.log(result);
+    // const items = reorder(
+    //   props.points,
+    //   result.source.index,
+    //   result.destination.index
+    // );
 
     // this.setState({
     //   items,
@@ -142,6 +170,10 @@ export const MapSideBar = (props) => {
   useEffect(() => {
     setTrip({ ...props.trip });
   }, [props.trip]);
+
+  useEffect(() => {
+    setPoints([...props.points]);
+  }, [props.points]);
 
   const handleOpenPublishModal = () => {
     setOpenPublishModal(true);
@@ -171,15 +203,15 @@ export const MapSideBar = (props) => {
     props.switchItinary(id);
   };
 
-  const getNumberOfItinary = () => {
-    var nbItinaryPlaceForItinary = 0;
-    props.points.forEach((ip) => {
-      if (props.itinary.id == ip.itinaryId) {
-        nbItinaryPlaceForItinary++;
-      }
-    });
-    return nbItinaryPlaceForItinary;
-  };
+  // const getNumberOfItinary = () => {
+  //   var nbItinaryPlaceForItinary = 0;
+  //   points.forEach((ip) => {
+  //     if (props.itinary.id == ip.itinaryId) {
+  //       nbItinaryPlaceForItinary++;
+  //     }
+  //   });
+  //   return nbItinaryPlaceForItinary;
+  // };
 
   return (
     <>
@@ -294,7 +326,7 @@ export const MapSideBar = (props) => {
                   }}
                   size="small"
                   icon={<FormatListNumberedIcon />}
-                  label={getNumberOfItinary()}
+                  // label={getNumberOfItinary()}
                 />
                 <Chip
                   sx={{
@@ -362,49 +394,52 @@ export const MapSideBar = (props) => {
                   ref={provided.innerRef}
                   style={getListStyle(snapshot.isDraggingOver)}
                 >
-                  {props.points.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                        >
-                          {item.content}
-                          <ListItem
-                            sx={styleBorder}
-                            button
-                            id={item.id}
-                            key={item.id}
-                            onClick={(e) => props.handleUpdate(item)}
+                  {points.length &&
+                    points.map((item, index) => (
+                      <Draggable
+                        key={item.id + "|" + item.osmId}
+                        draggableId={item.id + "|" + item.osmId}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
                           >
-                            <ListItemIcon>
-                              {item.osmId && <ExploreIcon fontSize="small" />}
-                              {!item.osmId && <PushPinIcon fontSize="small" />}
-                            </ListItemIcon>
-                            <Typography
-                              sx={{
-                                paddingTop: "5px",
-                                fontSize: "0.790rem",
-                              }}
-                              variant="body2"
-                              gutterBottom
+                            {item.content}
+                            <ListItem
+                              sx={styleBorder}
+                              button
+                              id={item.id}
+                              key={item.id}
+                              onClick={(e) => props.handleUpdate(item)}
                             >
-                              {item.name ? item.name : "Step"}
-                            </Typography>
-                          </ListItem>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                              <ListItemIcon>
+                                {item.osmId && <ExploreIcon fontSize="small" />}
+                                {!item.osmId && (
+                                  <PushPinIcon fontSize="small" />
+                                )}
+                              </ListItemIcon>
+                              <Typography
+                                sx={{
+                                  paddingTop: "5px",
+                                  fontSize: "0.790rem",
+                                }}
+                                variant="body2"
+                                gutterBottom
+                              >
+                                {item.position} {item.name ? item.name : "Step"}
+                              </Typography>
+                            </ListItem>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}

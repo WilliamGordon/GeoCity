@@ -93,10 +93,14 @@ export const Map = (props) => {
           duration: tripData.itinaries[0].duration,
         });
         setItinaries(tripData.itinaries);
-        setPoints([
-          ...tripData.itinaries[0].itinaryPointOfCrossing,
-          ...tripData.itinaries[0].itinaryPointOfInterest,
-        ]);
+        setPoints(
+          [
+            ...tripData.itinaries[0].itinaryPointOfCrossing,
+            ...tripData.itinaries[0].itinaryPointOfInterest,
+          ].sort((a, b) => {
+            return a.position - b.position;
+          })
+        );
         setTripIsLoaded(true);
       })
       .catch((rejected) => {
@@ -128,10 +132,14 @@ export const Map = (props) => {
       fetch("https://localhost:44396/api/Itinary/" + itinary.id)
         .then((response) => response.json())
         .then((itinaryData) => {
-          setPoints([
-            ...itinaryData.itinaryPointOfCrossing,
-            ...itinaryData.itinaryPointOfInterest,
-          ]);
+          setPoints(
+            [
+              ...itinaryData.itinaryPointOfCrossing,
+              ...itinaryData.itinaryPointOfInterest,
+            ].sort((a, b) => {
+              return a.position - b.position;
+            })
+          );
         })
         .catch((rejected) => {
           console.log(rejected);
@@ -182,10 +190,14 @@ export const Map = (props) => {
   const refreshPoints = () => {
     API.get(`Itinary/${itinary.id}`)
       .then((res) => {
-        setPoints([
-          ...res.data.itinaryPointOfCrossing,
-          ...res.data.itinaryPointOfInterest,
-        ]);
+        setPoints(
+          [
+            ...res.data.itinaryPointOfCrossing,
+            ...res.data.itinaryPointOfInterest,
+          ].sort((a, b) => {
+            return a.position - b.position;
+          })
+        );
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -265,14 +277,6 @@ export const Map = (props) => {
       .then((response) => response.json())
       .then((result) => {
         refreshPoints();
-        // setPoints((previousState) => [
-        //   ...previousState,
-        //   {
-        //     id: result,
-        //     latitude: point.latitude,
-        //     longitude: point.longitude,
-        //   },
-        // ]);
         setOpenSuccessNotif(true);
       })
       .catch((rejected) => {
@@ -345,7 +349,7 @@ export const Map = (props) => {
     )
       .then((response) => response.json())
       .then((pointId) => {
-        setPoints(points.filter((p) => p.id !== point.id));
+        refreshPoints();
       })
       .catch((rejected) => {
         console.log(rejected);

@@ -32,6 +32,22 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
             // Check if PointOfCrossing Is already created
             var POC = await _context.PointOfCrossing.SingleOrDefaultAsync(x => x.Latitude == request.PointOfCrossing.Latitude && x.Longitude == request.PointOfCrossing.Longitude);
 
+            //// Handle Position
+            //// 1. Get list of points for Itinary
+            //// 2. Get the latest points
+            //// 3. Icrement by one
+            //var POCMaxPosition = _context.ItinaryPointOfCrossings.Where(x => x.ItinaryId == request.ItinaryId).Max(x => (int?)x.Position) ?? 0;
+            //var POIMaxPosition = _context.ItinaryPointOfInterests.Where(x => x.ItinaryId == request.ItinaryId).Max(x => (int?)x.Position) ?? 0;
+            //var position = 0;
+            //if (POCMaxPosition > POIMaxPosition)
+            //{
+            //    position = POCMaxPosition + 1;
+            //} 
+            //else
+            //{
+            //    position = POIMaxPosition + 1;
+            //}
+
             if (POC == null)
             {
                 POC = new geocity.domain.Entities.PointOfCrossing();
@@ -47,6 +63,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
                 Itinary_POC.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POC.PointOfCrossing = await _context.PointOfCrossing.SingleOrDefaultAsync(x => x.Id == POC.Id);
                 Itinary_POC.Description = request.Description;
+                //Itinary_POC.Position = position;
                 _context.ItinaryPointOfCrossings.Add(Itinary_POC);
                 await _context.SaveChangesAsync(cancellationToken);
                 return Itinary_POC.Id;
@@ -59,6 +76,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
                 Itinary_POC.Itinary = await _context.Itinaries.SingleOrDefaultAsync(x => x.Id == request.ItinaryId, cancellationToken: cancellationToken);
                 Itinary_POC.PointOfCrossing = POC;
                 Itinary_POC.Description = request.Description;
+                //Itinary_POC.Position = position;
                 _context.ItinaryPointOfCrossings.Add(Itinary_POC);
                 await _context.SaveChangesAsync(cancellationToken);
                 return Itinary_POC.Id;

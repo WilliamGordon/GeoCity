@@ -47,6 +47,19 @@ namespace geocity.api.Controllers
             }
         }
 
+        [HttpPut("UpdatePosition")]
+        public async Task<ActionResult<Guid>> UpdatePosition(UpdatePositionItinaryPointOfInterestCommand command)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAsync(Guid id)
         {
