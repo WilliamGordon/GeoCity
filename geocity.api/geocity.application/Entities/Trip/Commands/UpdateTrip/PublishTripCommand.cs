@@ -39,7 +39,15 @@ namespace geocity.application.Entities.Trip.Commands.UpdateTrip
                 }
 
                 var trip = await _context.Trips.FindAsync(request.TripId);
-                trip.IsPublished = true;
+                if (trip.IsPublished)
+                {
+                    trip.IsPublished = false;
+                }
+                else
+                {
+                    trip.IsPublished = true;
+                }
+                
                 await _context.SaveChangesAsync(cancellationToken);
                 return trip.Id;
             }

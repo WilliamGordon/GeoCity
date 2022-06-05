@@ -1,4 +1,5 @@
-﻿using geocity.application.Itinary.Queries;
+﻿using geocity.application.Entities.Itinary.Commands.Update;
+using geocity.application.Itinary.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,19 @@ namespace geocity.api.Controllers
             try
             {
                 return Ok(await Mediator.Send(new GetItinaryQuery { Id = id }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ItinaryDto>> Update(UpdateItinaryCommand command)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(command));
             }
             catch (Exception ex)
             {

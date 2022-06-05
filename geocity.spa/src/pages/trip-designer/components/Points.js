@@ -30,7 +30,7 @@ function GetIcon(type) {
 export const Points = (props) => {
   return (
     <>
-      {props.data &&
+      {Object.keys(props.data).length !== 0 &&
         props.data.map((p) => {
           // Only show point for the currently selected itinary
           return (
@@ -41,7 +41,7 @@ export const Points = (props) => {
               icon={GetIcon(p.osmId ? "poi" : "poc")}
             >
               {p.osmId && <Tooltip>{p.name}</Tooltip>}
-              {!p.osmId && p.description && <Tooltip>{p.description}</Tooltip>}
+              {!p.osmId && <Tooltip>Step #{p.id.slice(0, 5)}</Tooltip>}
               <Popup className="point-popup">
                 <IconButton
                   aria-label="delete"

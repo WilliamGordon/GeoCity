@@ -44,7 +44,6 @@ namespace geocity.api.Controllers
             }
         }
 
-
         [HttpPost("PublishTrip")]
         public async Task<ActionResult<Guid>> PublishTrip(PublishTripCommand command)
         {
@@ -58,7 +57,20 @@ namespace geocity.api.Controllers
             }
         }
 
-                [HttpPost]
+        [HttpPut]
+        public async Task<ActionResult<Guid>> Update(UpdateTripCommand command)
+        {
+            try
+            {
+                return await Mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult<Guid>> PostAsync(CreateCityTripDto cityTrip)
         {
             try

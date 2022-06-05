@@ -25,9 +25,11 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import PublishIcon from "@mui/icons-material/Publish";
+import GroupIcon from "@mui/icons-material/Group";
 import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
 import TripModal from "./Modal/TripModal";
+import UserModal from "./Modal/UserModal";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useAuth0 } from "@auth0/auth0-react";
 import API from "../../../common/API/API";
@@ -87,10 +89,6 @@ const styleBorder = {
   marginBottom: "4px !important",
 };
 
-const styleText = {
-  fontSize: "150%",
-};
-
 const styleItinaries = {
   margin: "0 auto",
   width: "90%",
@@ -112,19 +110,110 @@ const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
 export const MapSideBar = (props) => {
+  // STATE FOR DATA
+  const [trip, setTrip] = React.useState({});
+  const [itinary, setItinary] = React.useState({});
+  const [points, setPoints] = useState([]);
+  const [link, setLink] = React.useState({});
+  const [totalPrice, setTotalPrice] = React.useState();
+  const [totalDuration, setTotalDuration] = React.useState();
+  const [totalDistance, setTotalDistance] = React.useState();
+
+  // STATE COSMETICS
   const [openPublishModal, setOpenPublishModal] = React.useState(false);
   const [openShareModal, setOpenShareModal] = React.useState(false);
   const [openTripModal, setOpenTripModal] = React.useState(false);
-  const [trip, setTrip] = React.useState({});
-  const [tripId, setTripId] = React.useState({});
-  const [link, setLink] = React.useState({});
-  const [points, setPoints] = useState([]);
+  const [openUserModal, setOpenUserModal] = React.useState(false);
+
+  // OTHERS
   const { user } = useAuth0();
+
+  // LIFE CYCLE USE EFFECT METHODS
+  useEffect(() => {
+    setTrip(props.trip);
+  }, [props.trip]);
+
+  useEffect(() => {
+    setItinary(props.itinary);
+  }, [props.itinary]);
+
+  useEffect(() => {
+    setPoints(props.points);
+  }, [props.points]);
+
+  useEffect(() => {
+    if (points.length) {
+      // Calculate total price
+      var total = 0;
+      points.forEach((element) => {
+        if (element.price) {
+          total = total + element.price;
+        }
+      });
+      setTotalPrice((Math.round(total * 100) / 100).toFixed(2));
+
+      // Calculate total duration
+      var totalMinutes = 0;
+      totalMinutes = itinary.duration;
+      points.forEach((element) => {
+        if (element.duration) {
+          totalMinutes = totalMinutes + element.duration;
+        }
+      });
+      var hours = Math.floor(totalMinutes / 60);
+      var minutes = totalMinutes % 60;
+
+      setTotalDuration(
+        hours.toString().padStart(2, "0") +
+          ":" +
+          minutes.toString().padStart(2, "0")
+      );
+
+      // Calculate total distance
+      setTotalDistance(itinary.distance + " km");
+    } else {
+      setTotalPrice((Math.round(0 * 100) / 100).toFixed(2));
+      setTotalDuration("00:00");
+      setTotalDistance("0 km");
+    }
+  }, [trip, itinary, points]);
+
+  // MODAL HANDLING
+  const handleOpenPublishModal = () => {
+    setOpenPublishModal(true);
+  };
+  const handleOpenShareModal = () => {
+    setOpenShareModal(true);
+    setLink(trip.link);
+  };
+  const handleOpenTripModal = () => {
+    setOpenTripModal(true);
+  };
+  const handleOpenUserModal = () => {
+    setOpenUserModal(true);
+  };
+
+  const handleClosePublishModal = () => {
+    setOpenPublishModal(false);
+  };
+  const handleCloseShareModal = () => {
+    setOpenShareModal(false);
+  };
+  const handleCloseTripModal = () => {
+    setOpenTripModal(false);
+  };
+  const handleCloseUserModal = () => {
+    setOpenUserModal(false);
+  };
+
+  // EVENT COMPONENT
+  const handleItinary = (e, id) => {
+    props.switchItinary(id);
+  };
 
   const onDragEnd = (result) => {
     // dropped outside the list
@@ -138,80 +227,47 @@ export const MapSideBar = (props) => {
       position: result.destination.index,
     };
 
-    console.log(pointForPositionUpdate);
-
     if (result.draggableId.split("|")[1] === "undefined") {
-      API.put(`ItinaryPointOfCrossing/UpdatePosition`, pointForPositionUpdate)
-        .then((res) => {})
-
-        .catch((error) => {
-          console.error("There was an error!", error);
-        });
+      updatePositionPointOfCrossing(pointForPositionUpdate, result);
     } else {
-      API.put(`ItinaryPointOfInterest/UpdatePosition`, pointForPositionUpdate)
-        .then((res) => {})
-
-        .catch((error) => {
-          console.error("There was an error!", error);
-        });
+      updatePositionPointOfInterest(pointForPositionUpdate, result);
     }
-    console.log(result);
-    // const items = reorder(
-    //   props.points,
-    //   result.source.index,
-    //   result.destination.index
-    // );
-
-    // this.setState({
-    //   items,
-    // });
   };
 
-  useEffect(() => {
-    setTrip({ ...props.trip });
-  }, [props.trip]);
-
-  useEffect(() => {
-    setPoints([...props.points]);
-  }, [props.points]);
-
-  const handleOpenPublishModal = () => {
-    setOpenPublishModal(true);
-    console.log(trip.id);
-    setTripId(trip.id);
-  };
-  const handleOpenShareModal = () => {
-    setOpenShareModal(true);
-    console.log(trip.link);
-    setLink(trip.link);
-  };
-  const handleOpenTripModal = () => {
-    setOpenTripModal(true);
+  // UPDATE API CALLS
+  const updatePositionPointOfInterest = (poi, result) => {
+    API.put(`ItinaryPointOfInterest/UpdatePosition`, poi)
+      .then((res) => {
+        props.success();
+        const items = reorder(
+          points,
+          result.source.index,
+          result.destination.index
+        );
+        setPoints([...items]);
+      })
+      .catch((error) => {
+        props.error();
+        console.error("There was an error!", error);
+      });
   };
 
-  const handleClosePublishModal = () => {
-    setOpenPublishModal(false);
+  const updatePositionPointOfCrossing = (poc, result) => {
+    API.put(`ItinaryPointOfCrossing/UpdatePosition`, poc)
+      .then((res) => {
+        props.success();
+        const items = reorder(
+          points,
+          result.source.index,
+          result.destination.index
+        );
+        setPoints([...items]);
+      })
+      .catch((error) => {
+        props.error();
+        console.error("There was an error!", error);
+      });
   };
-  const handleCloseShareModal = () => {
-    setOpenShareModal(false);
-  };
-  const handleCloseTripModal = () => {
-    setOpenTripModal(false);
-  };
-
-  const handleItinary = (e, id) => {
-    props.switchItinary(id);
-  };
-
-  // const getNumberOfItinary = () => {
-  //   var nbItinaryPlaceForItinary = 0;
-  //   points.forEach((ip) => {
-  //     if (props.itinary.id == ip.itinaryId) {
-  //       nbItinaryPlaceForItinary++;
-  //     }
-  //   });
-  //   return nbItinaryPlaceForItinary;
-  // };
 
   return (
     <>
@@ -225,7 +281,7 @@ export const MapSideBar = (props) => {
             component="div"
             sx={styleTypography}
           >
-            {props.trip.name}
+            {trip.name}
           </Typography>
           {props.isUserOWner && (
             <>
@@ -261,11 +317,21 @@ export const MapSideBar = (props) => {
               </IconButton>
             </>
           )}
+          <IconButton
+            onClick={(e) => {
+              handleOpenUserModal();
+            }}
+            aria-label="update"
+            size="small"
+            sx={styleButtonEdit}
+          >
+            <GroupIcon fontSize="inherit" />
+          </IconButton>
         </Toolbar>
         <Divider />
         <List sx={styleItinaries}>
-          {props.itinaries &&
-            props.itinaries.map((p) => {
+          {trip.itinaries &&
+            trip.itinaries.map((p) => {
               return (
                 <Button
                   variant="contained"
@@ -274,7 +340,7 @@ export const MapSideBar = (props) => {
                     marginTop: "5px !important",
                     marginBottom: "2px !important",
                     marginLeft: "10px !important",
-                    color: props.itinary.id == p.id ? "#ffffff" : "#9fafce",
+                    color: itinary.id == p.id ? "#ffffff" : "#9fafce",
                     backgroundColor: "#10377a",
                     fontSize: "0.680rem",
                     height: "17px",
@@ -313,7 +379,7 @@ export const MapSideBar = (props) => {
                   variant="h6"
                   component="div"
                 >
-                  Day {}
+                  Day
                 </Typography>
               </Grid>
               <Grid item xs={7}>
@@ -322,46 +388,44 @@ export const MapSideBar = (props) => {
                     marginRight: "4px",
                     marginBottom: "4px",
                     fontSize: "0.7125rem",
-                    width: "65px",
+                    width: "80px",
                   }}
                   size="small"
                   icon={<FormatListNumberedIcon />}
-                  // label={getNumberOfItinary()}
+                  label={points.length}
                 />
                 <Chip
                   sx={{
                     marginRight: "4px",
                     marginBottom: "4px",
                     fontSize: "0.7125rem",
-                    width: "65px",
+                    width: "80px",
                   }}
                   size="small"
                   icon={<EuroIcon />}
-                  label={props.itinary.price ? props.itinary.price : "0,00"}
+                  label={totalPrice}
                 />
                 <Chip
                   sx={{
                     marginRight: "4px",
                     marginBottom: "4px",
                     fontSize: "0.7125rem",
-                    width: "65px",
+                    width: "80px",
                   }}
                   size="small"
                   icon={<WatchIcon />}
-                  label={
-                    props.itinary.duration ? props.itinary.duration : "00:00"
-                  }
+                  label={totalDuration}
                 />
                 <Chip
                   sx={{
                     marginRight: "4px",
                     marginBottom: "4px",
                     fontSize: "0.7125rem",
-                    width: "65px",
+                    width: "80px",
                   }}
                   size="small"
                   icon={<StraightenIcon />}
-                  label={props.itinary.price ? props.itinary.price : "0 km"}
+                  label={totalDistance}
                 />
               </Grid>
             </Grid>
@@ -394,7 +458,7 @@ export const MapSideBar = (props) => {
                   ref={provided.innerRef}
                   style={getListStyle(snapshot.isDraggingOver)}
                 >
-                  {points.length &&
+                  {points.length !== 0 &&
                     points.map((item, index) => (
                       <Draggable
                         key={item.id + "|" + item.osmId}
@@ -433,7 +497,8 @@ export const MapSideBar = (props) => {
                                 variant="body2"
                                 gutterBottom
                               >
-                                {item.position} {item.name ? item.name : "Step"}
+                                {item.name ? item.name : "Step"}{" "}
+                                {!item.name ? "#" + item.id.slice(0, 5) : ""}
                               </Typography>
                             </ListItem>
                           </div>
@@ -460,16 +525,31 @@ export const MapSideBar = (props) => {
         </Button>
       </Drawer>
       <PublishModal
-        tripId={tripId}
+        trip={trip}
         open={openPublishModal}
         close={handleClosePublishModal}
+        refreshTrip={props.refreshTrip}
+        success={props.success}
+        error={props.error}
       />
       <ShareModal
         link={link}
         open={openShareModal}
         close={handleCloseShareModal}
       />
-      <TripModal open={openTripModal} close={handleCloseTripModal} />
+      <TripModal
+        trip={trip}
+        open={openTripModal}
+        close={handleCloseTripModal}
+        refreshTrip={props.refreshTrip}
+        success={props.success}
+        error={props.error}
+      />
+      <UserModal
+        trip={trip}
+        open={openUserModal}
+        close={handleCloseUserModal}
+      />
     </>
   );
 };

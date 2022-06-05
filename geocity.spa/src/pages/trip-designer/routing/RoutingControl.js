@@ -12,6 +12,8 @@ const createRoutineMachineLayer = (props) => {
     fitSelectedRoutes: false,
     showAlternatives: false,
     draggableWaypoints: false,
+    routeWhileDragging: false,
+    waypointMode: "connect",
     collapsible: true,
     position: "topright",
     router: L.Routing.mapbox(

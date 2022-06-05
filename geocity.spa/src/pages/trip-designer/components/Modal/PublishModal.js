@@ -3,24 +3,27 @@ import {
   Box,
   Typography,
   Modal,
-  TextField,
   Button,
-  FormGroup,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
+import API from "../../../../common/API/API";
 
 export const PublishModal = (props) => {
+  const [trip, setTrip] = useState({});
   const [publishTrip, setPublishTrip] = useState(false);
   const { user, isAuthenticated } = useAuth0();
 
-  const [tripId, setTripId] = useState();
+  useEffect(() => {
+    setTrip(props.trip);
+  }, [props.trip]);
 
   useEffect(() => {
-    console.log(props.tripId);
-    setTripId(props.tripId);
-  }, [props.tripId]);
+    if (trip.id) {
+      setPublishTrip(trip.isPublished);
+    }
+  }, [trip]);
 
   const handleChange = () => {
     if (publishTrip) {
@@ -31,20 +34,19 @@ export const PublishModal = (props) => {
   };
 
   const submitForm = () => {
-    fetch("https://localhost:44396/api/Trip/PublishTrip", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        TripId: tripId,
-        UserId: user.sub,
-      }),
+    API.post(`Trip/PublishTrip`, {
+      TripId: trip.id,
+      UserId: user.sub,
     })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+      .then((res) => {
+        // NOTIF SUCCESS
+        // REFRESH TRIP
+        props.refreshTrip(trip.id);
+        props.success();
       })
-      .catch((rejected) => {
-        console.log(rejected);
+      .catch((error) => {
+        // NOTIF ERROR
+        props.error();
       });
   };
 

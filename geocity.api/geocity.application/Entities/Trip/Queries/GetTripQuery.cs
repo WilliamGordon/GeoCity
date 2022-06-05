@@ -38,6 +38,8 @@ namespace geocity.application.Trip.Queries
                 .ThenInclude(t => t.ItinaryPointOfInterest)
                 .ThenInclude(t => t.PointOfInterest)
                 .Include(t => t.City)
+                .Include(t => t.TripUsers)
+                .ThenInclude(t => t.User)
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
                 var tripDto = _mapper.Map<TripDto>(trip);
                 return tripDto;
