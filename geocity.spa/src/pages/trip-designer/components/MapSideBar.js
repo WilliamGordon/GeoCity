@@ -22,6 +22,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import PublishIcon from "@mui/icons-material/Publish";
@@ -359,6 +360,31 @@ export const MapSideBar = (props) => {
                 </Button>
               );
             })}
+          {trip.itinaries && trip.itinaries.length < 5 && (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                marginTop: "5px !important",
+                marginBottom: "2px !important",
+                marginLeft: "10px !important",
+                color: "#9fafce",
+                backgroundColor: "#10377a",
+                fontSize: "0.680rem",
+                height: "17px",
+                margin: "0 auto",
+                "&:hover": {
+                  backgroundColor: "#10377a",
+                  color: "#ffffff",
+                },
+              }}
+              onClick={(e) => {
+                console.log(e);
+              }}
+            >
+              +
+            </Button>
+          )}
         </List>
         <Card
           variant="outlined"
@@ -370,7 +396,7 @@ export const MapSideBar = (props) => {
         >
           <CardContent>
             <Grid container spacing={2}>
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <Typography
                   sx={{
                     fontSize: "1.180rem",
@@ -379,7 +405,7 @@ export const MapSideBar = (props) => {
                   variant="h6"
                   component="div"
                 >
-                  Day
+                  Day {itinary.day}
                 </Typography>
               </Grid>
               <Grid item xs={7}>
@@ -427,6 +453,18 @@ export const MapSideBar = (props) => {
                   icon={<StraightenIcon />}
                   label={totalDistance}
                 />
+              </Grid>
+              <Grid item xs={1}>
+                <IconButton
+                  onClick={(e) => {
+                    handleOpenUserModal();
+                  }}
+                  aria-label="update"
+                  size="small"
+                  sx={styleButtonEdit}
+                >
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
