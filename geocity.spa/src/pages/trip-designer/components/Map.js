@@ -21,6 +21,7 @@ export const Map = (props) => {
   const [openPointModal, setOpenPointModal] = React.useState(false);
 
   // STATE COSMETICS
+  const [readonly, setReadonly] = React.useState(false);
   const [openBuffer, setOpenBuffer] = React.useState(false);
   const [isRouteGenerated, setIsRouteGenerated] = useState(false);
   const [openSuccessNotif, setOpenSuccessNotif] = React.useState(false);
@@ -36,11 +37,14 @@ export const Map = (props) => {
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
     fetchTrip(tripId);
-    console.log("REFRESHED");
   }, []);
 
   useEffect(() => {
-    if (trip.id) {
+    setReadonly(props.readonly);
+  }, [props.readonly]);
+
+  useEffect(() => {
+    if (trip.id && !props.readonly) {
       fetchTripUser();
     }
   }, [trip, user]);
@@ -408,6 +412,7 @@ export const Map = (props) => {
             </Alert>
           </Snackbar>
           <MapSideBar
+            readonly={readonly}
             trip={trip}
             isUserOWner={tripUser.isOwner}
             itinary={itinary}
@@ -438,12 +443,16 @@ export const Map = (props) => {
             }}
             whenCreated={setMap}
           >
-            <Pointer
-              AddPointOfCrossing={AddPointOfCrossing}
-              AddPointOfInterest={AddPointOfInterest}
-            />
+            {!readonly && (
+              <Pointer
+                AddPointOfCrossing={AddPointOfCrossing}
+                AddPointOfInterest={AddPointOfInterest}
+              />
+            )}
+
             <FeatureGroup ref={featureGroupRef}>
               <Points
+                readonly={readonly}
                 data={points}
                 handleUpdate={handleUpdate}
                 handleDelete={handleDelete}
@@ -456,6 +465,7 @@ export const Map = (props) => {
             />
           </MapContainer>
           <PointModal
+            readonly={readonly}
             open={openPointModal}
             close={handleClosePointModal}
             point={pointForUpdate}

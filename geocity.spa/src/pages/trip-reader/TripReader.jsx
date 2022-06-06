@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid } from "@mui/material";
 
-import Map from "./components/Map";
+import Map from "../trip-designer/components/Map";
 
 export const TripReader = () => {
   return (
@@ -9,7 +9,7 @@ export const TripReader = () => {
       <Box>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={12}>
-            <Map />
+            <Map readonly={true} />
           </Grid>
         </Grid>
       </Box>

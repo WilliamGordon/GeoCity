@@ -100,12 +100,19 @@ export const Discover = (props) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#E8E8E8" }}>
+    <Box>
       <Grid
         container
         justifyContent="center"
         alignItems="center"
-        sx={useStyles.grid}
+        sx={{
+          ...useStyles.grid,
+          height: "100vh",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "top",
+          justifyContent: "center",
+        }}
       >
         <Grid item xs={10} sx={{ marginTop: "15px" }}>
           <Paper component="form" sx={useStyles.paper}>

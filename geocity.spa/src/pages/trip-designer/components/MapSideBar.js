@@ -21,6 +21,7 @@ import {
   Paper,
   Grid,
   IconButton,
+  Rating,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -31,12 +32,15 @@ import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
 import TripModal from "./Modal/TripModal";
 import UserModal from "./Modal/UserModal";
+import RatingModal from "./Modal/RatingModal";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import GradeIcon from "@mui/icons-material/Grade";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useAuth0 } from "@auth0/auth0-react";
 import API from "../../../common/API/API";
 
 const styleButtonEdit = {
-  marginTop: "10px",
+  marginTop: "5px",
   marginLeft: "10px",
   marginBottom: "15px !important",
   color: "#9fafce",
@@ -119,6 +123,7 @@ export const MapSideBar = (props) => {
   const [trip, setTrip] = React.useState({});
   const [itinary, setItinary] = React.useState({});
   const [points, setPoints] = useState([]);
+  const [tripUserFavorite, setTripUserFavorite] = useState({});
   const [link, setLink] = React.useState({});
   const [totalPrice, setTotalPrice] = React.useState();
   const [totalDuration, setTotalDuration] = React.useState();
@@ -129,9 +134,10 @@ export const MapSideBar = (props) => {
   const [openShareModal, setOpenShareModal] = React.useState(false);
   const [openTripModal, setOpenTripModal] = React.useState(false);
   const [openUserModal, setOpenUserModal] = React.useState(false);
+  const [openRatingModal, setOpenRatingModal] = React.useState(false);
 
   // OTHERS
-  const { user } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
 
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
@@ -183,6 +189,12 @@ export const MapSideBar = (props) => {
     }
   }, [trip, itinary, points]);
 
+  useEffect(() => {
+    if (trip.id && isAuthenticated) {
+      fetchTripUserFavorite();
+    }
+  }, [trip, user]);
+
   // MODAL HANDLING
   const handleOpenPublishModal = () => {
     setOpenPublishModal(true);
@@ -197,6 +209,9 @@ export const MapSideBar = (props) => {
   const handleOpenUserModal = () => {
     setOpenUserModal(true);
   };
+  const handleOpenRatingModal = () => {
+    setOpenRatingModal(true);
+  };
 
   const handleClosePublishModal = () => {
     setOpenPublishModal(false);
@@ -210,6 +225,9 @@ export const MapSideBar = (props) => {
   const handleCloseUserModal = () => {
     setOpenUserModal(false);
   };
+  const handleCloseRatingModal = () => {
+    setOpenRatingModal(false);
+  };
 
   // EVENT COMPONENT
   const handleItinary = (e, id) => {
@@ -218,7 +236,7 @@ export const MapSideBar = (props) => {
 
   const onDragEnd = (result) => {
     // dropped outside the list
-    if (!result.destination) {
+    if (!result.destination && !props.readonly) {
       return;
     }
 
@@ -270,10 +288,58 @@ export const MapSideBar = (props) => {
       });
   };
 
+  const fetchTripUserFavorite = () => {
+    API.get(`TripUserFavorite/${trip.id}/${user.sub}`)
+      .then((res) => {
+        console.log(res);
+        setTripUserFavorite(res.data);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
+
+  const postTripUserFavorite = () => {
+    API.post(`TripUserFavorite`, {
+      tripId: trip.id,
+      userId: user.sub,
+    })
+      .then((res) => {
+        console.log("ADDDING SUCCESS", res);
+        setTripUserFavorite((previous) => ({ ...previous, id: res.data }));
+      })
+      .catch((error) => {
+        props.error();
+        console.error("There was an error!", error);
+      });
+  };
+
+  const deleteTripUserFavorite = () => {
+    API.delete(`TripUserFavorite/${tripUserFavorite.id}`)
+      .then((res) => {
+        console.log("DELETION SUCCESS", res);
+        setTripUserFavorite({});
+      })
+      .catch((error) => {
+        props.error();
+        console.error("There was an error!", error);
+      });
+  };
+
   return (
     <>
       <Drawer elevation={16} sx={styleDrawer} variant="permanent" anchor="left">
-        <Toolbar>
+        <Toolbar
+          sx={{
+            backgroundColor: "white",
+            minHeight: "43px !important",
+            heigth: "43px !important",
+            marginLeft: "5%",
+            marginRight: "5%",
+            marginTop: "5px",
+            marginBottom: "5px",
+          }}
+        >
           <Typography
             variant="overline"
             display="block"
@@ -284,38 +350,42 @@ export const MapSideBar = (props) => {
           >
             {trip.name}
           </Typography>
-          {props.isUserOWner && (
+          {!props.readonly && (
             <>
-              <IconButton
-                onClick={(e) => {
-                  handleOpenPublishModal();
-                }}
-                aria-label="update"
-                size="small"
-                sx={styleButtonEdit}
-              >
-                <PublishIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton
-                onClick={(e) => {
-                  handleOpenShareModal();
-                }}
-                aria-label="share"
-                size="small"
-                sx={styleButtonEdit}
-              >
-                <ShareIcon fontSize="inherit" />
-              </IconButton>
-              <IconButton
-                onClick={(e) => {
-                  handleOpenTripModal();
-                }}
-                aria-label="update"
-                size="small"
-                sx={styleButtonEdit}
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
+              {props.isUserOWner && (
+                <>
+                  <IconButton
+                    onClick={(e) => {
+                      handleOpenPublishModal();
+                    }}
+                    aria-label="update"
+                    size="small"
+                    sx={styleButtonEdit}
+                  >
+                    <PublishIcon fontSize="inherit" />
+                  </IconButton>
+                  <IconButton
+                    onClick={(e) => {
+                      handleOpenShareModal();
+                    }}
+                    aria-label="share"
+                    size="small"
+                    sx={styleButtonEdit}
+                  >
+                    <ShareIcon fontSize="inherit" />
+                  </IconButton>
+                  <IconButton
+                    onClick={(e) => {
+                      handleOpenTripModal();
+                    }}
+                    aria-label="update"
+                    size="small"
+                    sx={styleButtonEdit}
+                  >
+                    <EditIcon fontSize="inherit" />
+                  </IconButton>
+                </>
+              )}
             </>
           )}
           <IconButton
@@ -330,6 +400,65 @@ export const MapSideBar = (props) => {
           </IconButton>
         </Toolbar>
         <Divider />
+        {props.readonly && isAuthenticated && (
+          <>
+            <Toolbar
+              sx={{
+                backgroundColor: "white",
+                minHeight: "43px !important",
+                heigth: "43px !important",
+                marginLeft: "5%",
+                marginRight: "5%",
+                marginTop: "5px",
+              }}
+            >
+              <Typography
+                variant="overline"
+                display="block"
+                gutterBottom
+                align="center"
+                component="div"
+                sx={{ ...styleTypography }}
+              >
+                <Rating name="simple-controlled" />
+              </Typography>
+              <IconButton
+                onClick={(e) => {
+                  handleOpenRatingModal();
+                }}
+                aria-label="update"
+                size="small"
+                sx={styleButtonEdit}
+              >
+                <GradeIcon fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                onClick={(e) => {
+                  if (tripUserFavorite.id) {
+                    deleteTripUserFavorite();
+                  } else {
+                    postTripUserFavorite();
+                  }
+                }}
+                aria-label="update"
+                size="small"
+                sx={{
+                  marginTop: "5px",
+                  marginLeft: "10px",
+                  marginBottom: "15px !important",
+                  color: "#9fafce",
+                  backgroundColor: tripUserFavorite.id ? "red" : "#10377a",
+                  "&:hover": {
+                    backgroundColor: "#10377a",
+                    color: "white",
+                  },
+                }}
+              >
+                <FavoriteIcon fontSize="inherit" />
+              </IconButton>
+            </Toolbar>
+          </>
+        )}
         <List sx={styleItinaries}>
           {trip.itinaries &&
             trip.itinaries.map((p) => {
@@ -360,30 +489,34 @@ export const MapSideBar = (props) => {
                 </Button>
               );
             })}
-          {trip.itinaries && trip.itinaries.length < 5 && (
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                marginTop: "5px !important",
-                marginBottom: "2px !important",
-                marginLeft: "10px !important",
-                color: "#9fafce",
-                backgroundColor: "#10377a",
-                fontSize: "0.680rem",
-                height: "17px",
-                margin: "0 auto",
-                "&:hover": {
-                  backgroundColor: "#10377a",
-                  color: "#ffffff",
-                },
-              }}
-              onClick={(e) => {
-                console.log(e);
-              }}
-            >
-              +
-            </Button>
+          {!props.readonly && (
+            <>
+              {trip.itinaries && trip.itinaries.length < 5 && (
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    marginTop: "5px !important",
+                    marginBottom: "2px !important",
+                    marginLeft: "10px !important",
+                    color: "#9fafce",
+                    backgroundColor: "#10377a",
+                    fontSize: "0.680rem",
+                    height: "17px",
+                    margin: "0 auto",
+                    "&:hover": {
+                      backgroundColor: "#10377a",
+                      color: "#ffffff",
+                    },
+                  }}
+                  onClick={(e) => {
+                    console.log(e);
+                  }}
+                >
+                  +
+                </Button>
+              )}
+            </>
           )}
         </List>
         <Card
@@ -455,16 +588,20 @@ export const MapSideBar = (props) => {
                 />
               </Grid>
               <Grid item xs={1}>
-                <IconButton
-                  onClick={(e) => {
-                    handleOpenUserModal();
-                  }}
-                  aria-label="update"
-                  size="small"
-                  sx={styleButtonEdit}
-                >
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
+                {!props.readonly && (
+                  <>
+                    <IconButton
+                      onClick={(e) => {
+                        handleOpenUserModal();
+                      }}
+                      aria-label="update"
+                      size="small"
+                      sx={styleButtonEdit}
+                    >
+                      <DeleteIcon fontSize="inherit" />
+                    </IconButton>
+                  </>
+                )}
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -501,6 +638,7 @@ export const MapSideBar = (props) => {
                       <Draggable
                         key={item.id + "|" + item.osmId}
                         draggableId={item.id + "|" + item.osmId}
+                        isDragDisabled={props.readonly}
                         index={index}
                       >
                         {(provided, snapshot) => (
@@ -549,45 +687,54 @@ export const MapSideBar = (props) => {
             </Droppable>
           </DragDropContext>
         </Paper>
-        <Button variant="contained" sx={styleButton}>
-          Add new step
-        </Button>
-        <Box sx={{ flexGrow: 1 }}></Box>
-        <Button
-          onClick={() => props.generateRoute()}
-          variant="contained"
-          sx={styleButton}
-        >
-          {props.isRouteGenerated && <>Reset</>}
-          {!props.isRouteGenerated && <>Generate Trip</>}
-        </Button>
+        {!props.readonly && (
+          <>
+            <Button variant="contained" sx={styleButton}>
+              Add new step
+            </Button>
+            <Box sx={{ flexGrow: 1 }}></Box>
+            <Button
+              onClick={() => props.generateRoute()}
+              variant="contained"
+              sx={styleButton}
+            >
+              {props.isRouteGenerated && <>Reset</>}
+              {!props.isRouteGenerated && <>Generate Trip</>}
+            </Button>
+          </>
+        )}
       </Drawer>
-      <PublishModal
-        trip={trip}
-        open={openPublishModal}
-        close={handleClosePublishModal}
-        refreshTrip={props.refreshTrip}
-        success={props.success}
-        error={props.error}
-      />
-      <ShareModal
-        link={link}
-        open={openShareModal}
-        close={handleCloseShareModal}
-      />
-      <TripModal
-        trip={trip}
-        open={openTripModal}
-        close={handleCloseTripModal}
-        refreshTrip={props.refreshTrip}
-        success={props.success}
-        error={props.error}
-      />
+      {!props.readonly && (
+        <>
+          <PublishModal
+            trip={trip}
+            open={openPublishModal}
+            close={handleClosePublishModal}
+            refreshTrip={props.refreshTrip}
+            success={props.success}
+            error={props.error}
+          />
+          <ShareModal
+            link={link}
+            open={openShareModal}
+            close={handleCloseShareModal}
+          />
+          <TripModal
+            trip={trip}
+            open={openTripModal}
+            close={handleCloseTripModal}
+            refreshTrip={props.refreshTrip}
+            success={props.success}
+            error={props.error}
+          />
+        </>
+      )}
       <UserModal
         trip={trip}
         open={openUserModal}
         close={handleCloseUserModal}
       />
+      <RatingModal open={openRatingModal} close={handleCloseRatingModal} />
     </>
   );
 };

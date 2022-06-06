@@ -13,12 +13,11 @@ import { useParams } from "react-router-dom";
 import Map from "./components/Map";
 
 export const TripDesigner = () => {
-  const { user, isAuthenticated } = useAuth0();
   const [isParticipant, setIsParticipant] = useState(false);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [openBuffer, setOpenBuffer] = React.useState(false);
-  let { tripId } = useParams();
-
+  const { tripId } = useParams();
+  const { user, isAuthenticated } = useAuth0();
   useEffect(() => {
     setOpenBuffer(true);
     if (isAuthenticated) {
