@@ -420,7 +420,7 @@ export const MapSideBar = (props) => {
                 component="div"
                 sx={{ ...styleTypography }}
               >
-                <Rating name="simple-controlled" />
+                <Rating name="read-only" value={trip.rating || 0} readOnly />
               </Typography>
               <IconButton
                 onClick={(e) => {
@@ -734,7 +734,14 @@ export const MapSideBar = (props) => {
         open={openUserModal}
         close={handleCloseUserModal}
       />
-      <RatingModal open={openRatingModal} close={handleCloseRatingModal} />
+      <RatingModal
+        trip={trip}
+        open={openRatingModal}
+        close={handleCloseRatingModal}
+        refreshTrip={props.refreshTrip}
+        success={props.success}
+        error={props.error}
+      />
     </>
   );
 };

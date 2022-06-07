@@ -102,25 +102,25 @@ export const TripCard = (props) => {
                         sx={chip}
                         size="small"
                         icon={<FormatListNumberedIcon sx={{ width: "20px" }} />}
-                        label={""}
+                        label={props.data.days}
                       />
                       <Chip
                         sx={chip}
                         size="small"
                         icon={<EuroIcon sx={{ width: "20px" }} />}
-                        label={""}
+                        label={props.data.price}
                       />
                       <Chip
                         sx={chip}
                         size="small"
                         icon={<WatchIcon sx={{ width: "20px" }} />}
-                        label={""}
+                        label={props.data.duration}
                       />
                       <Chip
                         sx={chip}
                         size="small"
                         icon={<StraightenIcon sx={{ width: "20px" }} />}
-                        label={""}
+                        label={props.data.distance}
                       />
                     </Grid>
                   </Grid>
@@ -136,7 +136,9 @@ export const TripCard = (props) => {
               }}
             >
               <Rating
-                name="simple-controlled"
+                name="read-only"
+                value={props.data.rating || 0}
+                readOnly
                 sx={{
                   ...border,
                   marginTop: "5px",

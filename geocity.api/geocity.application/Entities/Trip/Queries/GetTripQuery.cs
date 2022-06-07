@@ -41,7 +41,16 @@ namespace geocity.application.Trip.Queries
                 .Include(t => t.TripUsers)
                 .ThenInclude(t => t.User)
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
+                
+                var ratings = await _context.TripUserRatings.Where(x => x.TripId == request.Id).ToListAsync();
+                int rating = 0;
+                if (ratings.Count != 0)
+                {
+                    rating = (int)Math.Round(ratings.Average(x => x.Rating));
+                }
+
                 var tripDto = _mapper.Map<TripDto>(trip);
+                tripDto.Rating = rating;
                 return tripDto;
             }
             catch (Exception ex)

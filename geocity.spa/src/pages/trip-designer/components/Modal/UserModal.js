@@ -102,7 +102,7 @@ export const UserModal = (props) => {
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {users.length !== 0 &&
             users.map((item, index) => (
-              <ListItem>
+              <ListItem key={item.id}>
                 <ListItemAvatar>
                   <Avatar {...stringAvatar(`${item.firstname}`)} />
                 </ListItemAvatar>

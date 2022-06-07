@@ -19,6 +19,7 @@ namespace geocity.application.Trip.Queries
         public string? Description { get; set; }
         public int Days { get; set; }
         public bool IsPublished { get; set; }
+        public int Rating { get; set; }
         public Guid Link { get; set; }
         public Guid CityId { get; set; }
         public CityDto City { get; set; }

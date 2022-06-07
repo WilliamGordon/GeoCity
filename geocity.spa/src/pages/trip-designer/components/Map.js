@@ -69,7 +69,7 @@ export const Map = (props) => {
 
   useEffect(() => {
     if (points.length > 0) {
-      ZoomInCluster();
+      // ZoomInCluster();
     }
   }, [points]);
 
@@ -197,6 +197,8 @@ export const Map = (props) => {
     setOpenBuffer(true);
     API.get(`Trip/${id}`)
       .then((res) => {
+        console.log(id);
+        console.log(res);
         setTrip({
           id: res.data.id,
           createdDate: res.data.createdDate,
@@ -206,6 +208,7 @@ export const Map = (props) => {
           days: res.data.days,
           isPublished: res.data.isPublished,
           link: res.data.link,
+          rating: res.data.rating,
           itinaries: res.data.itinaries.map((x) => ({ id: x.id, day: x.day })),
           tripUsers: res.data.tripUsers.map((x) => ({
             id: x.id,

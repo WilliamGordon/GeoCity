@@ -16,30 +16,16 @@ export const RatingModal = (props) => {
   useEffect(() => {
     if (isAuthenticated) {
       if (trip !== undefined) {
-        fetchTripUserRating();
+        fetchTripUserRating(trip.id);
       }
     }
   }, [trip, user]);
 
-  useEffect(() => {
-    console.log("RATING", tripUserRating);
-  }, [tripUserRating]);
-
-  useEffect(() => {
-    if (rating) {
-      if (tripUserRating.id) {
-        updateTripUserRating();
-      } else {
-        postTripUserRating();
-      }
-    }
-  }, [rating]);
-
-  const fetchTripUserRating = () => {
-    API.get(`TripUserRating/${trip.id}/${user.sub}`)
+  const fetchTripUserRating = (id) => {
+    API.get(`TripUserRating/${id}/${user.sub}`)
       .then((res) => {
-        console.log(res);
         setTripUserRating(res.data);
+        setRating(res.data.rating);
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -47,26 +33,30 @@ export const RatingModal = (props) => {
   };
 
   const postTripUserRating = (tur) => {
+    console.log(tur);
     API.post(`TripUserRating`, tur)
       .then((res) => {
-        console.log("ADDDING SUCCESS", res);
         setRating(tur.rating);
-        setTripUserRating((previous) => ({ ...previous, id: res.data }));
+        setTripUserRating((previous) => tur);
+        props.success();
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        props.error();
       });
   };
 
   const updateTripUserRating = (tur) => {
+    console.log(tur);
     API.put(`TripUserRating`, tur)
       .then((res) => {
-        console.log("ADDDING SUCCESS", res);
         setRating(tur.rating);
-        setTripUserRating((previous) => ({ ...previous, id: res.data }));
+        setTripUserRating((previous) => tur);
+        props.success();
       })
       .catch((error) => {
         console.error("There was an error!", error);
+        props.error();
       });
   };
 
@@ -101,27 +91,28 @@ export const RatingModal = (props) => {
             justifyContent: "center",
           }}
         >
-          <Rating
-            name="simple-controlled"
-            value={rating}
-            onChange={(event, newValue) => {
-              console.log(newValue);
-              if (newValue) {
-                if (tripUserRating.id) {
-                  postTripUserRating({
-                    tripId: trip.id,
-                    userId: user.sub,
-                    Rating: newValue,
-                  });
-                } else {
-                  postTripUserRating({
-                    id: tripUserRating.id,
-                    Rating: newValue,
-                  });
+          {trip && (
+            <Rating
+              name="simple-controlled"
+              value={rating || 0}
+              onChange={(event, newValue) => {
+                if (newValue) {
+                  if (tripUserRating.id) {
+                    updateTripUserRating({
+                      id: tripUserRating.id,
+                      rating: newValue,
+                    });
+                  } else {
+                    postTripUserRating({
+                      tripId: trip.id,
+                      userId: user.sub,
+                      rating: newValue,
+                    });
+                  }
                 }
-              }
-            }}
-          />
+              }}
+            />
+          )}
         </div>
         <Box sx={{ height: "25px" }}></Box>
       </Box>

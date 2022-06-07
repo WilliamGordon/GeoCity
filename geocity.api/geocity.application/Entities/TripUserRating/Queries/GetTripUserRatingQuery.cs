@@ -28,7 +28,7 @@ namespace geocity.application.Entities.TripUserRating.Queries
 
         public async Task<TripUserRatingDto> Handle(GetTripUserRatingQuery request, CancellationToken cancellationToken)
         {
-            var tripUser = await _context.TripUsers
+            var tripUser = await _context.TripUserRatings
                 .SingleOrDefaultAsync(x => x.UserId == request.UserId && x.TripId == request.TripId);
             return _mapper.Map<TripUserRatingDto>(tripUser);
         }

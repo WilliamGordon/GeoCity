@@ -30,13 +30,29 @@ namespace geocity.application.Entities.Trip.Queries
         {
             try
             {
-                var trip = await _context.Trips
+                var trips = await _context.Trips
                     .Include(t => t.City)
                     .Where(i => (i.Name.Contains(request.SearchString) || i.City.Name.Contains(request.SearchString)) && i.IsPublished ==  true)
                     .ToListAsync(cancellationToken: cancellationToken);
+                var tripsDto = _mapper.Map<List<TripOverviewDto>>(trips);
+                foreach (var trip in tripsDto)
+                {
+                    var ratings = await _context.TripUserRatings.Where(x => x.TripId == trip.Id).ToListAsync();
+                    int rating = 0;
+                    if (ratings.Count != 0)
+                    {
+                        trip.Rating = (int)Math.Round(ratings.Average(x => x.Rating));
+                    }
 
-                var tripDto = _mapper.Map<List<TripOverviewDto>>(trip);
-                return tripDto;
+                    var duration = _context.Itinaries.Where(x => x.TripId == trip.Id).Sum(x => x.Duration);
+                    var distance = _context.Itinaries.Where(x => x.TripId == trip.Id).Sum(x => x.Distance);
+                    var price = _context.ItinaryPointOfInterests.Where(x => x.Itinary.Trip.Id == trip.Id).DefaultIfEmpty().Sum(x => x.Price);
+                    duration = duration + _context.ItinaryPointOfInterests.Where(x => x.Itinary.Trip.Id == trip.Id).DefaultIfEmpty().Sum(x => x.Duration);
+                    trip.Duration = (int)duration;
+                    trip.Distance = (decimal)distance;
+                    trip.Price = (decimal)price;
+                }
+                return tripsDto;
             }
             catch (Exception ex)
             {

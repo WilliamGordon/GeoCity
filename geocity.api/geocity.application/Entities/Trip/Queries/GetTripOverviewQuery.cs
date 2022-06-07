@@ -37,6 +37,15 @@ namespace geocity.application.Entities.Trip.Queries
                 .ThenInclude(t => t.User)
                 .SingleOrDefaultAsync(x => x.Link == request.Link);
                 var tripDto = _mapper.Map<TripOverviewDto>(trip);
+                int rating = (int)Math.Round(_context.TripUserRatings.Where(x => x.TripId == trip.Id).DefaultIfEmpty().Average(x => x.Rating));
+                var duration = _context.Itinaries.Where(x => x.TripId == trip.Id).Sum(x => x.Duration);
+                var distance = _context.Itinaries.Where(x => x.TripId == trip.Id).Sum(x => x.Distance);
+                var price = _context.ItinaryPointOfInterests.Where(x => x.Itinary.Trip.Id == trip.Id).DefaultIfEmpty().Sum(x => x.Price);
+                duration = duration + _context.ItinaryPointOfInterests.Where(x => x.Itinary.Trip.Id == trip.Id).DefaultIfEmpty().Sum(x => x.Duration);
+                tripDto.Duration = (int)duration;
+                tripDto.Distance = (decimal)distance;
+                tripDto.Price = (decimal)price;
+                tripDto.Rating = rating;
                 return tripDto;
             }
             catch (Exception ex)
