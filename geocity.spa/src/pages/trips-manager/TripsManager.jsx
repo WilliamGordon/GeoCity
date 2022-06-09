@@ -1,44 +1,55 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Grid,
-  Backdrop,
-  CircularProgress,
-  Card,
-  CardContent,
-  Typography,
-  CardHeader,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import { Grid, Box, Tabs, Paper, Tab } from "@mui/material";
+import MuiInput from "@mui/material/Input";
+import { styled } from "@mui/material/styles";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PeopleIcon from "@mui/icons-material/People";
 import { Link } from "react-router-dom";
 
-const tabHeight = "40px"; // default: '48px'
 const useStyles = {
-  grid: {
+  paper: {
+    p: "2px 4px",
+    display: "flex",
+    alignItems: "center",
     minWidth: 275,
-    maxWidth: 675,
+    maxWidth: 975,
     margin: "auto",
     marginTop: "10px",
     marginBottom: "10px",
   },
-  tabsRoot: {
-    bgcolor: "#ffffff",
-    minHeight: tabHeight,
-    height: tabHeight,
+  icon: {
+    p: "10px",
   },
-  tabRoot: {
-    marginBotttom: "10px",
-    minHeight: tabHeight,
-    height: tabHeight,
-    width: "33%",
+  divider: {
+    height: 28,
+    m: 0.5,
+  },
+  grid: {
+    minWidth: 275,
+    maxWidth: 975,
+    margin: "auto",
+    marginTop: "10px",
+    marginBottom: "10px",
+  },
+  button: {
+    margin: "10px !important",
+    color: "#9fafce",
+    backgroundColor: "#10377a",
+    fontSize: "70%",
+    height: "30px",
+    "&:hover": {
+      backgroundColor: "#10377a",
+      color: "#ffffff",
+    },
+  },
+  searchInput: {
+    ml: 1,
+    flex: 1,
+    fontSize: "80%",
   },
 };
 
 export const TripsManager = (props) => {
-  const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("/trips-manager/participant");
 
   const handleChange = (_event, newValue) => {
@@ -46,10 +57,22 @@ export const TripsManager = (props) => {
   };
 
   return (
-    <>
-      <Grid container>
-        <Grid item xs={12}>
-          <Box sx={useStyles.grid}>
+    <Box>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          ...useStyles.grid,
+          height: "100vh",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "top",
+          justifyContent: "center",
+        }}
+      >
+        <Grid item xs={10} sx={{ marginTop: "15px" }}>
+          <Paper component="form" sx={useStyles.paper}>
             <Tabs
               value={value}
               onChange={handleChange}
@@ -76,19 +99,11 @@ export const TripsManager = (props) => {
                 sx={useStyles.tabRoot}
               />
             </Tabs>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={useStyles.grid}>{props.component}</Box>
+          </Paper>
+          <Box>{props.component}</Box>
         </Grid>
       </Grid>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </>
+    </Box>
   );
 };
 

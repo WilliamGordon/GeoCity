@@ -39,12 +39,22 @@ export const TripSubscriber = () => {
   const { user, isAuthenticated } = useAuth0();
   let { linkId } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(isTripLoaded);
+  }, [isTripLoaded]);
+
+  useEffect(() => {
+    console.log(trip);
+  }, [trip]);
+
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
     setOpenBuffer(true);
     fetch("https://localhost:44396/api/Trip/GetTripOverview/" + linkId)
       .then((response) => response.json())
       .then((tripData) => {
+        console.log(tripData);
         setTrip({ ...tripData });
         setIsTripLoaded(true);
         setOpenBuffer(false);

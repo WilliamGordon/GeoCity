@@ -26,6 +26,7 @@ export const Map = (props) => {
   const [isRouteGenerated, setIsRouteGenerated] = useState(false);
   const [openSuccessNotif, setOpenSuccessNotif] = React.useState(false);
   const [openErrorNotif, setOpenErrorNotif] = React.useState(false);
+  const [zoomCluster, setZoomCluster] = React.useState(true);
 
   // OTHERS
   const [map, setMap] = useState(null);
@@ -63,13 +64,17 @@ export const Map = (props) => {
 
   useEffect(() => {
     if (itinary.id) {
-      fetchPoints(itinary.id);
+      setZoomCluster(true);
+      fetchPoints();
     }
   }, [itinary]);
 
   useEffect(() => {
     if (points.length > 0) {
-      // ZoomInCluster();
+      if (zoomCluster) {
+        ZoomInCluster();
+        setZoomCluster(false);
+      }
     }
   }, [points]);
 

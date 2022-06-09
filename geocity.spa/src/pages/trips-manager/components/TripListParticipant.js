@@ -1,102 +1,54 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  Typography,
-  Stack,
-  Chip,
-  Grid,
-  Paper,
-  Box,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { CircularProgress, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import API from "../../../common/API/API";
+import TripsList from "../../../common/components/TripsList";
 
 export const TripListParticipant = (props) => {
-  const [open, setOpen] = React.useState(false);
-  const [trip, setTrip] = useState({});
-  const [tripIsLoaded, setTripIsLoaded] = useState(false);
   const { user, isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
+
+  // RETRIEVED DATA
+  const [trips, setTrips] = React.useState([]);
+
+  // COMPONENT HIDE SHOW
+  const [loading, setLoading] = React.useState(false);
+
+  const fetchTrips = () => {
+    setLoading(true);
+    API.get(`TripUser/${user.sub}`)
+      .then((res) => {
+        console.log(res.data);
+        setTrips(
+          res.data.map((x) => ({ id: x.id, isOwner: x.isOwner, ...x.trip }))
+        );
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
-      setOpen(true);
-      fetch("https://localhost:44396/api/TripUser/" + user.sub)
-        .then((response) => response.json())
-        .then((tripData) => {
-          setOpen(false);
-          setTrip(tripData);
-          console.log(tripData);
-          setTripIsLoaded(true);
-        })
-        .catch((rejected) => {
-          setOpen(false);
-        });
+      fetchTrips();
     }
   }, [user]);
 
+  useEffect(() => {
+    console.log(trips);
+  }, [trips]);
+
   return (
-    <div>
-      {tripIsLoaded &&
-        trip.map((x) => {
-          return (
-            <Card
-              sx={{ minWidth: 275, maxWidth: 675, marginBottom: "10px" }}
-              key={x.trip.id}
-            >
-              <CardActionArea
-                onClick={(e) => {
-                  navigate("/trip-designer/" + x.trip.id);
-                }}
-              >
-                <CardContent>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={8}>
-                        <Item>
-                          <Typography>{x.trip.name}</Typography>
-                        </Item>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Item>
-                          {x.isOwner && <Chip label="Owner" color="primary" />}
-                          {x.trip.isPublished && (
-                            <Chip
-                              label="Published"
-                              color="primary"
-                              variant="outlined"
-                            />
-                          )}
-                          {!x.isOwner && (
-                            <Chip label="Participant" color="success" />
-                          )}
-                        </Item>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Item>Days : {x.trip.days}</Item>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Item>{x.trip.description}</Item>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          );
-        })}
-    </div>
+    <>
+      {loading && (
+        <Box>
+          <CircularProgress />
+        </Box>
+      )}
+      {!loading && <TripsList data={trips} edit={true} />}
+    </>
   );
 };
 
