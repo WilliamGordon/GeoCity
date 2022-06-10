@@ -190,8 +190,10 @@ export const MapSideBar = (props) => {
   }, [trip, itinary, points]);
 
   useEffect(() => {
-    if (trip.id && isAuthenticated) {
-      fetchTripUserFavorite();
+    if (props.readonly) {
+      if (trip.id && isAuthenticated) {
+        fetchTripUserFavorite();
+      }
     }
   }, [trip, user]);
 
@@ -734,7 +736,8 @@ export const MapSideBar = (props) => {
         open={openUserModal}
         close={handleCloseUserModal}
       />
-      <RatingModal
+      { props.readonly && (
+        <RatingModal
         trip={trip}
         open={openRatingModal}
         close={handleCloseRatingModal}
@@ -742,6 +745,7 @@ export const MapSideBar = (props) => {
         success={props.success}
         error={props.error}
       />
+      )}
     </>
   );
 };
