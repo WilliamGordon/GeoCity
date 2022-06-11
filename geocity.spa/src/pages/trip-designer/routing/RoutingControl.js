@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
@@ -27,6 +28,15 @@ const createRoutineMachineLayer = (props) => {
         },
       ],
     },
+  });
+  instance.on("routeselected", function (e) {
+    var summary = e.route.summary;
+    var distance = summary.totalDistance / 1000;
+    var duration = Math.round((summary.totalTime % 3600) / 60);
+    props.getInfoRoute({
+      distance: distance,
+      duration: duration,
+    });
   });
   return instance;
 };

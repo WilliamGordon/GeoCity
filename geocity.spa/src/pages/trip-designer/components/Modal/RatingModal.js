@@ -53,10 +53,12 @@ export const RatingModal = (props) => {
         setRating(tur.rating);
         setTripUserRating((previous) => tur);
         props.success();
+        props.close();
       })
       .catch((error) => {
         console.error("There was an error!", error);
         props.error();
+        props.close();
       });
   };
 

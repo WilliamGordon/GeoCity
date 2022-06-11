@@ -1,5 +1,6 @@
 ﻿using geocity.application.Cities.Commands.Create;
 using geocity.application.City.Queries;
+using geocity.application.Entities.City.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace geocity.api.Controllers
@@ -7,7 +8,7 @@ namespace geocity.api.Controllers
     public class CityController : ApiControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<List<CityDto>>> Index()
+        public async Task<ActionResult<List<CityOverviewDto>>> Index()
         {
             try
             {

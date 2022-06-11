@@ -28,7 +28,8 @@ namespace geocity.application.City.Queries
 
         public async Task<CityDto> Handle(GetCityQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<CityDto>(await _context.Cities.SingleOrDefaultAsync(x => x.Id == request.Id));
+            var city = _mapper.Map<CityDto>(await _context.Cities.SingleOrDefaultAsync(x => x.Id == request.Id));
+            return city;
         }
     }
 }

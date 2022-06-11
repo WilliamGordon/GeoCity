@@ -13,6 +13,7 @@ using geocity.application.City.Queries;
 using geocity.application.Entities.ItinaryPointOfCrossing.Queries;
 using geocity.application.DTOs.Composite;
 using geocity.application.Entities.Trip.Queries;
+using geocity.application.Entities.City.Queries;
 
 namespace geocity.application.Common
 {
@@ -22,6 +23,9 @@ namespace geocity.application.Common
         {
             CreateMap<geocity.domain.Entities.City, CityDto>();
             CreateMap<CityDto, geocity.domain.Entities.City>();
+
+            CreateMap<geocity.domain.Entities.City, CityOverviewDto>();
+            CreateMap<CityOverviewDto, geocity.domain.Entities.City>();
 
             CreateMap<geocity.domain.Entities.Itinary, ItinaryDto>();
             CreateMap<ItinaryDto, geocity.domain.Entities.Itinary>();

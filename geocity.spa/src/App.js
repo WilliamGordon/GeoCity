@@ -5,9 +5,11 @@ import { TripReader } from "./pages/trip-reader/TripReader";
 import { TripSubscriber } from "./pages/trip-subscriber/TripSubscriber";
 import { TripDesigner } from "./pages/trip-designer/TripDesigner";
 import { TripsManager } from "./pages/trips-manager/TripsManager";
+import { TripSuggestion } from "./pages/trip-suggestion/TripSuggestion";
 import NavigationBar from "./common/components/NavigationBar";
 import Discover from "./pages/discover/discover";
 import Profile from "./pages/profile/Profile";
+import Admin from "./pages/admin/Admin";
 import TripListParticipant from "./pages/trips-manager/components/TripListParticipant";
 import TripListFavorite from "./pages/trips-manager/components/TripListFavorite";
 
@@ -36,6 +38,12 @@ function App() {
           exact
           path="/trips-manager/favorite"
           element={<TripsManager component={<TripListFavorite />} />}
+        />
+        <Route exact path="/admin" element={<Admin />} />
+        <Route
+          exact
+          path="/trip-suggestion/:cityId"
+          element={<TripSuggestion />}
         />
       </Routes>
     </div>

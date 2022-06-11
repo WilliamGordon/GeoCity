@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using geocity.application.City.Queries;
+using geocity.application.Entities.City.Queries;
 using geocity.infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace geocity.application.City.Queries
 {
-    public class GetCitiesQuery : IRequest<List<CityDto>>
+    public class GetCitiesQuery : IRequest<List<CityOverviewDto>>
     {
 
     }
 
-    public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, List<CityDto>>
+    public class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, List<CityOverviewDto>>
     {
         private readonly GeoCityDbContext _context;
         private readonly IMapper _mapper;
@@ -27,9 +28,17 @@ namespace geocity.application.City.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<CityDto>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
+        public async Task<List<CityOverviewDto>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<List<CityDto>>(await _context.Cities.ToListAsync(cancellationToken: cancellationToken));
+            var citiesDto = _mapper.Map<List<CityOverviewDto>>(await _context.Cities.ToListAsync(cancellationToken: cancellationToken));
+            foreach (var city in citiesDto)
+            {
+                var trips = await _context.Trips.Where(x => x.City.Id == city.Id).ToListAsync();
+                var Pois = await _context.PointOfInterest.Where(x => x.City.Id == city.Id).ToListAsync();
+                city.NbTrips = trips.Count;
+                city.NbPointOfInterests = Pois.Count;
+            }
+            return citiesDto;
         }
     }
 }

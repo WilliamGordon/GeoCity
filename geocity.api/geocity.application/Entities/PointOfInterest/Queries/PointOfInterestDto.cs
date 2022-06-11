@@ -11,6 +11,8 @@ namespace geocity.application.Entities.PointOfInterest.Queries
     {
         public string OsmId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string PriceRange { get; set; } = string.Empty;
+        public string DurationRange { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }

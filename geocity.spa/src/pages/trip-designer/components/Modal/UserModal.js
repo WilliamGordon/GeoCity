@@ -67,14 +67,6 @@ export const UserModal = (props) => {
     }
   }, [trip]);
 
-  useEffect(() => {
-    console.log(trip);
-  }, [trip]);
-
-  useEffect(() => {
-    console.log(users);
-  }, [users]);
-
   return (
     <Modal
       open={props.open}

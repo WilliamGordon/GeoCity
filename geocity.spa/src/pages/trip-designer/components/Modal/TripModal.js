@@ -58,10 +58,11 @@ export const TripModal = (props) => {
       .then((res) => {
         props.refreshTrip(props.trip.id);
         props.success();
+        props.close();
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         props.error();
+        props.close();
       });
   };
   return (

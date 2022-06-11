@@ -19,6 +19,7 @@ export const Map = (props) => {
   const [points, setPoints] = useState([]);
   const [pointForUpdate, setPointForUpdate] = useState({});
   const [openPointModal, setOpenPointModal] = React.useState(false);
+  const [infoForItinaryUpdate, setInfoForItinaryUpdate] = React.useState({});
 
   // STATE COSMETICS
   const [readonly, setReadonly] = React.useState(false);
@@ -79,36 +80,14 @@ export const Map = (props) => {
   }, [points]);
 
   useEffect(() => {
-    if (isRouteGenerated) {
-      if (routingMachine.current) {
-        console.log(routingMachine);
-        var itiplace = [];
-        points.forEach((ip) => {
-          itiplace.push([ip.latitude, ip.longitude]);
-        });
-        routingMachine.current.setWaypoints(itiplace);
-      }
-    } else {
-      if (routingMachine.current) {
-        routingMachine.current.setWaypoints([]);
-      }
+    if (infoForItinaryUpdate) {
+      putItinary({
+        id: itinary.id,
+        distance: infoForItinaryUpdate.distance,
+        duration: infoForItinaryUpdate.duration,
+      });
     }
-    if (isRouteGenerated) {
-      if (routingMachine.current) {
-        routingMachine.current.on("routeselected", function (e) {
-          console.log(e);
-          var summary = e.route.summary;
-          var distance = summary.totalDistance / 1000;
-          var duration = Math.round((summary.totalTime % 3600) / 60);
-          putItinary(distance, duration);
-        });
-      }
-    } else {
-      if (itinary.id) {
-        putItinary(0, 0);
-      }
-    }
-  }, [isRouteGenerated]);
+  }, [infoForItinaryUpdate]);
 
   useEffect(() => {
     ZoomInCluster();
@@ -188,13 +167,45 @@ export const Map = (props) => {
     }
   };
 
-  // ROUTING
+  // ROUTING NEW
   const generateRoute = () => {
-    if (isRouteGenerated) {
-      setIsRouteGenerated(false);
+    if (isRouteGenerated == false) {
+      console.log("FROM GENERATE : " + itinary.day);
+      createRoute();
     } else {
-      setIsRouteGenerated(true);
+      deleteRoute();
     }
+  };
+
+  const createRoute = () => {
+    if (routingMachine.current) {
+      var itiplace = [];
+      var waypoints = points.sort((a, b) => {
+        return a.position - b.position;
+      });
+      waypoints.forEach((ip) => {
+        itiplace.push([ip.latitude, ip.longitude]);
+      });
+      routingMachine.current.setWaypoints(itiplace);
+    }
+  };
+
+  const deleteRoute = () => {
+    console.log("DELETE ROUTE");
+    if (routingMachine.current) {
+      routingMachine.current.setWaypoints([]);
+      setIsRouteGenerated(false);
+    }
+  };
+
+  const getInfoRoute = (e) => {
+    setInfoForItinaryUpdate(e);
+    setIsRouteGenerated(true);
+  };
+
+  const switchItinary = (id) => {
+    deleteRoute();
+    fetchItinary(id);
   };
 
   // GET API CALLS
@@ -202,8 +213,6 @@ export const Map = (props) => {
     setOpenBuffer(true);
     API.get(`Trip/${id}`)
       .then((res) => {
-        console.log(id);
-        console.log(res);
         setTrip({
           id: res.data.id,
           createdDate: res.data.createdDate,
@@ -233,7 +242,6 @@ export const Map = (props) => {
         setOpenBuffer(false);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenBuffer(false);
       });
   };
@@ -251,7 +259,6 @@ export const Map = (props) => {
         setOpenBuffer(false);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenBuffer(false);
       });
   };
@@ -259,7 +266,6 @@ export const Map = (props) => {
   const fetchItinary = (id) => {
     API.get(`Itinary/${id}`)
       .then((res) => {
-        console.log(res.data);
         setItinary({
           id: res.data.id,
           createdDate: res.data.createdDate,
@@ -301,7 +307,6 @@ export const Map = (props) => {
         setOpenSuccessNotif(true);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenErrorNotif(true);
       });
   };
@@ -314,30 +319,23 @@ export const Map = (props) => {
         setOpenSuccessNotif(true);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenErrorNotif(true);
       });
   };
 
   // PUT API CALLS
-  const putItinary = (distance, duration) => {
-    if (!isRouteGenerated) {
-      distance = 0;
-      duration = 0;
+  const putItinary = (itinaryForUpdate) => {
+    console.log("UPDATE : ", itinaryForUpdate);
+    if (itinaryForUpdate.distance !== undefined) {
+      API.put(`Itinary`, itinaryForUpdate)
+        .then((res) => {
+          fetchItinary(itinary.id);
+          setOpenSuccessNotif(true);
+        })
+        .catch((error) => {
+          setOpenErrorNotif(true);
+        });
     }
-    API.put(`Itinary`, {
-      id: itinary.id,
-      distance: distance,
-      duration: duration,
-    })
-      .then((res) => {
-        fetchItinary(itinary.id);
-        setOpenSuccessNotif(true);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-        setOpenErrorNotif(true);
-      });
   };
 
   // DELETE API CALLS
@@ -348,7 +346,6 @@ export const Map = (props) => {
         setOpenSuccessNotif(true);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenErrorNotif(true);
       });
   };
@@ -360,7 +357,6 @@ export const Map = (props) => {
         setOpenSuccessNotif(true);
       })
       .catch((error) => {
-        console.error("There was an error!", error);
         setOpenErrorNotif(true);
       });
   };
@@ -426,7 +422,7 @@ export const Map = (props) => {
             itinary={itinary}
             points={points}
             refreshTrip={fetchTrip}
-            switchItinary={fetchItinary}
+            switchItinary={switchItinary}
             generateRoute={generateRoute}
             isRouteGenerated={isRouteGenerated}
             handleUpdate={handleUpdate}
@@ -466,7 +462,7 @@ export const Map = (props) => {
                 handleDelete={handleDelete}
               />
             </FeatureGroup>
-            <RoutingControl ref={routingMachine} />
+            <RoutingControl ref={routingMachine} getInfoRoute={getInfoRoute} />
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

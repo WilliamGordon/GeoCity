@@ -1,0 +1,25 @@
+.point-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    margin: 0px;
+  }
+
+  .point-popup .leaflet-popup-content {
+    margin: 0px;
+    padding: 5px !important ;
+    width: 80px !important ;
+    height: 32px !important ;
+  }
+
+  .pointer-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+  }
+
+  .pointer-popup .leaflet-popup-content {
+    margin: 0px;
+    padding-top: 5px !important ;
+    padding-left: 5px !important ;
+    padding-right: 5px !important ;
+    padding-bottom: 5px !important ;
+    width: 150px !important ;
+    height: 40px  !important ;
+  }

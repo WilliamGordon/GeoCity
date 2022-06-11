@@ -5,7 +5,6 @@ export const ShareModal = (props) => {
   const [link, setLink] = useState({});
 
   useEffect(() => {
-    console.log(props.link);
     setLink({ ...props.link });
   }, [props.link]);
 

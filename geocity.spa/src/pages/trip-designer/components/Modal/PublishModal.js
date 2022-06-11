@@ -43,10 +43,12 @@ export const PublishModal = (props) => {
         // REFRESH TRIP
         props.refreshTrip(trip.id);
         props.success();
+        props.close();
       })
       .catch((error) => {
         // NOTIF ERROR
         props.error();
+        props.close();
       });
   };
 

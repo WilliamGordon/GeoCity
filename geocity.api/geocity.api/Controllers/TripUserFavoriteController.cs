@@ -8,6 +8,19 @@ namespace geocity.api.Controllers
 {
     public class TripUserFavoriteController : ApiControllerBase
     {
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<List<TripUserFavoriteDto>>> Details(string userId)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(new GetAllTripUserFavoriteQuery { UserId = userId }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{tripId}/{userId}")]
         public async Task<ActionResult<List<TripUserFavoriteDto>>> GetAsync(Guid tripId, string userId)
         {

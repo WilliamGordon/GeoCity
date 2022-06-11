@@ -66,7 +66,6 @@ export const PointModal = (props) => {
   const { user } = useAuth0();
   useEffect(() => {
     setPoint({ ...props.point });
-    console.log(props.point);
   }, [props.point]);
 
   const submitForm = () => {
@@ -88,10 +87,11 @@ export const PointModal = (props) => {
               console.error("There was an error!", error);
             });
           props.success();
+          props.close();
         })
         .catch((error) => {
-          console.error("There was an error!", error);
           props.error();
+          props.close();
         });
     } else {
       API.put(`ItinaryPointOfCrossing`, {
@@ -109,10 +109,11 @@ export const PointModal = (props) => {
               console.error("There was an error!", error);
             });
           props.success();
+          props.close();
         })
         .catch((error) => {
-          console.error("There was an error!", error);
           props.error();
+          props.close();
         });
     }
   };

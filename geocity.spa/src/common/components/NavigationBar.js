@@ -91,6 +91,26 @@ export default function NavigationBar() {
             Create
           </Button>
           <Box sx={{ flexGrow: 1 }}></Box>
+          {isAuthenticated &&
+            user["https://schemas.quickstarts.com/roles"].includes(
+              "GeocityAdmin"
+            ) && (
+              <Button
+                component={Link}
+                to="/admin"
+                sx={{
+                  ...styleButton,
+                  color: location.pathname.includes("admin")
+                    ? "#ffffff"
+                    : "#9fafce",
+                }}
+                size="small"
+                color="inherit"
+                variant="outlined"
+              >
+                ADMIN
+              </Button>
+            )}
           {isAuthenticated && (
             <Button
               component={Link}

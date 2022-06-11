@@ -736,15 +736,15 @@ export const MapSideBar = (props) => {
         open={openUserModal}
         close={handleCloseUserModal}
       />
-      { props.readonly && (
+      {props.readonly && (
         <RatingModal
-        trip={trip}
-        open={openRatingModal}
-        close={handleCloseRatingModal}
-        refreshTrip={props.refreshTrip}
-        success={props.success}
-        error={props.error}
-      />
+          trip={trip}
+          open={openRatingModal}
+          close={handleCloseRatingModal}
+          refreshTrip={props.refreshTrip}
+          success={props.success}
+          error={props.error}
+        />
       )}
     </>
   );
