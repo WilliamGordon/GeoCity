@@ -72,8 +72,6 @@ export const Map = (props) => {
     }
   };
 
-  const AddPointOfInterest = (point) => {};
-
   // UPDATE POINTS
   const handleUpdate = (point) => {
     setPointForUpdate({ ...point });
@@ -114,6 +112,45 @@ export const Map = (props) => {
       });
   };
   // POST API CALLS
+  const AddPointOfInterest = (point) => {
+    fetch(
+      "https://nominatim.openstreetmap.org/reverse?lat=" +
+        point.latitude +
+        "&lon=" +
+        point.longitude +
+        "&format=geojson"
+    )
+      .then((response) => response.json())
+      .then((POI) => {
+        console.log(POI);
+        postPointOfInterest({
+          osmId: POI.features[0].properties.osm_id.toString(),
+          name: POI.features[0].properties.name,
+          category: POI.features[0].properties.category,
+          latitude: POI.features[0].geometry.coordinates[1],
+          longitude: POI.features[0].geometry.coordinates[0],
+          cityId: city.id,
+        });
+      })
+      .catch((rejected) => {
+        console.log(rejected);
+      });
+  };
+
+  const postPointOfInterest = (poi) => {
+    console.log(poi);
+    API.post(`PointOfInterest`, poi)
+      .then((res) => {
+        // REFRESH POINTS
+        console.log(res);
+        fetchPoints();
+        setOpenSuccessNotif(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setOpenErrorNotif(true);
+      });
+  };
 
   return (
     <>
@@ -207,7 +244,7 @@ export const Map = (props) => {
             open={openPointModal}
             close={handleClosePointModal}
             point={pointForUpdate}
-            // refreshPoints={fetchPoints}
+            refreshPoints={fetchPoints}
             success={() => {
               setOpenSuccessNotif(true);
             }}

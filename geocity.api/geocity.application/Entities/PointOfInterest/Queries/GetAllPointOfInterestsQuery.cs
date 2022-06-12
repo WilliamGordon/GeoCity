@@ -39,8 +39,10 @@ namespace geocity.application.Entities.PointOfInterest.Queries
                     var BigPrice = _context.ItinaryPointOfInterests.Where(x => x.PointOfInterestId == poi.Id).Max(x => x.Price);
                     var smallDuration = _context.ItinaryPointOfInterests.Where(x => x.PointOfInterestId == poi.Id && x.Price != 0).Min(x => x.Duration);
                     var BigDuration = _context.ItinaryPointOfInterests.Where(x => x.PointOfInterestId == poi.Id).Max(x => x.Duration);
+                    var NbTimeUsed = _context.ItinaryPointOfInterests.Where(x => x.PointOfInterestId == poi.Id).Count();
                     poi.PriceRange = $"{smallPrice} - {BigPrice}";
                     poi.DurationRange = $"{smallDuration} - {BigDuration}";
+                    poi.NbTimeUsed = NbTimeUsed;
                 }
 
                 return poisDto;

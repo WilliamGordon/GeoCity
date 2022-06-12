@@ -14,6 +14,7 @@ namespace geocity.application.Entities.PointOfInterest.Queries
         public string PriceRange { get; set; } = string.Empty;
         public string DurationRange { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
+        public int NbTimeUsed { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public bool IsSuggestion { get; set; }

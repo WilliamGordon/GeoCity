@@ -38,30 +38,15 @@ export const Points = (props) => {
               key={p.id}
               id={p.id}
               position={[p.latitude, p.longitude]}
-              icon={GetIcon(p.osmId ? "poi" : "poc")}
+              icon={GetIcon(p.isSuggestion ? "suggestion" : "poi")}
+              eventHandlers={{
+                click: (e) => {
+                  props.handleUpdate(p);
+                },
+              }}
             >
               {p.osmId && <Tooltip>{p.name}</Tooltip>}
               {!p.osmId && <Tooltip>Step #{p.id.slice(0, 5)}</Tooltip>}
-              <Popup className="point-popup">
-                <IconButton
-                  aria-label="delete"
-                  size="small"
-                  onClick={(e) => {
-                    props.handleUpdate(p);
-                  }}
-                  sx={styleButton}
-                >
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-                <IconButton
-                  aria-label="delete"
-                  size="small"
-                  onClick={(e) => props.handleDelete(p)}
-                  sx={styleButton}
-                >
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              </Popup>
             </Marker>
           );
         })}

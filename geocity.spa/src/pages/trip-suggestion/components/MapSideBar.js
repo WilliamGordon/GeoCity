@@ -194,7 +194,7 @@ export const MapSideBar = (props) => {
                   variant="body2"
                   gutterBottom
                 >
-                  {item.name} {item.priceRange}
+                  {item.name}
                 </Typography>
               </ListItem>
             ))}

@@ -70,7 +70,6 @@ export const PointModal = (props) => {
   const { user } = useAuth0();
   useEffect(() => {
     setPoint({ ...props.point });
-    console.log(props.point);
   }, [props.point]);
 
   useEffect(() => {
@@ -88,26 +87,19 @@ export const PointModal = (props) => {
   };
 
   const submitForm = () => {
-    API.put(`ItinaryPointOfInterest`, {
-      userUpdateId: user.sub,
+    console.log("SUBMIT");
+    API.put(`PointOfInterest`, {
       id: point.id,
-      priceRange: point.priceRange,
-      durationRange: point.durationRange,
-      description: point.description,
+      isSuggestion: isSuggestion,
     })
       .then((res) => {
+        console.log("SUCCES PUT");
         props.refreshPoints();
-        API.get(`ItinaryPointOfInterest/${point.id}`)
-          .then((res) => {
-            setPoint({ ...res.data });
-          })
-          .catch((error) => {
-            console.error("There was an error!", error);
-          });
         props.success();
         props.close();
       })
       .catch((error) => {
+        console.log("ERROR", error);
         props.error();
         props.close();
       });
@@ -162,6 +154,24 @@ export const PointModal = (props) => {
           type="text"
           autoComplete="off"
           value={point.category || ""}
+          InputProps={{
+            style: { fontSize: "90%" },
+            pattern: "[0-9]*",
+          }}
+          fullWidth
+          margin="dense"
+          size="small"
+          sx={{
+            ...useStyles.textField,
+          }}
+        />
+        <TextField
+          id="nbTimeUsed"
+          name="nbTimeUsed"
+          label="Used"
+          type="text"
+          autoComplete="off"
+          value={point.nbTimeUsed || ""}
           InputProps={{
             style: { fontSize: "90%" },
             pattern: "[0-9]*",

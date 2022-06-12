@@ -52,7 +52,7 @@ export const Pointer = (props) => {
       position={[point.latitude, point.longitude]}
       icon={GetIcon()}
     >
-      <Popup className="pointer-popup">
+      <Popup className="pointer-popup-suggestion">
         <Button
           onClick={(e) => {
             props.AddPointOfInterest({
@@ -64,18 +64,6 @@ export const Pointer = (props) => {
           sx={styleButton}
         >
           POI
-        </Button>
-        <Button
-          onClick={(e) => {
-            props.AddPointOfCrossing({
-              latitude: point.latitude,
-              longitude: point.longitude,
-            });
-            setPoint({});
-          }}
-          sx={styleButton}
-        >
-          POC
         </Button>
       </Popup>
     </Marker>
