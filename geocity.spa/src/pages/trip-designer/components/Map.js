@@ -1,6 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
-import { Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import {
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  Alert,
+  Paper,
+  ListItem,
+  Typography,
+  ListItemIcon,
+  Button,
+  Chip,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import RoutingControl from "../routing/RoutingControl";
@@ -8,8 +19,17 @@ import MapSideBar from "./MapSideBar";
 import Pointer from "./Pointer";
 import Points from "./Points";
 import PointModal from "./Modal/PointModal";
+import ExploreIcon from "@mui/icons-material/Explore";
 import API from "../../../common/API/API";
 import "./Map.css";
+
+const styleBorder = {
+  backgroundColor: "#ffffff",
+  margin: "0 auto",
+  height: "32px",
+  fontSize: "14px",
+  marginBottom: "4px !important",
+};
 
 export const Map = (props) => {
   // STATE FOR DATA
@@ -17,6 +37,7 @@ export const Map = (props) => {
   const [tripUser, setTripUser] = React.useState({});
   const [itinary, setItinary] = useState({});
   const [points, setPoints] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [pointForUpdate, setPointForUpdate] = useState({});
   const [openPointModal, setOpenPointModal] = React.useState(false);
   const [infoForItinaryUpdate, setInfoForItinaryUpdate] = React.useState({});
@@ -76,6 +97,7 @@ export const Map = (props) => {
         ZoomInCluster();
         setZoomCluster(false);
       }
+      fetchSuggestions();
     }
   }, [points]);
 
@@ -298,9 +320,44 @@ export const Map = (props) => {
       });
   };
 
+  const fetchSuggestions = () => {
+    API.get(`PointOfInterest/GetAllSuggestionForCityQuery/${trip.city.id}`)
+      .then((res) => {
+        // FILTER SUGGESTION TO NOT INCLUDE POINT ALREADY ADDED
+        var filterdSuggestion = res.data.filter((p) => {
+          if (points.filter((e) => e.osmId === p.osmId).length > 0) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        setSuggestions(
+          [...filterdSuggestion].sort((a, b) => {
+            return b.nbTimeUsed - a.nbTimeUsed;
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
+  };
+
   // POST API CALLS
   const postPointOfInterest = (poi) => {
     API.post(`ItinaryPointOfInterest`, poi)
+      .then((res) => {
+        // REFRESH POINTS
+        fetchPoints();
+        setOpenSuccessNotif(true);
+      })
+      .catch((error) => {
+        setOpenErrorNotif(true);
+      });
+  };
+
+  const postAddSuggestions = (suggestion) => {
+    console.log(suggestion);
+    API.post(`ItinaryPointOfInterest/AddSuggestion`, suggestion)
       .then((res) => {
         // REFRESH POINTS
         fetchPoints();
@@ -468,6 +525,96 @@ export const Map = (props) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </MapContainer>
+
+          {!readonly && (
+            <>
+              <Paper
+                style={{
+                  padding: "1%",
+                  boxSizing: "border-box",
+                  height: "calc(35% - 65px)",
+                  backgroundColor: "#eceff1",
+                  flexShrink: 0,
+                  minWidth: "25%",
+                  float: "left",
+                  position: "fixed",
+                  left: "74%",
+                  bottom: "2%",
+                  backgroundColor: "#eceff1",
+                  overflow: "auto",
+                  marginTop: "15px",
+                }}
+              >
+                {suggestions.length !== 0 &&
+                  suggestions.map((item, index) => (
+                    <ListItem sx={styleBorder}>
+                      <ListItemIcon>
+                        <ExploreIcon fontSize="small" />
+                      </ListItemIcon>
+                      <Typography
+                        sx={{
+                          paddingTop: "5px",
+                          fontSize: "0.790rem",
+                        }}
+                        variant="body2"
+                        gutterBottom
+                      >
+                        {item.name}{" "}
+                        <Chip
+                          sx={{
+                            fontSize: "0.7125rem",
+                          }}
+                          size="small"
+                          label={item.category}
+                        />
+                        <Chip
+                          sx={{
+                            fontSize: "0.7125rem",
+                          }}
+                          size="small"
+                          label={item.nbTimeUsed}
+                        />
+                        <Chip
+                          sx={{
+                            fontSize: "0.7125rem",
+                          }}
+                          size="small"
+                          label={item.priceRange}
+                        />
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          marginLeft: "auto",
+                          marginRight: 0,
+                          minWidth: "0px",
+                          color: "#9fafce",
+                          backgroundColor: "#10377a",
+                          fontSize: "0.680rem",
+                          height: "17px",
+                          "&:hover": {
+                            backgroundColor: "#10377a",
+                            color: "#ffffff",
+                          },
+                        }}
+                        onClick={(e) => {
+                          console.log(e);
+                          var p = {
+                            itinaryId: itinary.id,
+                            pointOfInterestId: item.id,
+                            userCreateId: user.sub,
+                          };
+                          postAddSuggestions(p);
+                        }}
+                      >
+                        +
+                      </Button>
+                    </ListItem>
+                  ))}
+              </Paper>
+            </>
+          )}
           <PointModal
             readonly={readonly}
             open={openPointModal}

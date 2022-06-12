@@ -34,6 +34,19 @@ namespace geocity.api.Controllers
             }
         }
 
+        [HttpPost("AddSuggestion")]
+        public async Task<ActionResult<Guid>> AddSuggestion(CreateItinaryPointOfInterestFromSuggestionCommand command)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(command));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut]
         public async Task<ActionResult<Guid>> UpdateAsync(UpdateItinaryPointOfInterestCommand command)
         {

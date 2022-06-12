@@ -34,6 +34,19 @@ namespace geocity.api.Controllers
             }
         }
 
+        [HttpGet("GetAllSuggestionForCityQuery/{id}")]
+        public async Task<ActionResult<PointOfInterestDto>> GetAllSuggestionForCityQuery(Guid id)
+        {
+            try
+            {
+                return Ok(await Mediator.Send(new GetAllSuggestionForCityQuery { Id = id }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Guid>> PostAsync(CreatePointOfInterestCommand command)
         {
