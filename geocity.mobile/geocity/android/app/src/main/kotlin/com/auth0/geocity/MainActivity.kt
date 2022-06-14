@@ -1,4 +1,4 @@
-package com.example.geocity
+package com.auth0.geocity
 
 import io.flutter.embedding.android.FlutterActivity
 

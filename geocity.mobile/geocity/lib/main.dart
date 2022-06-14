@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'navigation_drawer.dart';
+
+/// -----------------------------------
+///           Auth0 Variables
+/// -----------------------------------
+
+const AUTH0_DOMAIN = 'dev-ls7u7q-d.eu.auth0.com';
+const AUTH0_CLIENT_ID = 'uocBA5DDCcGWaJiImeJcDXcDBH1kSaKB';
+const AUTH0_REDIRECT_URI = 'com.auth0.geocity://login-callback';
+const AUTH0_ISSUER = 'https://$AUTH0_DOMAIN';
+
+// instantiate appAuth
+final FlutterAppAuth appAuth = FlutterAppAuth();
+// instantiate secure storage
+final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+// login
+bool isLogged = false;
 
 void main() {
   runApp(const MyApp());
@@ -8,7 +29,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,46 +49,114 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String loginResult = '';
+  String loginName = '';
+  String accessToken = '';
+  String apiResponse = '';
+
+  @override
+  initState() {
+    loginFromToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Color.fromARGB(255, 16, 55, 122),
-        elevation: 4.0,
-        actions: [
-          IconButton(onPressed: () => {}, icon: Icon(Icons.supervisor_account)),
-          IconButton(onPressed: () => {}, icon: Icon(Icons.favorite)),
-        ],
-        leading: IconButton(onPressed: () => {}, icon: Icon(Icons.explore)),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Flexible(
-              child: FlutterMap(
-                  layers: [
-                    TileLayerOptions(
-                      urlTemplate:
-                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: ['a', 'b', 'c'],
-                      attributionBuilder: (_) {
-                        return Text("© OpenStreetMap contributors");
-                      },
-                    ),
-                    MarkerLayerOptions(markers: [
-                      Marker(
-                        point: LatLng(50.850340, 4.351710),
-                        builder: (context) => Icon(Icons.pin_drop),
-                      )
-                    ]),
-                  ],
-                  options:
-                      MapOptions(center: LatLng(50.850340, 4.351710), zoom: 8)),
-            )
-          ],
+        drawer: NavigationDrawerNew(),
+        appBar: AppBar(
+          title: const Text('Geocity'),
+          centerTitle: true,
+          backgroundColor: const Color.fromARGB(255, 16, 55, 122),
         ),
-      ),
-    );
+        body: Builder(builder: (context) {
+          return Center(
+              child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(
+                        "https://i.pinimg.com/564x/f0/a0/30/f0a030a687f387f5b36d4828fade251e.jpg"),
+                    fit: BoxFit.cover)),
+          ));
+        }));
   }
+
+  Future<void> loginAction() async {
+    setState(() {
+      loginName = '';
+      loginResult = '';
+      accessToken = '';
+    });
+    try {
+      final AuthorizationTokenResponse? result =
+          await appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          AUTH0_CLIENT_ID,
+          AUTH0_REDIRECT_URI,
+          issuer: 'https://$AUTH0_DOMAIN',
+          scopes: ['openid', 'profile', 'offline_access', 'email'],
+          promptValues: ['login'],
+        ),
+      );
+      final token = parseIdToken(result!.idToken);
+      await secureStorage.write(
+          key: 'refresh_token', value: result.refreshToken);
+      setState(() {
+        isLogged = true;
+        loginName = token['name'];
+        loginResult = 'Auth with auth0 success';
+        accessToken = result.accessToken!;
+        // for(String k in token.keys) {
+        //   loginResult += '\n$k = ${token[k]}';
+        // }
+      });
+    } catch (e, s) {
+      setState(() {
+        isLogged = false;
+        loginResult = 'Auth failed : $e';
+      });
+    }
+  }
+
+  void logoutAction() async {
+    await secureStorage.delete(key: 'refresh_token');
+    setState(() {
+      loginName = '';
+      loginResult = '';
+      isLogged = false;
+    });
+  }
+
+  void loginFromToken() async {
+    final storedRefreshToken = await secureStorage.read(key: 'refresh_token');
+    if (storedRefreshToken == null) return;
+    setState(() {
+      isLogged = true;
+    });
+    try {
+      final response = await appAuth.token(TokenRequest(
+        AUTH0_CLIENT_ID,
+        AUTH0_REDIRECT_URI,
+        issuer: AUTH0_ISSUER,
+        refreshToken: storedRefreshToken,
+      ));
+      final token = parseIdToken(response!.idToken);
+      secureStorage.write(key: 'refresh_token', value: response.refreshToken);
+      setState(() {
+        isLogged = true;
+        loginName = token['name'];
+        loginResult = 'Auth with auth0 success';
+      });
+    } catch (e, s) {
+      logoutAction();
+    }
+  }
+}
+
+Map<String, dynamic> parseIdToken(String? idToken) {
+  final parts = idToken!.split(r'.');
+  return jsonDecode(
+      utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
 }

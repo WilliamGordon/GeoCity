@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.geocity">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    package="com.auth0.geocity">
    <application
         android:label="geocity"
         android:name="${applicationName}"
