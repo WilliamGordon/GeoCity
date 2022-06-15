@@ -76,8 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             width: double.infinity,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(
-                        "https://i.pinimg.com/564x/f0/a0/30/f0a030a687f387f5b36d4828fade251e.jpg"),
+                    image: AssetImage("assets/images/ny.jpg"),
                     fit: BoxFit.cover)),
           ));
         }));

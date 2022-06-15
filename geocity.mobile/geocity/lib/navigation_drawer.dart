@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geocity/pages/account.dart';
 import 'package:geocity/pages/explore.dart';
 import 'package:geocity/pages/favorites.dart';
-import 'package:geocity/pages/trip.dart';
+import 'package:geocity/pages/trip_reader.dart';
 import 'package:geocity/pages/trips.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
@@ -171,8 +171,8 @@ class _NavigationDrawerNew extends State<NavigationDrawerNew> {
             MaterialPageRoute(builder: (context) => const Favorites()));
         break;
       case 6:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Trip()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const TripReader("test")));
     }
   }
 

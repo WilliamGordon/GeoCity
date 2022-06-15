@@ -208,6 +208,8 @@ export const Map = (props) => {
       waypoints.forEach((ip) => {
         itiplace.push([ip.latitude, ip.longitude]);
       });
+      console.log(points);
+      console.log(itiplace);
       routingMachine.current.setWaypoints(itiplace);
     }
   };
