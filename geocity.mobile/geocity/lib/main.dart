@@ -6,6 +6,7 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'navigation_drawer.dart';
+import 'pages/Trip_reader.dart';
 
 /// -----------------------------------
 ///           Auth0 Variables
@@ -62,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // return TripReader("C3D38C99-4E41-454E-4B5C-08DA4EE44742");
     return Scaffold(
         drawer: NavigationDrawerNew(),
         appBar: AppBar(

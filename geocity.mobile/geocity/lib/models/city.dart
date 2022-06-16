@@ -27,32 +27,3 @@ class City {
     );
   }
 }
-
-// [
-//     "city": {
-//       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//       "createdDate": "2022-06-15T09:46:38.992Z",
-//       "modifiedDate": "2022-06-15T09:46:38.992Z",
-//       "name": "string",
-//       "latitude": 0,
-//       "longitude": 0
-//     },
-//     "tripUsers": [
-//       {
-//         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//         "createdDate": "2022-06-15T09:46:38.992Z",
-//         "modifiedDate": "2022-06-15T09:46:38.992Z",
-//         "tripId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-//         "trip": "string",
-//         "userId": "string",
-//         "user": {
-//           "id": "string",
-//           "firstname": "string",
-//           "lastname": "string",
-//           "email": "string"
-//         },
-//         "isOwner": true
-//       }
-//     ]
-//   }
-// ]

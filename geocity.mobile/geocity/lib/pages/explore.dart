@@ -99,7 +99,13 @@ class _Explore extends State<Explore> {
 
   void fetchTripOverviews() async {
     final HttpService httpService = HttpService();
-    var TripOverviews = await httpService.getTripOverviews(myController.text);
+    String searchString = "";
+    if (myController.text == "") {
+      searchString = "nyc";
+    } else {
+      searchString = myController.text;
+    }
+    var TripOverviews = await httpService.getTripOverviews(searchString);
 
     setState(() {
       _TripOverviews = TripOverviews;

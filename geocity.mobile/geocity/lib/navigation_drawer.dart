@@ -170,9 +170,6 @@ class _NavigationDrawerNew extends State<NavigationDrawerNew> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const Favorites()));
         break;
-      case 6:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const TripReader("test")));
     }
   }
 
