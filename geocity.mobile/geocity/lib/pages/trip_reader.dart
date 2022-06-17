@@ -18,6 +18,8 @@ class TripReader extends StatefulWidget {
 }
 
 class _TripReader extends State<TripReader> {
+  late MapController _mapController;
+  bool isMapRead = false;
   late Trip _Trip;
   late Itinary _Itinary;
   late Points _Points;
@@ -28,11 +30,11 @@ class _TripReader extends State<TripReader> {
 
   String dropdownValue = 'Day 1';
 
-  List<String> getDropdownValues() {
+  List<String> getDropdownValues(Trip trip) {
     items = [
       'Day 1',
     ];
-    for (Itinary itinary in _Trip.itinaries) {
+    for (Itinary itinary in trip.itinaries) {
       if (itinary.day != 1) {
         items.add('Day ' + itinary.day.toString());
       }
@@ -44,6 +46,12 @@ class _TripReader extends State<TripReader> {
   void initState() {
     super.initState();
     print("INIT STATE!");
+    if (!isMapRead) {
+      _mapController = MapController();
+    }
+    _mapController.onReady.then((v) {
+      isMapRead = true;
+    });
     fetchTrip();
   }
 
@@ -72,6 +80,7 @@ class _TripReader extends State<TripReader> {
     var points = await httpService.fetchPoints(itinaryId);
     print("points is loaded");
     setMarkers(points);
+    ZoomInCluster();
     setState(() {
       _Points = points;
     });
@@ -89,17 +98,37 @@ class _TripReader extends State<TripReader> {
     fetchItinary(itinaryId);
   }
 
+  void ZoomInCluster() {
+    // move map to first marker
+    if (markers.length > 0 && isMapRead) {
+      _mapController.move(
+          LatLng(markers[0].point.latitude, markers[0].point.longitude), 12);
+    }
+  }
+
   List<Marker> setMarkers(points) {
     markers = <Marker>[];
     for (var poi in points.pointOfInterests) {
       markers.add(Marker(
-          point: LatLng(poi.latitude.toDouble(), poi.longitude.toDouble()),
-          builder: (context) => Icon(Icons.pin_drop)));
+        point: LatLng(poi.latitude.toDouble(), poi.longitude.toDouble()),
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.pin_drop),
+          onPressed: () {
+            print(poi.name);
+          },
+        ),
+      ));
     }
     for (var poc in points.pointOfCrossings) {
       markers.add(Marker(
-          point: LatLng(poc.latitude.toDouble(), poc.longitude.toDouble()),
-          builder: (context) => Icon(Icons.pin_drop)));
+        point: LatLng(poc.latitude.toDouble(), poc.longitude.toDouble()),
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.pin_drop),
+          onPressed: () {
+            print(poc.id);
+          },
+        ),
+      ));
     }
     return markers;
   }
@@ -141,7 +170,8 @@ class _TripReader extends State<TripReader> {
                               child: DropdownButton(
                                 value: dropdownValue,
                                 icon: const Icon(Icons.keyboard_arrow_down),
-                                items: getDropdownValues().map((String items) {
+                                items: getDropdownValues(snapshot.data as Trip)
+                                    .map((String items) {
                                   return DropdownMenuItem(
                                     value: items,
                                     child: Text(items,
@@ -160,6 +190,7 @@ class _TripReader extends State<TripReader> {
                     ),
                     Flexible(
                       child: FlutterMap(
+                          mapController: _mapController,
                           layers: [
                             TileLayerOptions(
                               urlTemplate:
@@ -173,65 +204,14 @@ class _TripReader extends State<TripReader> {
                           ],
                           options: MapOptions(
                               center: LatLng(
-                                  _Trip.city.latitude, _Trip.city.longitude),
+                                  (snapshot.data as Trip).city.latitude,
+                                  (snapshot.data as Trip).city.longitude),
                               zoom: 12)),
                     )
                   ],
                 ),
               );
             }));
-  }
-}
-
-class MapReader extends StatefulWidget {
-  const MapReader(this.trip);
-  final Trip trip;
-  @override
-  State<MapReader> createState() => _Map();
-}
-
-class _Map extends State<MapReader> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: HttpService().fetchPoints(widget.trip.itinaries[0].id),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("Loading DATA");
-          }
-          return FlutterMap(
-              layers: [
-                TileLayerOptions(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c'],
-                  attributionBuilder: (_) {
-                    return Text("© OpenStreetMap contributors");
-                  },
-                ),
-                MarkerLayerOptions(
-                    markers: getMarkers(snapshot.data as Points)),
-              ],
-              options: MapOptions(
-                  center: LatLng(
-                      widget.trip.city.latitude, widget.trip.city.longitude),
-                  zoom: 12));
-        });
-  }
-
-  List<Marker> getMarkers(Points points) {
-    List<Marker> markers = <Marker>[];
-    for (var poi in points.pointOfInterests) {
-      markers.add(Marker(
-          point: LatLng(poi.latitude.toDouble(), poi.longitude.toDouble()),
-          builder: (context) => Icon(Icons.pin_drop)));
-    }
-    for (var poc in points.pointOfCrossings) {
-      markers.add(Marker(
-          point: LatLng(poc.latitude.toDouble(), poc.longitude.toDouble()),
-          builder: (context) => Icon(Icons.pin_drop)));
-    }
-    return markers;
   }
 }
 
