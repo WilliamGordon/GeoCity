@@ -57,6 +57,18 @@ namespace geocity.api.Controllers
             }
         }
 
+        [HttpGet("GetMyTrip/{userId}")]
+        public async Task<List<TripOverviewDto>> GetMyTrip(string userId)
+        {
+            return await Mediator.Send(new GetAllTripForUserQuery { UserId = userId });
+        }
+
+        [HttpGet("GetFavoriteTrip/{userId}")]
+        public async Task<List<TripOverviewDto>> GetFavoriteTrip(string userId)
+        {
+            return await Mediator.Send(new GetAllTripFavoriteForUserQuerry { UserId = userId });
+        }
+
         [HttpPut]
         public async Task<ActionResult<Guid>> Update(UpdateTripCommand command)
         {

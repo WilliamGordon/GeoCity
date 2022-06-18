@@ -22,6 +22,66 @@ class HttpService {
     }
   }
 
+  Future<List<TripOverview>> fetchMyTrips(String userId) async {
+    Response res = await get(Uri.parse('$baseUrl/trip/GetMyTrip/auth0|608e980d95657a0069252b8d'));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<TripOverview> posts = body
+          .map(
+            (dynamic item) => TripOverview.fromJson(item),
+          )
+          .toList();
+      return posts;
+    } else {
+      throw "Unable to retrieve posts. " + res.statusCode.toString();
+    }
+  }
+
+  Future<List<TripOverview>> fetchTripFavorite(String userId) async {
+    Response res = await get(Uri.parse('$baseUrl/trip/GetFavoriteTrip/auth0|608e980d95657a0069252b8d'));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<TripOverview> posts = body
+          .map(
+            (dynamic item) => TripOverview.fromJson(item),
+          )
+          .toList();
+      return posts;
+    } else {
+      throw "Unable to retrieve posts. " + res.statusCode.toString();
+    }
+  }
+
+  Future<List<TripOverview>> AddTripToFavorite(String userId) async {
+    Response res = await get(Uri.parse('$baseUrl/TripUserFavorite/$userId'));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<TripOverview> posts = body
+          .map(
+            (dynamic item) => TripOverview.fromJson(item),
+          )
+          .toList();
+      return posts;
+    } else {
+      throw "Unable to retrieve posts. " + res.statusCode.toString();
+    }
+  }
+
+  Future<List<TripOverview>> RemoveTripFromFavorite(String userId) async {
+    Response res = await get(Uri.parse('$baseUrl/TripUserFavorite/$userId'));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<TripOverview> posts = body
+          .map(
+            (dynamic item) => TripOverview.fromJson(item),
+          )
+          .toList();
+      return posts;
+    } else {
+      throw "Unable to retrieve posts. " + res.statusCode.toString();
+    }
+  }
+
   Future<Trip> fetchTrip(String? id) async {
     Response res = await get(Uri.parse('$baseUrl/trip/$id'));
     if (res.statusCode == 200) {
@@ -49,9 +109,7 @@ class HttpService {
     if (res.statusCode == 200) {
       dynamic body = jsonDecode(res.body);
       Itinary itinary = Itinary.fromJson(body);
-      Points points = Points(
-          pointOfInterests: itinary.pointOfInterests,
-          pointOfCrossings: itinary.pointOfCrossings);
+      Points points = Points(pointOfInterests: itinary.pointOfInterests, pointOfCrossings: itinary.pointOfCrossings);
       return points;
     } else {
       throw "Unable to retrieve posts. " + res.statusCode.toString();

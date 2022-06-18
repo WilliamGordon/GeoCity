@@ -4,6 +4,8 @@ import 'package:geocity/custom_drawer/home_drawer.dart';
 import 'package:geocity/views/start_screen.dart';
 import 'package:geocity/views/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:geocity/views/trip_favorite_screen.dart';
+import 'package:geocity/views/trip_participant_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   @override
@@ -35,6 +37,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             drawerWidth: MediaQuery.of(context).size.width * 0.75,
             onDrawerCall: (DrawerIndex drawerIndexdata) {
               changeIndex(drawerIndexdata);
+              print(drawerIndexdata);
               //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
             },
             screenView: screenView,
@@ -47,6 +50,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void changeIndex(DrawerIndex drawerIndexdata) {
     if (drawerIndex != drawerIndexdata) {
+      print(drawerIndex);
       drawerIndex = drawerIndexdata;
       switch (drawerIndex) {
         case DrawerIndex.HOME:
@@ -56,12 +60,12 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           break;
         case DrawerIndex.Help:
           setState(() {
-            // screenView = FitnessAppHomeScreen();
+            screenView = TripParticipantScreen();
           });
           break;
         case DrawerIndex.FeedBack:
           setState(() {
-            // screenView = DesignCourseHomeScreen();
+            screenView = TripFavoriteScreen();
           });
           break;
         case DrawerIndex.Invite:
