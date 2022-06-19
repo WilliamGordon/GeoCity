@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:geocity/models/trip.dart';
 import 'package:geocity/views/theme/app_theme.dart';
 import 'package:geocity/views/trip_list_view.dart';
 import 'package:geocity/models/trip_overview.dart';
@@ -36,7 +37,6 @@ class _TripParticipantScreenState extends State<TripParticipantScreen> with Tick
   @override
   void dispose() {
     animationController?.dispose();
-    fetchMyTrips();
     super.dispose();
   }
 
@@ -61,39 +61,46 @@ class _TripParticipantScreenState extends State<TripParticipantScreen> with Tick
                     getAppBarUI(),
                     Expanded(
                       child: NestedScrollView(
-                        controller: _scrollController,
-                        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                          return <Widget>[
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                                return Column(
-                                  children: <Widget>[],
-                                );
-                              }, childCount: 1),
-                            ),
-                          ];
-                        },
-                        body: Container(
-                          color: Colors.white,
-                          child: ListView.builder(
-                            itemCount: hotelList.length,
-                            padding: const EdgeInsets.only(top: 8),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (BuildContext context, int index) {
-                              final int count = hotelList.length > 10 ? 10 : hotelList.length;
-                              final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
-                                  .animate(CurvedAnimation(parent: animationController!, curve: Interval((1 / count) * index, 1.0, curve: Curves.fastOutSlowIn)));
-                              animationController?.forward();
-                              return TripListView(
-                                callback: () {},
-                                tripData: hotelList[index],
-                                animation: animation,
-                                animationController: animationController!,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                          controller: _scrollController,
+                          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                            return <Widget>[
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                  return Column(
+                                    children: <Widget>[],
+                                  );
+                                }, childCount: 1),
+                              ),
+                            ];
+                          },
+                          body: FutureBuilder(
+                              future: HttpService().fetchMyTrips("userId"),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text('LOADING');
+                                } else {
+                                  return Container(
+                                    color: Colors.white,
+                                    child: ListView.builder(
+                                      itemCount: (snapshot.data as List<TripOverview>).length,
+                                      padding: const EdgeInsets.only(top: 8),
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        final int count = (snapshot.data as List<TripOverview>).length > 10 ? 10 : (snapshot.data as List<TripOverview>).length;
+                                        final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
+                                            .animate(CurvedAnimation(parent: animationController!, curve: Interval((1 / count) * index, 1.0, curve: Curves.fastOutSlowIn)));
+                                        animationController?.forward();
+                                        return TripListView(
+                                          callback: () {},
+                                          tripData: (snapshot.data as List<TripOverview>)[index],
+                                          animation: animation,
+                                          animationController: animationController!,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
+                              })),
                     )
                   ],
                 ),

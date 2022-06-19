@@ -120,7 +120,30 @@ class _HomeDrawerState extends State<HomeDrawer> {
             color: AppTheme.grey.withOpacity(0.6),
           ),
           Column(
-            children: <Widget>[],
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  'Sign Out',
+                  style: TextStyle(
+                    fontFamily: AppTheme.fontName,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: AppTheme.darkText,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                trailing: Icon(
+                  Icons.power_settings_new,
+                  color: Colors.red,
+                ),
+                onTap: () {
+                  onTapped();
+                },
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).padding.bottom,
+              )
+            ],
           ),
         ],
       ),

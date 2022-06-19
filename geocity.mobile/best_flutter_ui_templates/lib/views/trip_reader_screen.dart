@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:geocity/models/city.dart';
 import 'package:geocity/models/point_of_crossing.dart';
 import 'package:geocity/models/point_of_interest.dart';
+import 'package:geocity/models/trip_user_favorite.dart';
 import 'package:geocity/views/icons/icons.dart';
 import 'package:geocity/views/theme/app_theme.dart';
 import 'package:geocity/views/trip_list_view.dart';
@@ -29,6 +30,7 @@ class TripReaderScreen extends StatefulWidget {
 class _TripReaderScreenState extends State<TripReaderScreen> with TickerProviderStateMixin {
   // API DATA
   late Trip tripData;
+  late TripUserFavorite tripFavoriteData = new TripUserFavorite(id: "", userId: "", tripId: "");
   late Itinary itinaryData;
   late Points pointsData;
 
@@ -54,6 +56,7 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
 
     // Start by getting the info of the trip
     fetchTrip();
+    fetchTripFavorite();
 
     super.initState();
   }
@@ -65,6 +68,31 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
     print("trip is loaded" + trip.name);
     setState(() {
       tripData = trip;
+    });
+  }
+
+  fetchTripFavorite() async {
+    final HttpService httpService = HttpService();
+    var tripFavorite = await httpService.fetchTripFavoriteForTrip(widget.id, "");
+    print("trip favorite is loaded" + tripFavorite.id);
+    setState(() {
+      tripFavoriteData = tripFavorite;
+    });
+  }
+
+  postTripFavorite(String tripId, String userId) async {
+    final HttpService httpService = HttpService();
+    var tripFavorite = await httpService.AddTripToFavorite(tripData.id, "");
+    setState(() {
+      tripFavoriteData = new TripUserFavorite(id: tripFavorite, userId: userId, tripId: tripId);
+    });
+  }
+
+  deleteTripFavorite(String tripFavoriteId) async {
+    final HttpService httpService = HttpService();
+    var tripFavorite = await httpService.RemoveTripFromFavorite(tripFavoriteId);
+    setState(() {
+      tripFavoriteData = new TripUserFavorite(id: "", userId: "", tripId: "");
     });
   }
 
@@ -243,7 +271,7 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 4, bottom: 3),
                                                       child: Text(
-                                                        tripData.name,
+                                                        (snapshot.data as Trip).name,
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: FitnessAppTheme.fontName,
@@ -281,12 +309,37 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
                                                             ),
                                                           ),
                                                         ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            if (tripFavoriteData.id == "") {
+                                                              postTripFavorite(tripData.id, "");
+                                                            } else {
+                                                              deleteTripFavorite(tripFavoriteData.id);
+                                                            }
+                                                          },
+                                                          child: Card(
+                                                            color: AppTheme.geoctiy,
+                                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+                                                            elevation: 10.0,
+                                                            child: Container(
+                                                              width: 30,
+                                                              height: 30,
+                                                              child: Center(
+                                                                child: Icon(
+                                                                  Icons.favorite,
+                                                                  color: (tripFavoriteData.id == "") ? DesignCourseAppTheme.nearlyWhite : Colors.red,
+                                                                  size: 15,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ],
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 4, bottom: 14),
                                                       child: Text(
-                                                        'InBody SmartScale',
+                                                        (snapshot.data as Trip).city.name,
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: FitnessAppTheme.fontName,
@@ -316,7 +369,7 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 16),
-                                        child: Row(children: getItinariesButtons(tripData)),
+                                        child: Row(children: getItinariesButtons((snapshot.data as Trip))),
                                       )
                                     ],
                                   ),
