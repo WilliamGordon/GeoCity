@@ -11,6 +11,8 @@ import {
   ListItemIcon,
   Button,
   Chip,
+  Collapse,
+  Box,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -49,6 +51,7 @@ export const Map = (props) => {
   const [openSuccessNotif, setOpenSuccessNotif] = React.useState(false);
   const [openErrorNotif, setOpenErrorNotif] = React.useState(false);
   const [zoomCluster, setZoomCluster] = React.useState(true);
+  const [expandedSuggestion, setexpandedSuggestion] = React.useState(false);
 
   // OTHERS
   const [map, setMap] = useState(null);
@@ -532,9 +535,11 @@ export const Map = (props) => {
             <>
               <Paper
                 style={{
-                  padding: "1%",
+                  maxHeight: "35vh",
+                  paddingTop: "0.5%",
+                  paddingLeft: "0.5%",
+                  paddingRight: "0.5%",
                   boxSizing: "border-box",
-                  height: "calc(35% - 65px)",
                   backgroundColor: "#eceff1",
                   flexShrink: 0,
                   minWidth: "25%",
@@ -547,73 +552,106 @@ export const Map = (props) => {
                   marginTop: "15px",
                 }}
               >
-                {suggestions.length !== 0 &&
-                  suggestions.map((item, index) => (
-                    <ListItem sx={styleBorder}>
-                      <ListItemIcon>
-                        <ExploreIcon fontSize="small" />
-                      </ListItemIcon>
-                      <Typography
-                        sx={{
-                          paddingTop: "5px",
-                          fontSize: "0.790rem",
-                        }}
-                        variant="body2"
-                        gutterBottom
-                      >
-                        {item.name}{" "}
-                        <Chip
-                          sx={{
-                            fontSize: "0.7125rem",
-                          }}
-                          size="small"
-                          label={item.category}
-                        />
-                        <Chip
-                          sx={{
-                            fontSize: "0.7125rem",
-                          }}
-                          size="small"
-                          label={item.nbTimeUsed}
-                        />
-                        <Chip
-                          sx={{
-                            fontSize: "0.7125rem",
-                          }}
-                          size="small"
-                          label={item.priceRange}
-                        />
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        sx={{
-                          marginLeft: "auto",
-                          marginRight: 0,
-                          minWidth: "0px",
-                          color: "#9fafce",
-                          backgroundColor: "#10377a",
-                          fontSize: "0.680rem",
-                          height: "17px",
-                          "&:hover": {
-                            backgroundColor: "#10377a",
-                            color: "#ffffff",
-                          },
-                        }}
-                        onClick={(e) => {
-                          console.log(e);
-                          var p = {
-                            itinaryId: itinary.id,
-                            pointOfInterestId: item.id,
-                            userCreateId: user.sub,
-                          };
-                          postAddSuggestions(p);
-                        }}
-                      >
-                        +
-                      </Button>
-                    </ListItem>
-                  ))}
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    marginLeft: "auto",
+                    marginRight: 0,
+                    color: "#9fafce",
+                    backgroundColor: "#10377a",
+                    fontSize: "0.680rem",
+                    height: "30px",
+                    width: "100%",
+                    margin: "0 auto",
+                    marginBottom: "15px",
+                    "&:hover": {
+                      backgroundColor: "#10377a",
+                      color: "#ffffff",
+                    },
+                  }}
+                  onClick={(e) => {
+                    console.log("test");
+                    setexpandedSuggestion(!expandedSuggestion);
+                  }}
+                >
+                  Open Suggestions Tab
+                </Button>
+                <Collapse in={expandedSuggestion} timeout="auto">
+                  <Box
+                    style={{
+                      minHeight: "35vh",
+                    }}
+                  >
+                    {suggestions.length !== 0 &&
+                      suggestions.map((item, index) => (
+                        <ListItem sx={styleBorder}>
+                          <ListItemIcon>
+                            <ExploreIcon fontSize="small" />
+                          </ListItemIcon>
+                          <Typography
+                            sx={{
+                              paddingTop: "5px",
+                              fontSize: "0.790rem",
+                            }}
+                            variant="body2"
+                            gutterBottom
+                          >
+                            {item.name}{" "}
+                            <Chip
+                              sx={{
+                                fontSize: "0.7125rem",
+                              }}
+                              size="small"
+                              label={item.category}
+                            />
+                            <Chip
+                              sx={{
+                                fontSize: "0.7125rem",
+                              }}
+                              size="small"
+                              label={item.nbTimeUsed}
+                            />
+                            <Chip
+                              sx={{
+                                fontSize: "0.7125rem",
+                              }}
+                              size="small"
+                              label={item.priceRange}
+                            />
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            sx={{
+                              marginLeft: "auto",
+                              marginRight: 0,
+                              minWidth: "0px",
+                              color: "#9fafce",
+                              backgroundColor: "#10377a",
+                              fontSize: "0.680rem",
+                              height: "17px",
+                              "&:hover": {
+                                backgroundColor: "#10377a",
+                                color: "#ffffff",
+                              },
+                            }}
+                            onClick={(e) => {
+                              console.log(e);
+                              var p = {
+                                itinaryId: itinary.id,
+                                pointOfInterestId: item.id,
+                                userCreateId: user.sub,
+                              };
+                              postAddSuggestions(p);
+                            }}
+                          >
+                            +
+                          </Button>
+                        </ListItem>
+                      ))}
+                  </Box>
+                </Collapse>
               </Paper>
             </>
           )}
