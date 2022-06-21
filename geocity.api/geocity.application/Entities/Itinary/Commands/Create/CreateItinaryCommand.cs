@@ -21,14 +21,19 @@ namespace geocity.application.Itinary.Commands.CreateItinary
 
         public async Task<Guid> Handle(CreateItinaryCommand request, CancellationToken cancellationToken)
         {
-            var entity = new geocity.domain.Entities.Itinary();
-            entity.Trip = _context.Trips.SingleOrDefault(x => x.Id == request.TripId);
-            entity.Day = request.Day;
-            entity.Distance = request.Distance;
-            entity.Duration = request.Duration;
-            _context.Itinaries.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            try
+            {
+                var entity = new geocity.domain.Entities.Itinary();
+                entity.Trip = _context.Trips.SingleOrDefault(x => x.Id == request.TripId);
+                entity.Day = request.Day;
+                _context.Itinaries.Add(entity);
+                await _context.SaveChangesAsync(cancellationToken);
+                return entity.Id;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

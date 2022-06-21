@@ -14,6 +14,7 @@ namespace geocity.domain.Entities
         public string Category { get; set; } = string.Empty;
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public string Address { get; set; }
         public bool IsSuggestion { get; set; }
         public Guid CityId { get; set; }
 

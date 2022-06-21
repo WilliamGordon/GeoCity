@@ -14,6 +14,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Queries
         public string? Description { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public string Address { get; set; }
         public int Position { get; set; }
         public string UserCreateId { get; set; }
         public string UserCreateName { get; set; }

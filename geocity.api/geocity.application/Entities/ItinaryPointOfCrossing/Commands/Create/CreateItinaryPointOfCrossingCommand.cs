@@ -53,6 +53,7 @@ namespace geocity.application.Entities.ItinaryPointOfCrossing.Commands.Create
                 POC = new geocity.domain.Entities.PointOfCrossing();
                 POC.Latitude = request.PointOfCrossing.Latitude;
                 POC.Longitude = request.PointOfCrossing.Longitude;
+                POC.Address = request.PointOfCrossing.Address;
                 POC.CityId = request.PointOfCrossing.CityId;
                 _context.PointOfCrossing.Add(POC);
                 await _context.SaveChangesAsync(cancellationToken);

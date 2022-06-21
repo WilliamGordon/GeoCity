@@ -28,6 +28,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import PublishIcon from "@mui/icons-material/Publish";
 import GroupIcon from "@mui/icons-material/Group";
+import SearchPointModal from "./Modal/SearchPointModal";
+import ItinaryModal from "./Modal/ItinaryModal";
 import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
 import TripModal from "./Modal/TripModal";
@@ -130,6 +132,8 @@ export const MapSideBar = (props) => {
   const [totalDistance, setTotalDistance] = React.useState();
 
   // STATE COSMETICS
+  const [openSearchPointModal, setOpenSearchPointModal] = React.useState(false);
+  const [openItinaryModal, setOpenItinaryModal] = React.useState(false);
   const [openPublishModal, setOpenPublishModal] = React.useState(false);
   const [openShareModal, setOpenShareModal] = React.useState(false);
   const [openTripModal, setOpenTripModal] = React.useState(false);
@@ -150,6 +154,7 @@ export const MapSideBar = (props) => {
 
   useEffect(() => {
     setPoints(props.points);
+    console.log(points);
   }, [props.points]);
 
   useEffect(() => {
@@ -198,6 +203,12 @@ export const MapSideBar = (props) => {
   }, [trip, user]);
 
   // MODAL HANDLING
+  const handleOpenSearchPointModal = () => {
+    setOpenSearchPointModal(true);
+  };
+  const handleOpenItinaryModal = () => {
+    setOpenItinaryModal(true);
+  };
   const handleOpenPublishModal = () => {
     setOpenPublishModal(true);
   };
@@ -215,6 +226,12 @@ export const MapSideBar = (props) => {
     setOpenRatingModal(true);
   };
 
+  const handleCloseSearchPointModal = () => {
+    setOpenSearchPointModal(false);
+  };
+  const handleCloseItinaryModal = () => {
+    setOpenItinaryModal(false);
+  };
   const handleClosePublishModal = () => {
     setOpenPublishModal(false);
   };
@@ -253,6 +270,18 @@ export const MapSideBar = (props) => {
     } else {
       updatePositionPointOfInterest(pointForPositionUpdate, result);
     }
+  };
+  // CREATE API CALS
+  const postItinary = (itinary) => {
+    API.post(`Itinary`, itinary)
+      .then((res) => {
+        props.success();
+        props.refreshTrip(trip.id);
+      })
+      .catch((error) => {
+        props.error();
+        console.error("There was an error!", error);
+      });
   };
 
   // UPDATE API CALLS
@@ -512,7 +541,10 @@ export const MapSideBar = (props) => {
                     },
                   }}
                   onClick={(e) => {
-                    console.log(e);
+                    postItinary({
+                      day: trip.itinaries.length + 1,
+                      tripId: trip.id,
+                    });
                   }}
                 >
                   +
@@ -594,7 +626,7 @@ export const MapSideBar = (props) => {
                   <>
                     <IconButton
                       onClick={(e) => {
-                        handleOpenUserModal();
+                        handleOpenItinaryModal();
                       }}
                       aria-label="update"
                       size="small"
@@ -653,9 +685,8 @@ export const MapSideBar = (props) => {
                               provided.draggableProps.style
                             )}
                           >
-                            {item.content}
                             <ListItem
-                              sx={styleBorder}
+                              sx={{ ...styleBorder }}
                               button
                               id={item.id}
                               key={item.id}
@@ -675,8 +706,13 @@ export const MapSideBar = (props) => {
                                 variant="body2"
                                 gutterBottom
                               >
-                                {item.name ? item.name : "Step"}{" "}
-                                {!item.name ? "#" + item.id.slice(0, 5) : ""}
+                                {item.name ? item.name : ""}
+                                {!item.osmId && item.address
+                                  ? item.address.slice(0, 40) + " ..."
+                                  : ""}
+                                {!item.osmId && !item.address
+                                  ? "# Step " + item.id.slice(0, 5)
+                                  : ""}
                               </Typography>
                             </ListItem>
                           </div>
@@ -691,7 +727,13 @@ export const MapSideBar = (props) => {
         </Paper>
         {!props.readonly && (
           <>
-            <Button variant="contained" sx={styleButton}>
+            <Button
+              variant="contained"
+              sx={styleButton}
+              onClick={(e) => {
+                handleOpenSearchPointModal();
+              }}
+            >
               Add new step
             </Button>
             <Box sx={{ flexGrow: 1 }}></Box>
@@ -708,6 +750,24 @@ export const MapSideBar = (props) => {
       </Drawer>
       {!props.readonly && (
         <>
+          <SearchPointModal
+            trip={trip}
+            itinary={itinary}
+            open={openSearchPointModal}
+            close={handleCloseSearchPointModal}
+            refreshTrip={props.refreshTrip}
+            success={props.success}
+            error={props.error}
+          />
+          <ItinaryModal
+            trip={trip}
+            itinary={itinary}
+            open={openItinaryModal}
+            close={handleCloseItinaryModal}
+            refreshTrip={props.refreshTrip}
+            success={props.success}
+            error={props.error}
+          />
           <PublishModal
             trip={trip}
             open={openPublishModal}

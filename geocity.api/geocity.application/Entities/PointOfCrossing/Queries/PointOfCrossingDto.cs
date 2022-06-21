@@ -11,6 +11,7 @@ namespace geocity.application.Entities.PointOfCrossing.Queries
     {
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public string Address { get; set; }
         public Guid CityId { get; set; }
     }
 }

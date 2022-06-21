@@ -23,7 +23,10 @@ import Points from "./Points";
 import PointModal from "./Modal/PointModal";
 import ExploreIcon from "@mui/icons-material/Explore";
 import API from "../../../common/API/API";
+import * as ELG from "esri-leaflet-geocoder";
 import "./Map.css";
+import L from "leaflet";
+import "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css";
 
 const styleBorder = {
   backgroundColor: "#ffffff",
@@ -43,6 +46,7 @@ export const Map = (props) => {
   const [pointForUpdate, setPointForUpdate] = useState({});
   const [openPointModal, setOpenPointModal] = React.useState(false);
   const [infoForItinaryUpdate, setInfoForItinaryUpdate] = React.useState({});
+  const [searchPoint, setSearchPoint] = React.useState({});
 
   // STATE COSMETICS
   const [readonly, setReadonly] = React.useState(false);
@@ -52,6 +56,7 @@ export const Map = (props) => {
   const [openErrorNotif, setOpenErrorNotif] = React.useState(false);
   const [zoomCluster, setZoomCluster] = React.useState(true);
   const [expandedSuggestion, setexpandedSuggestion] = React.useState(false);
+  const [searchFunctionAdded, setSearchFunctionAdded] = React.useState(false);
 
   // OTHERS
   const [map, setMap] = useState(null);
@@ -118,6 +123,37 @@ export const Map = (props) => {
     ZoomInCluster();
   }, [map]);
 
+  useEffect(() => {
+    if (map && trip) {
+      if (!searchFunctionAdded) {
+        const searchControl = new ELG.Geosearch({
+          position: "topright",
+          placeholder: "Enter an address or place e.g. 1 York St",
+          useMapBounds: false,
+          providers: [
+            ELG.arcgisOnlineProvider({
+              apikey:
+                "AAPKf36f375d73c448b0bb7a68a9759cb2c4EesZUIK2HKA1XeztBxliNBzFL_h6CJJUHcVYzDGlinMiIF5BOrpoTB-iHWA2AwIO",
+              nearby: {
+                lat: trip.city.latitude,
+                lng: trip.city.longitude,
+              },
+            }),
+          ],
+        }).addTo(map);
+        // const results = new L.LayerGroup().addTo(map);
+        searchControl.on("results", function (data) {
+          console.log(data);
+          setSearchPoint({
+            latitude: data.latlng.lat,
+            longitude: data.latlng.lng,
+          });
+        });
+        setSearchFunctionAdded(true);
+      }
+    }
+  }, [map, trip]);
+
   // MAP ACTION
   const ZoomInCluster = () => {
     if (map) {
@@ -134,15 +170,31 @@ export const Map = (props) => {
   // ADDING POINTS
   const AddPointOfCrossing = (point) => {
     // Call API to create PointOfCrossing
-    postPointOfCrossing({
-      userCreateId: user.sub,
-      itinaryId: itinary.id,
-      pointOfCrossing: {
-        cityId: trip.city.id,
-        latitude: point.latitude,
-        longitude: point.longitude,
-      },
-    });
+
+    fetch(
+      "https://nominatim.openstreetmap.org/reverse?lat=" +
+        point.latitude +
+        "&lon=" +
+        point.longitude +
+        "&format=geojson"
+    )
+      .then((response) => response.json())
+      .then((POI) => {
+        console.log(POI);
+        postPointOfCrossing({
+          userCreateId: user.sub,
+          itinaryId: itinary.id,
+          pointOfCrossing: {
+            cityId: trip.city.id,
+            latitude: POI.features[0].geometry.coordinates[1],
+            longitude: POI.features[0].geometry.coordinates[0],
+            address: POI.features[0].properties.display_name,
+          },
+        });
+      })
+      .catch((rejected) => {
+        console.log(rejected);
+      });
   };
 
   const AddPointOfInterest = (point) => {
@@ -165,6 +217,7 @@ export const Map = (props) => {
             latitude: POI.features[0].geometry.coordinates[1],
             longitude: POI.features[0].geometry.coordinates[0],
             cityId: trip.city.id,
+            address: POI.features[0].properties.display_name,
           },
         });
       })
@@ -374,6 +427,7 @@ export const Map = (props) => {
   };
 
   const postPointOfCrossing = (poc) => {
+    console.log(poc);
     API.post(`ItinaryPointOfCrossing`, poc)
       .then((res) => {
         // REFRESH POINTS
@@ -513,6 +567,7 @@ export const Map = (props) => {
               <Pointer
                 AddPointOfCrossing={AddPointOfCrossing}
                 AddPointOfInterest={AddPointOfInterest}
+                searchPoint={searchPoint}
               />
             )}
 

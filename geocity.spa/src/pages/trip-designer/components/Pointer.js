@@ -31,6 +31,25 @@ function GetIcon() {
 
 export const Pointer = (props) => {
   const [point, setPoint] = useState({});
+  const [searchPoint, setSearchPoint] = useState({});
+
+  useEffect(() => {
+    setSearchPoint(props.searchPoint);
+  }, [props.searchPoint]);
+
+  useEffect(() => {
+    console.log("SEARCH POINT: ", searchPoint);
+    if (searchPoint.latitude) {
+      setPoint({
+        latitude: searchPoint.latitude,
+        longitude: searchPoint.longitude,
+      });
+    }
+  }, [searchPoint]);
+
+  useEffect(() => {
+    console.log("POINT : ", point);
+  }, [point]);
 
   useMapEvents({
     click(e) {

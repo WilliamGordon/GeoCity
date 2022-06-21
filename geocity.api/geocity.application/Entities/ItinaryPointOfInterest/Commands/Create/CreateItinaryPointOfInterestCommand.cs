@@ -58,6 +58,7 @@ namespace geocity.application.Entities.ItinaryPointOfInterest.Commands.Create
                 POI.Category = request.PointOfInterest.Category;
                 POI.Latitude = request.PointOfInterest.Latitude;
                 POI.Longitude = request.PointOfInterest.Longitude;
+                POI.Address = request.PointOfInterest.Address;
                 POI.IsSuggestion = request.PointOfInterest.IsSuggestion;
                 POI.CityId = request.PointOfInterest.CityId;
                 _context.PointOfInterest.Add(POI);

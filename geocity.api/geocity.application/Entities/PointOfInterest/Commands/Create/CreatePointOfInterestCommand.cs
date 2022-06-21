@@ -15,6 +15,7 @@ namespace geocity.application.Entities.PointOfInterest.Commands.Create
         public string Category { get; set; } = string.Empty;
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public string Address { get; set; }
         public bool IsSuggestion { get; set; }
         public Guid CityId { get; set; }
     }
@@ -37,6 +38,7 @@ namespace geocity.application.Entities.PointOfInterest.Commands.Create
             entity.Category = request.Category;
             entity.Latitude = request.Latitude;
             entity.Longitude = request.Longitude;
+            entity.Address = request.Address;
             entity.IsSuggestion = request.IsSuggestion;
             entity.City = _context.Cities.SingleOrDefault(x => x.Id == request.CityId);
             _context.PointOfInterest.Add(entity);
