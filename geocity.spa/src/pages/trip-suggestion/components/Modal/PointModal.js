@@ -43,25 +43,6 @@ const useStyles = {
   },
 };
 
-const getReadableDate = (strDate) => {
-  if (strDate) {
-    var date = strDate.split("T")[0];
-    var year = date.split("-")[0];
-    var month = date.split("-")[1];
-    var day = date.split("-")[2];
-    return `${day}/${month}/${year}`;
-  }
-};
-
-const getReadableTime = (strDate) => {
-  if (strDate) {
-    var Time = strDate.split("T")[1];
-    var hours = Time.split(":")[0];
-    var minutes = Time.split(":")[1];
-    return `${hours}:${minutes}`;
-  }
-};
-
 export const PointModal = (props) => {
   const [point, setPoint] = useState({});
   const [isSuggestion, setIsSuggestion] = useState(false);
@@ -236,19 +217,6 @@ export const PointModal = (props) => {
           Envoyer
         </Button>
         <Box sx={{ height: "25px" }}></Box>
-
-        <Box sx={{ fontSize: "70%" }}>
-          <Typography sx={{ fontSize: "110%", marginBottom: "2px" }}>
-            Created by <b>{point.userCreateName}</b> the{" "}
-            {getReadableDate(point.createdDate)} at{" "}
-            {getReadableTime(point.createdDate)}
-          </Typography>
-          <Typography sx={{ fontSize: "110%" }}>
-            Last Modified by <b>{point.userUpdateName}</b> the{" "}
-            {getReadableDate(point.modifiedDate)} at{" "}
-            {getReadableTime(point.modifiedDate)}
-          </Typography>
-        </Box>
       </Box>
     </Modal>
   );

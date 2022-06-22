@@ -322,7 +322,8 @@ export const MapSideBar = (props) => {
       userId: user.sub,
     })
       .then((res) => {
-        setTripUserFavorite((previous) => ({ ...previous, id: res.data }));
+        setTripUserFavorite((previous) => ({ ...previous, id: res.data }))
+        props.success("This trip has been added to your favorite");
       })
       .catch((error) => {
         props.error(error);
@@ -333,6 +334,7 @@ export const MapSideBar = (props) => {
     API.delete(`TripUserFavorite/${tripUserFavorite.id}`)
       .then((res) => {
         setTripUserFavorite({});
+        props.success("This trip has been removed from your favorite");
       })
       .catch((error) => {
         props.error(error);

@@ -134,7 +134,7 @@ export const PointModal = (props) => {
             marginBottom: "10px",
           }}
         >
-          EDIT PLACE
+          {props.readonly ? "DETAILS PLACE" : "EDIT PLACE"} 
         </Typography>
         {point.osmId && (
           <>
@@ -154,9 +154,17 @@ export const PointModal = (props) => {
             </Typography>
           </>
         )}
+        <Typography
+          sx={{
+            ...useStyles.typography,
+          }}
+        >
+          Address : <b>{point.address}</b>
+        </Typography>
         {point.osmId && (
           <>
             <TextField
+              disabled={props.readonly}
               id="price"
               label="Price"
               type="number"
@@ -186,6 +194,7 @@ export const PointModal = (props) => {
               }}
             />
             <TextField
+              disabled={props.readonly}
               id="duration"
               name="duration"
               label="Duration"
@@ -217,6 +226,7 @@ export const PointModal = (props) => {
           </>
         )}
         <TextField
+              disabled={props.readonly}
           multiline
           rows={5}
           id="description"
@@ -241,27 +251,34 @@ export const PointModal = (props) => {
             fontSize: "40% !important",
           }}
         />
-        <Button
-          variant="contained"
-          onClick={submitForm}
-          sx={{
-            ...useStyles.button,
-          }}
-        >
-          Envoyer
-        </Button>
-        <Box sx={{ fontSize: "70%" }}>
-          <Typography sx={{ fontSize: "110%", marginBottom: "2px" }}>
-            Created by <b>{point.userCreateName}</b> the{" "}
-            {getReadableDate(point.createdDate)} at{" "}
-            {getReadableTime(point.createdDate)}
-          </Typography>
-          <Typography sx={{ fontSize: "110%" }}>
-            Last Modified by <b>{point.userUpdateName}</b> the{" "}
-            {getReadableDate(point.modifiedDate)} at{" "}
-            {getReadableTime(point.modifiedDate)}
-          </Typography>
-        </Box>
+        {
+          !props.readonly && (
+            <>
+            <Button
+              variant="contained"
+              onClick={submitForm}
+              sx={{
+                ...useStyles.button,
+              }}
+            >
+              Envoyer
+            </Button>
+            <Box sx={{ fontSize: "70%" }}>
+              <Typography sx={{ fontSize: "110%", marginBottom: "2px" }}>
+                Created by <b>{point.userCreateName}</b> the{" "}
+                {getReadableDate(point.createdDate)} at{" "}
+                {getReadableTime(point.createdDate)}
+              </Typography>
+              <Typography sx={{ fontSize: "110%" }}>
+                Last Modified by <b>{point.userUpdateName}</b> the{" "}
+                {getReadableDate(point.modifiedDate)} at{" "}
+                {getReadableTime(point.modifiedDate)}
+              </Typography>
+            </Box>
+            </>
+          )
+        }
+       
       </Box>
     </Modal>
   );

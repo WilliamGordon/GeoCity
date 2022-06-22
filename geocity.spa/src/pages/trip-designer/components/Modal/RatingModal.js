@@ -26,7 +26,9 @@ export const RatingModal = (props) => {
     };
     if (isAuthenticated) {
       if (trip !== undefined) {
-        fetchTripUserRating(trip.id);
+        if(trip.id !== undefined) {
+          fetchTripUserRating(trip.id);
+        }
       }
     }
   }, [trip, user, isAuthenticated]);

@@ -74,6 +74,8 @@ const Input = styled(MuiInput)`
 export const Discover = (props) => {
   // INPUTS STATE
   const [searchValue, setSearchValue] = React.useState();
+  const [day, setDay] = React.useState("");
+
   const [value, setValue] = React.useState(30);
   const [valueRating] = React.useState(2);
 
@@ -85,6 +87,9 @@ export const Discover = (props) => {
   const [loading, setLoading] = React.useState(false);
 
   const submit = () => {
+    if (day) {
+      
+    }
     setLoading(true);
     fetch("https://localhost:44396/api/Trip/Search=" + searchValue)
       .then((response) => response.json())
@@ -162,8 +167,9 @@ export const Discover = (props) => {
                         labelId="demo-simple-select-helper-label"
                         id="demo-simple-select-helper"
                         label="Days"
+                        defaultValue=""
                         onChange={(event, newValue) => {
-                          setValue(
+                          setDay(
                             event.target.value === ""
                               ? ""
                               : Number(event.target.value)

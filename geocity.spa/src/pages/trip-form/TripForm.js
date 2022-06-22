@@ -35,7 +35,7 @@ export const TripForm = () => {
   const { user, isAuthenticated } = useAuth0();
 
   // City input
-  const [selectedCityOption, setSelectedCityOption] = useState([]);
+  const [selectedCityOption, setSelectedCityOption] = useState({});
   const [citySearchBoxValue, setCitySearchBoxValue] = useState("");
   const [options, setOptions] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(0);
@@ -59,7 +59,8 @@ export const TripForm = () => {
 
     if (
       selectedCityOption.label === "" ||
-      selectedCityOption.label === undefined
+      selectedCityOption.label === undefined ||
+      Object.keys(selectedCityOption).length === 0
     ) {
       setSelectedCityError("Please provide a name for your trip");
     } else {
@@ -78,7 +79,7 @@ export const TripForm = () => {
       setTripNbDaysError("");
     }
 
-    if (selectedCityOption && tripName && tripNbDays) {
+    if (Object.keys(selectedCityOption).length !== 0 && tripName && tripNbDays) {
       setOpen(true);
       const requestOptions = {
         method: "POST",

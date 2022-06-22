@@ -38,29 +38,41 @@ export const Points = (props) => {
               id={p.id}
               position={[p.latitude, p.longitude]}
               icon={GetIcon(p.osmId ? "poi" : "poc")}
+              eventHandlers={{
+                click: (e) => {
+                  if(props.readonly) {
+                    props.handleUpdate(p);
+                  }
+                },
+              }}
             >
               {p.osmId && <Tooltip>{p.name}</Tooltip>}
               {(!p.osmId) && <Tooltip>{p.address.slice(0, 25)}</Tooltip>}
-              <Popup className="point-popup">
-                <IconButton
-                  aria-label="delete"
-                  size="small"
-                  onClick={(e) => {
-                    props.handleUpdate(p);
-                  }}
-                  sx={styleButton}
-                >
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-                <IconButton
-                  aria-label="delete"
-                  size="small"
-                  onClick={(e) => props.handleDelete(p)}
-                  sx={styleButton}
-                >
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              </Popup>
+              {
+                !props.readonly && (
+                  <Popup className="point-popup">
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={(e) => {
+                        props.handleUpdate(p);
+                      }}
+                      sx={styleButton}
+                    >
+                      <EditIcon fontSize="inherit" />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={(e) => props.handleDelete(p)}
+                      sx={styleButton}
+                    >
+                      <DeleteIcon fontSize="inherit" />
+                    </IconButton>
+                  </Popup>
+                )
+              }
+              
             </Marker>
           );
         })}

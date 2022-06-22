@@ -70,6 +70,7 @@ export const Map = (props) => {
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
     fetchTrip(tripId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -80,18 +81,21 @@ export const Map = (props) => {
     if (trip.id && !props.readonly) {
       fetchTripUser();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trip, user]);
 
   useEffect(() => {
     if (trip.itinaries) {
       fetchItinary(trip.itinaries[0].id); // Fetch the first itinary by default
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trip]);
 
   useEffect(() => {
     if (pointForUpdate.id) {
       setOpenPointModal(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pointForUpdate]);
 
   useEffect(() => {
@@ -99,6 +103,7 @@ export const Map = (props) => {
       setZoomCluster(true);
       fetchPoints();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itinary]);
 
   useEffect(() => {
@@ -112,6 +117,7 @@ export const Map = (props) => {
       } 
       fetchSuggestions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points]);
 
   useEffect(() => {
@@ -122,40 +128,45 @@ export const Map = (props) => {
         duration: infoForItinaryUpdate.duration,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infoForItinaryUpdate]);
 
   useEffect(() => {
     ZoomInCluster();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   useEffect(() => {
-    if (map && trip) {
-      if (!searchFunctionAdded) {
-        const searchControl = new ELG.Geosearch({
-          position: "topright",
-          placeholder: "Enter an address or place e.g. 1 York St",
-          useMapBounds: false,
-          providers: [
-            ELG.arcgisOnlineProvider({
-              apikey:
-                "AAPKf36f375d73c448b0bb7a68a9759cb2c4EesZUIK2HKA1XeztBxliNBzFL_h6CJJUHcVYzDGlinMiIF5BOrpoTB-iHWA2AwIO",
-              nearby: {
-                lat: trip.city.latitude,
-                lng: trip.city.longitude,
-              },
-            }),
-          ],
-        }).addTo(map);
-        searchControl.on("results", function (data) {
-          setSearchPoint({
-            latitude: data.latlng.lat,
-            longitude: data.latlng.lng,
+    if(!props.readonly) {
+      if (map && trip) {
+        if (!searchFunctionAdded) {
+          const searchControl = new ELG.Geosearch({
+            position: "topright",
+            placeholder: "Enter an address or place e.g. 1 York St",
+            useMapBounds: false,
+            providers: [
+              ELG.arcgisOnlineProvider({
+                apikey:
+                  "AAPKf36f375d73c448b0bb7a68a9759cb2c4EesZUIK2HKA1XeztBxliNBzFL_h6CJJUHcVYzDGlinMiIF5BOrpoTB-iHWA2AwIO",
+                nearby: {
+                  lat: trip.city.latitude,
+                  lng: trip.city.longitude,
+                },
+              }),
+            ],
+          }).addTo(map);
+          searchControl.on("results", function (data) {
+            setSearchPoint({
+              latitude: data.latlng.lat,
+              longitude: data.latlng.lng,
+            });
           });
-        });
-        setSearchFunctionAdded(true);
+          setSearchFunctionAdded(true);
+        }
       }
     }
-  }, [map, trip]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, trip, props.readonly]);
 
   // MAP ACTION
   const ZoomInCluster = () => {

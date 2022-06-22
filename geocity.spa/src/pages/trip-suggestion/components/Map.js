@@ -30,12 +30,14 @@ export const Map = (props) => {
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
     fetchCity(cityId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (city.id) {
       fetchPoints();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city]);
 
   useEffect(() => {
@@ -45,16 +47,19 @@ export const Map = (props) => {
         setZoomCluster(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points, zoomCluster]);
 
   useEffect(() => {
     if (pointForUpdate.id) {
       setOpenPointModal(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pointForUpdate]);
 
   useEffect(() => {
     ZoomInCluster();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   // MAP ACTION
@@ -126,6 +131,7 @@ export const Map = (props) => {
           category: POI.features[0].properties.category,
           latitude: POI.features[0].geometry.coordinates[1],
           longitude: POI.features[0].geometry.coordinates[0],
+          address: POI.features[0].properties.display_name,
           cityId: city.id,
         });
       })
