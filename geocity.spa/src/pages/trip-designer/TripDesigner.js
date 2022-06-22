@@ -35,7 +35,7 @@ export const TripDesigner = () => {
           setOpenBuffer(false);
         });
     }
-  }, [user]);
+  }, [user, isAuthenticated, tripId]);
 
   return (
     <>

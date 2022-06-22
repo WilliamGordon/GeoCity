@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Modal, TextField, Button } from "@mui/material";
+import { Box, Typography, Modal, TextField } from "@mui/material";
 
 export const ShareModal = (props) => {
-  const [link, setLink] = useState({});
+  const [link, setLink] = useState("");
 
   useEffect(() => {
-    setLink({ ...props.link });
+    setLink(props.link);
   }, [props.link]);
 
   return (
@@ -38,7 +38,7 @@ export const ShareModal = (props) => {
           label="Link"
           type="text"
           autoComplete="off"
-          value={"http://localhost:3000/trip-subscriber/" + props.link}
+          value={"http://localhost:3000/trip-subscriber/" + link}
           required
           fullWidth
           sx={{

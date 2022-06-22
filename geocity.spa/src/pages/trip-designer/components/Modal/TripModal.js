@@ -5,7 +5,6 @@ import {
   Modal,
   TextField,
   Button,
-  InputAdornment,
 } from "@mui/material";
 import API from "../../../../common/API/API";
 
@@ -40,12 +39,10 @@ const useStyles = {
 
 export const TripModal = (props) => {
   const [name, setName] = useState();
-  const [days, setDays] = useState();
   const [description, setDescription] = useState();
 
   useEffect(() => {
     setName(props.trip.name);
-    setDays(props.trip.days);
     setDescription(props.trip.description);
   }, [props.trip]);
 
@@ -57,11 +54,11 @@ export const TripModal = (props) => {
     })
       .then((res) => {
         props.refreshTrip(props.trip.id);
-        props.success();
+        props.success("Trip information successfully updated !");
         props.close();
       })
       .catch((error) => {
-        props.error();
+        props.error(error);
         props.close();
       });
   };

@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Grid, Box, Tabs, Paper, Tab } from "@mui/material";
-import MuiInput from "@mui/material/Input";
-import { styled } from "@mui/material/styles";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PeopleIcon from "@mui/icons-material/People";
 import { Link } from "react-router-dom";

@@ -1,12 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useMapEvents, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import {
   Button,
-  Backdrop,
-  CircularProgress,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 
 const styleButton = {
@@ -38,7 +34,6 @@ export const Pointer = (props) => {
   }, [props.searchPoint]);
 
   useEffect(() => {
-    console.log("SEARCH POINT: ", searchPoint);
     if (searchPoint.latitude) {
       setPoint({
         latitude: searchPoint.latitude,
@@ -46,10 +41,6 @@ export const Pointer = (props) => {
       });
     }
   }, [searchPoint]);
-
-  useEffect(() => {
-    console.log("POINT : ", point);
-  }, [point]);
 
   useMapEvents({
     click(e) {

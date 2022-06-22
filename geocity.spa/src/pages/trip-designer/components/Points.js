@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Marker, Popup, Tooltip } from "react-leaflet";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -41,7 +40,7 @@ export const Points = (props) => {
               icon={GetIcon(p.osmId ? "poi" : "poc")}
             >
               {p.osmId && <Tooltip>{p.name}</Tooltip>}
-              {!p.osmId && <Tooltip>Step #{p.id.slice(0, 5)}</Tooltip>}
+              {(!p.osmId) && <Tooltip>{p.address.slice(0, 25)}</Tooltip>}
               <Popup className="point-popup">
                 <IconButton
                   aria-label="delete"

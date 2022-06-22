@@ -1,12 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useState } from "react";
 import { useMapEvents, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import {
   Button,
-  Backdrop,
-  CircularProgress,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 
 const styleButton = {

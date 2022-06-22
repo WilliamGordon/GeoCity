@@ -69,7 +69,6 @@ export const Map = (props) => {
           ]);
         })
         .catch((rejected) => {
-          console.log(rejected);
         });
     }
   }, [itinary]);
@@ -85,7 +84,6 @@ export const Map = (props) => {
     itinaries.forEach((itinary) => {
       if (itinary.id == id) {
         setItinary(itinary);
-        console.log(itinary);
       }
     });
   };
@@ -95,7 +93,6 @@ export const Map = (props) => {
       const isEmpty =
         Object.keys(featureGroupRef.current.getBounds()).length === 0;
       if (!isEmpty) {
-        console.log(featureGroupRef.current.getBounds());
         map.fitBounds(featureGroupRef.current.getBounds());
       }
     }

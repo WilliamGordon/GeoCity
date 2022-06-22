@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import MapSideBar from "./MapSideBar";
 import Pointer from "./Pointer";
 import Points from "./Points";
@@ -27,7 +26,6 @@ export const Map = (props) => {
   const [map, setMap] = useState(null);
   const featureGroupRef = useRef();
   const { cityId } = useParams();
-  const { user } = useAuth0();
 
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
@@ -47,7 +45,7 @@ export const Map = (props) => {
         setZoomCluster(false);
       }
     }
-  }, [points]);
+  }, [points, zoomCluster]);
 
   useEffect(() => {
     if (pointForUpdate.id) {
@@ -122,7 +120,6 @@ export const Map = (props) => {
     )
       .then((response) => response.json())
       .then((POI) => {
-        console.log(POI);
         postPointOfInterest({
           osmId: POI.features[0].properties.osm_id.toString(),
           name: POI.features[0].properties.name,
@@ -133,21 +130,17 @@ export const Map = (props) => {
         });
       })
       .catch((rejected) => {
-        console.log(rejected);
       });
   };
 
   const postPointOfInterest = (poi) => {
-    console.log(poi);
     API.post(`PointOfInterest`, poi)
       .then((res) => {
         // REFRESH POINTS
-        console.log(res);
         fetchPoints();
         setOpenSuccessNotif(true);
       })
       .catch((error) => {
-        console.log(error);
         setOpenErrorNotif(true);
       });
   };

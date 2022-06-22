@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import {
@@ -67,7 +66,6 @@ export const PointModal = (props) => {
   const [point, setPoint] = useState({});
   const [isSuggestion, setIsSuggestion] = useState(false);
 
-  const { user } = useAuth0();
   useEffect(() => {
     setPoint({ ...props.point });
   }, [props.point]);
@@ -87,20 +85,17 @@ export const PointModal = (props) => {
   };
 
   const submitForm = () => {
-    console.log("SUBMIT");
     API.put(`PointOfInterest`, {
       id: point.id,
       isSuggestion: isSuggestion,
     })
       .then((res) => {
-        console.log("SUCCES PUT");
         props.refreshPoints();
-        props.success();
+        props.success("The suggestion has been added to your trip !");
         props.close();
       })
       .catch((error) => {
-        console.log("ERROR", error);
-        props.error();
+        props.error(error);
         props.close();
       });
   };

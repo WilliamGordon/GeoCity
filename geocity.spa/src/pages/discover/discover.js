@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Trips from "./components/Trips";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -17,7 +17,6 @@ import {
   Select,
   MenuItem,
   Rating,
-  Backdrop,
   CircularProgress,
 } from "@mui/material";
 import EuroIcon from "@mui/icons-material/Euro";
@@ -76,7 +75,7 @@ export const Discover = (props) => {
   // INPUTS STATE
   const [searchValue, setSearchValue] = React.useState();
   const [value, setValue] = React.useState(30);
-  const [valueRating, setValueRating] = React.useState(2);
+  const [valueRating] = React.useState(2);
 
   // RETRIEVED DATA
   const [trips, setTrips] = React.useState([]);
@@ -92,7 +91,6 @@ export const Discover = (props) => {
       .then((tripsData) => {
         setLoading(false);
         setTrips([...tripsData]);
-        console.log(tripsData);
       })
       .catch((rejected) => {
         setLoading(false);
@@ -124,7 +122,7 @@ export const Discover = (props) => {
               placeholder="Explore your city of choice"
               value={searchValue ? searchValue : ""}
               onKeyDown={(e) => {
-                if (e.keyCode == 13) {
+                if (e.keyCode === 13) {
                   e.preventDefault();
                   submit();
                 }

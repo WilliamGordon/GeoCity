@@ -28,7 +28,15 @@ namespace geocity.api.Controllers
         [HttpGet("GetTripOverview/{link}")]
         public async Task<ActionResult<TripOverviewDto>> GetTripOverview(Guid link)
         {
-            return await Mediator.Send(new GetTripOverviewQuery { Link = link });
+            try
+            {
+                return await Mediator.Send(new GetTripOverviewQuery { Link = link });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("Search={searchString}")]
@@ -58,15 +66,31 @@ namespace geocity.api.Controllers
         }
 
         [HttpGet("GetMyTrip/{userId}")]
-        public async Task<List<TripOverviewDto>> GetMyTrip(string userId)
+        public async Task<ActionResult<List<TripOverviewDto>>> GetMyTrip(string userId)
         {
-            return await Mediator.Send(new GetAllTripForUserQuery { UserId = userId });
+            try
+            {
+                return await Mediator.Send(new GetAllTripForUserQuery { UserId = userId });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetFavoriteTrip/{userId}")]
-        public async Task<List<TripOverviewDto>> GetFavoriteTrip(string userId)
+        public async Task<ActionResult<List<TripOverviewDto>>> GetFavoriteTrip(string userId)
         {
-            return await Mediator.Send(new GetAllTripFavoriteForUserQuerry { UserId = userId });
+            try
+            {
+                return await Mediator.Send(new GetAllTripFavoriteForUserQuerry { UserId = userId });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]

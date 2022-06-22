@@ -58,21 +58,21 @@ export const TripForm = () => {
     setApiErrorMsg("");
 
     if (
-      selectedCityOption.label == "" ||
-      selectedCityOption.label == undefined
+      selectedCityOption.label === "" ||
+      selectedCityOption.label === undefined
     ) {
       setSelectedCityError("Please provide a name for your trip");
     } else {
       setSelectedCityError("");
     }
 
-    if (tripName == "") {
+    if (tripName === "") {
       setTripNameError("Please provide a name for your trip");
     } else {
       setTripNameError("");
     }
 
-    if (tripNbDays == "") {
+    if (tripNbDays === "") {
       setTripNbDaysError("Please provide a name for your trip");
     } else {
       setTripNbDaysError("");
@@ -155,7 +155,7 @@ export const TripForm = () => {
                   }
                 }}
                 onBlur={(event) => {
-                  if (event.target.value == "") {
+                  if (event.target.value === "") {
                     setSelectedCityError("Please provide a name for your trip");
                   } else {
                     setSelectedCityError("");
@@ -172,15 +172,10 @@ export const TripForm = () => {
                       let cities = await provider.search({
                         query: newInputValue,
                       });
-                      cities = cities.filter(
-                        (city) =>
-                          city.raw.type === "city" ||
-                          city.raw.type === "administrative"
-                      );
                       setOptions(
                         cities.map((city) => ({
                           value: JSON.stringify(city),
-                          label: city.label.split(",")[0],
+                          label: city.label,
                         }))
                       );
                     }, 1000)
@@ -216,7 +211,7 @@ export const TripForm = () => {
                   setTripName(event.target.value);
                 }}
                 onBlur={(event) => {
-                  if (event.target.value == "") {
+                  if (event.target.value === "") {
                     setTripNameError("Please provide a name for your trip");
                   } else {
                     setTripNameError("");
@@ -245,14 +240,14 @@ export const TripForm = () => {
                   label="Number of days"
                   onChange={(event) => {
                     setTripNbDays(event.target.value);
-                    if (event.target.value == "") {
+                    if (event.target.value === "") {
                       setTripNbDaysError("Please provide a name for your trip");
                     } else {
                       setTripNbDaysError("");
                     }
                   }}
                   onBlur={(event) => {
-                    if (event.target.value == "") {
+                    if (event.target.value === "") {
                       setTripNbDaysError("Please provide a name for your trip");
                     } else {
                       setTripNbDaysError("");

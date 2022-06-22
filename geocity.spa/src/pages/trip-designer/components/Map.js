@@ -25,7 +25,6 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import API from "../../../common/API/API";
 import * as ELG from "esri-leaflet-geocoder";
 import "./Map.css";
-import L from "leaflet";
 import "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css";
 
 const styleBorder = {
@@ -53,7 +52,10 @@ export const Map = (props) => {
   const [openBuffer, setOpenBuffer] = React.useState(false);
   const [isRouteGenerated, setIsRouteGenerated] = useState(false);
   const [openSuccessNotif, setOpenSuccessNotif] = React.useState(false);
+  const [successNotif, setSuccessNotif] = React.useState(false);
   const [openErrorNotif, setOpenErrorNotif] = React.useState(false);
+  const [errorNotif, setErrorNotif] = React.useState(false);
+
   const [zoomCluster, setZoomCluster] = React.useState(true);
   const [expandedSuggestion, setexpandedSuggestion] = React.useState(false);
   const [searchFunctionAdded, setSearchFunctionAdded] = React.useState(false);
@@ -105,6 +107,9 @@ export const Map = (props) => {
         ZoomInCluster();
         setZoomCluster(false);
       }
+      if(trip.isPublished) {
+        generateRoute();
+      } 
       fetchSuggestions();
     }
   }, [points]);
@@ -141,9 +146,7 @@ export const Map = (props) => {
             }),
           ],
         }).addTo(map);
-        // const results = new L.LayerGroup().addTo(map);
         searchControl.on("results", function (data) {
-          console.log(data);
           setSearchPoint({
             latitude: data.latlng.lat,
             longitude: data.latlng.lng,
@@ -180,7 +183,6 @@ export const Map = (props) => {
     )
       .then((response) => response.json())
       .then((POI) => {
-        console.log(POI);
         postPointOfCrossing({
           userCreateId: user.sub,
           itinaryId: itinary.id,
@@ -193,7 +195,6 @@ export const Map = (props) => {
         });
       })
       .catch((rejected) => {
-        console.log(rejected);
       });
   };
 
@@ -222,7 +223,6 @@ export const Map = (props) => {
         });
       })
       .catch((rejected) => {
-        console.log(rejected);
       });
   };
 
@@ -239,16 +239,15 @@ export const Map = (props) => {
   // DELETE POINTS
   const handleDelete = (point) => {
     if (point.osmId) {
-      deletePointOfInterest(point.id);
+      deletePointOfInterest(point.id, point.modifiedDate);
     } else {
-      deletePointOfCrossing(point.id);
+      deletePointOfCrossing(point.id, point.modifiedDate);
     }
   };
 
   // ROUTING NEW
   const generateRoute = () => {
-    if (isRouteGenerated == false) {
-      console.log("FROM GENERATE : " + itinary.day);
+    if (isRouteGenerated === false) {
       createRoute();
     } else {
       deleteRoute();
@@ -264,14 +263,11 @@ export const Map = (props) => {
       waypoints.forEach((ip) => {
         itiplace.push([ip.latitude, ip.longitude]);
       });
-      console.log(points);
-      console.log(itiplace);
       routingMachine.current.setWaypoints(itiplace);
     }
   };
 
   const deleteRoute = () => {
-    console.log("DELETE ROUTE");
     if (routingMachine.current) {
       routingMachine.current.setWaypoints([]);
       setIsRouteGenerated(false);
@@ -279,7 +275,9 @@ export const Map = (props) => {
   };
 
   const getInfoRoute = (e) => {
-    setInfoForItinaryUpdate(e);
+    if (!trip.isPublished) {
+      setInfoForItinaryUpdate(e);
+    }
     setIsRouteGenerated(true);
   };
 
@@ -287,6 +285,22 @@ export const Map = (props) => {
     deleteRoute();
     fetchItinary(id);
   };
+
+  const handleSuccess = (msg) => {
+    setOpenSuccessNotif(true);
+    setSuccessNotif(msg)
+  } 
+
+  const handleError = (err) => {
+    setOpenErrorNotif(true);
+    var errorMsg = "";
+    if(err.request) {
+      if (err.request.responseText) {
+        errorMsg = err.request.responseText;
+      }
+    }
+    setErrorNotif(errorMsg)
+  } 
 
   // GET API CALLS
   const fetchTrip = (id) => {
@@ -357,7 +371,7 @@ export const Map = (props) => {
         });
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+        handleError(error);
       });
   };
 
@@ -374,7 +388,7 @@ export const Map = (props) => {
         );
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+        handleError(error);
       });
   };
 
@@ -396,7 +410,7 @@ export const Map = (props) => {
         );
       })
       .catch((error) => {
-        console.error("There was an error!", error);
+        handleError(error);
       });
   };
 
@@ -406,74 +420,73 @@ export const Map = (props) => {
       .then((res) => {
         // REFRESH POINTS
         fetchPoints();
-        setOpenSuccessNotif(true);
+        handleSuccess("The point was correctly added to your itinary");
       })
       .catch((error) => {
-        setOpenErrorNotif(true);
+        handleError(error);
       });
   };
 
   const postAddSuggestions = (suggestion) => {
-    console.log(suggestion);
     API.post(`ItinaryPointOfInterest/AddSuggestion`, suggestion)
       .then((res) => {
         // REFRESH POINTS
         fetchPoints();
-        setOpenSuccessNotif(true);
+        handleSuccess("Suggestion correctly added to your itinary");
       })
       .catch((error) => {
-        setOpenErrorNotif(true);
+        handleError(error);
       });
   };
 
   const postPointOfCrossing = (poc) => {
-    console.log(poc);
     API.post(`ItinaryPointOfCrossing`, poc)
       .then((res) => {
         // REFRESH POINTS
         fetchPoints();
-        setOpenSuccessNotif(true);
+        handleSuccess("The point has been correctly added to your itinary !");
       })
       .catch((error) => {
-        setOpenErrorNotif(true);
+        handleError(error);
       });
   };
 
   // PUT API CALLS
   const putItinary = (itinaryForUpdate) => {
-    console.log("UPDATE : ", itinaryForUpdate);
     if (itinaryForUpdate.distance !== undefined) {
       API.put(`Itinary`, itinaryForUpdate)
         .then((res) => {
           fetchItinary(itinary.id);
-          setOpenSuccessNotif(true);
+          handleSuccess("The itinary was correctly updated !");
         })
         .catch((error) => {
-          setOpenErrorNotif(true);
+          handleError(error);
         });
     }
   };
 
   // DELETE API CALLS
-  const deletePointOfInterest = (id) => {
-    API.delete(`ItinaryPointOfInterest/${id}`)
+  const deletePointOfInterest = (id, modifiedDate) => {
+    API.delete(`ItinaryPointOfInterest/${id}/${modifiedDate}`)
       .then((res) => {
         fetchPoints();
-        setOpenSuccessNotif(true);
+        handleSuccess("The point was correctly deleted !");
       })
       .catch((error) => {
-        setOpenErrorNotif(true);
+        fetchItinary(itinary.id);
+        handleError(error);
       });
   };
 
-  const deletePointOfCrossing = (id) => {
-    API.delete(`ItinaryPointOfCrossing/${id}`)
+  const deletePointOfCrossing = (id, modifiedDate) => {
+    API.delete(`ItinaryPointOfCrossing/${id}/${modifiedDate}`)
       .then((res) => {
         fetchPoints();
-        setOpenSuccessNotif(true);
+        handleSuccess("The point was correctly deleted !");
       })
       .catch((error) => {
-        setOpenErrorNotif(true);
+        fetchItinary(itinary.id);
+        handleError(error);
       });
   };
 
@@ -483,9 +496,10 @@ export const Map = (props) => {
         <>
           <Snackbar
             open={openSuccessNotif}
-            autoHideDuration={1000}
+            autoHideDuration={3000}
             onClose={() => {
               setOpenSuccessNotif(false);
+              setSuccessNotif("");
             }}
             anchorOrigin={{
               vertical: "top",
@@ -498,19 +512,21 @@ export const Map = (props) => {
             <Alert
               onClose={() => {
                 setOpenSuccessNotif(false);
+                setSuccessNotif("");
               }}
               severity="success"
               sx={{ width: "100%" }}
               variant="filled"
             >
-              The point was correctly added !
+              {successNotif ? successNotif : ""}
             </Alert>
           </Snackbar>
           <Snackbar
             open={openErrorNotif}
-            autoHideDuration={1000}
+            autoHideDuration={3000}
             onClose={() => {
               setOpenErrorNotif(false);
+              setErrorNotif("");
             }}
             anchorOrigin={{
               vertical: "top",
@@ -523,12 +539,13 @@ export const Map = (props) => {
             <Alert
               onClose={() => {
                 setOpenErrorNotif(false);
+                setErrorNotif("");
               }}
               severity="error"
               sx={{ width: "100%" }}
               variant="filled"
             >
-              Oups something went wrong !
+              {errorNotif ? errorNotif : "Oups something went wrong !"}
             </Alert>
           </Snackbar>
           <MapSideBar
@@ -542,11 +559,11 @@ export const Map = (props) => {
             generateRoute={generateRoute}
             isRouteGenerated={isRouteGenerated}
             handleUpdate={handleUpdate}
-            success={() => {
-              setOpenSuccessNotif(true);
+            success={(msg) => {
+              handleSuccess(msg);
             }}
-            error={() => {
-              setOpenErrorNotif(true);
+            error={(msg) => {
+              handleError(msg);
             }}
           />
           <MapContainer
@@ -602,7 +619,6 @@ export const Map = (props) => {
                   position: "fixed",
                   left: "74%",
                   bottom: "2%",
-                  backgroundColor: "#eceff1",
                   overflow: "auto",
                   marginTop: "15px",
                 }}
@@ -626,7 +642,6 @@ export const Map = (props) => {
                     },
                   }}
                   onClick={(e) => {
-                    console.log("test");
                     setexpandedSuggestion(!expandedSuggestion);
                   }}
                 >
@@ -640,11 +655,12 @@ export const Map = (props) => {
                   >
                     {suggestions.length !== 0 &&
                       suggestions.map((item, index) => (
-                        <ListItem sx={styleBorder}>
+                        <ListItem sx={styleBorder} key={index}>
                           <ListItemIcon>
                             <ExploreIcon fontSize="small" />
                           </ListItemIcon>
                           <Typography
+                            component={'span'}
                             sx={{
                               paddingTop: "5px",
                               fontSize: "0.790rem",
@@ -692,7 +708,6 @@ export const Map = (props) => {
                               },
                             }}
                             onClick={(e) => {
-                              console.log(e);
                               var p = {
                                 itinaryId: itinary.id,
                                 pointOfInterestId: item.id,
@@ -716,11 +731,11 @@ export const Map = (props) => {
             close={handleClosePointModal}
             point={pointForUpdate}
             refreshPoints={fetchPoints}
-            success={() => {
-              setOpenSuccessNotif(true);
+            success={(msg) => {
+              handleSuccess(msg);
             }}
-            error={() => {
-              setOpenErrorNotif(true);
+            error={(msg) => {
+              handleError(msg);
             }}
           />
         </>

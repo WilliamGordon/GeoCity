@@ -8,7 +8,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useParams } from "react-router-dom";
 
 import Map from "./components/Map";
 
@@ -16,7 +15,6 @@ export const TripSuggestion = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
   const [openBuffer, setOpenBuffer] = React.useState(false);
-  const { cityId } = useParams();
   const { user, isAuthenticated } = useAuth0();
   useEffect(() => {
     setOpenBuffer(true);
@@ -29,7 +27,7 @@ export const TripSuggestion = () => {
         setOpenBuffer(false);
       }
     }
-  }, [user]);
+  }, [user, isAuthenticated]);
 
   return (
     <>

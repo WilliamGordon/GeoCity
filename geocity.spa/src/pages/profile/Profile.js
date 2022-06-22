@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Card, Typography, CardContent, Avatar } from "@mui/material";
 
 const Profile = () => {
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log(user);
-    }
-  }, [user]);
+  const { user } = useAuth0();
 
   return (
     <>

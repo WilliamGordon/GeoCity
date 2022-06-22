@@ -73,12 +73,12 @@ namespace geocity.api.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(Guid id)
+        [HttpDelete("{id}/{modifiedDate}")]
+        public async Task<ActionResult> DeleteAsync(Guid id, DateTime modifiedDate)
         {
             try
             {
-                return Ok(await Mediator.Send(new DeleteItinaryPointOfInterestCommand { Id = id }));
+                return Ok(await Mediator.Send(new DeleteItinaryPointOfInterestCommand { Id = id, ModifiedDate = modifiedDate }));
             }
             catch (Exception ex)
             {

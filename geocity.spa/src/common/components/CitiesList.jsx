@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import CityCard from "./CityCard";
 
 export const CitiesList = (props) => {

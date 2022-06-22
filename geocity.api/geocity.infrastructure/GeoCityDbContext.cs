@@ -136,6 +136,30 @@ namespace geocity.infrastructure
                 .Property(p => p.Longitude).HasPrecision(38, 18);
 
             modelBuilder.Entity<Trip>().Property(x => x.Link).HasDefaultValueSql("NEWID()");
+
+            modelBuilder.Entity<City>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Itinary>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfCrossing>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfCrossing>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfInterest>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Trip>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUser>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserFavorite>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserRating>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<User>().Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+
+            modelBuilder.Entity<City>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Itinary>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfCrossing>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<ItinaryPointOfInterest>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PointOfCrossing>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<Trip>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUser>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserFavorite>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<TripUserRating>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<User>().Property(p => p.ModifiedDate).HasDefaultValueSql("GETDATE()");
         }
     }
 }

@@ -28,7 +28,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import ShareIcon from "@mui/icons-material/Share";
 import PublishIcon from "@mui/icons-material/Publish";
 import GroupIcon from "@mui/icons-material/Group";
-import SearchPointModal from "./Modal/SearchPointModal";
 import ItinaryModal from "./Modal/ItinaryModal";
 import PublishModal from "./Modal/PublishModal";
 import ShareModal from "./Modal/ShareModal";
@@ -132,7 +131,6 @@ export const MapSideBar = (props) => {
   const [totalDistance, setTotalDistance] = React.useState();
 
   // STATE COSMETICS
-  const [openSearchPointModal, setOpenSearchPointModal] = React.useState(false);
   const [openItinaryModal, setOpenItinaryModal] = React.useState(false);
   const [openPublishModal, setOpenPublishModal] = React.useState(false);
   const [openShareModal, setOpenShareModal] = React.useState(false);
@@ -154,7 +152,6 @@ export const MapSideBar = (props) => {
 
   useEffect(() => {
     setPoints(props.points);
-    console.log(points);
   }, [props.points]);
 
   useEffect(() => {
@@ -195,17 +192,23 @@ export const MapSideBar = (props) => {
   }, [trip, itinary, points]);
 
   useEffect(() => {
+    const fetchTripUserFavorite = () => {
+      API.get(`TripUserFavorite/${trip.id}/${user.sub}`)
+        .then((res) => {
+          setTripUserFavorite(res.data);
+        })
+        .catch((error) => {
+        });
+    };
+
     if (props.readonly) {
       if (trip.id && isAuthenticated) {
         fetchTripUserFavorite();
       }
     }
-  }, [trip, user]);
+  }, [trip, user, isAuthenticated, props.readonly]);
 
   // MODAL HANDLING
-  const handleOpenSearchPointModal = () => {
-    setOpenSearchPointModal(true);
-  };
   const handleOpenItinaryModal = () => {
     setOpenItinaryModal(true);
   };
@@ -226,9 +229,6 @@ export const MapSideBar = (props) => {
     setOpenRatingModal(true);
   };
 
-  const handleCloseSearchPointModal = () => {
-    setOpenSearchPointModal(false);
-  };
   const handleCloseItinaryModal = () => {
     setOpenItinaryModal(false);
   };
@@ -275,12 +275,11 @@ export const MapSideBar = (props) => {
   const postItinary = (itinary) => {
     API.post(`Itinary`, itinary)
       .then((res) => {
-        props.success();
+        props.success("The itinary was successfully created !");
         props.refreshTrip(trip.id);
       })
       .catch((error) => {
-        props.error();
-        console.error("There was an error!", error);
+        props.error(error);
       });
   };
 
@@ -288,7 +287,7 @@ export const MapSideBar = (props) => {
   const updatePositionPointOfInterest = (poi, result) => {
     API.put(`ItinaryPointOfInterest/UpdatePosition`, poi)
       .then((res) => {
-        props.success();
+        props.success("Position updated !");
         const items = reorder(
           points,
           result.source.index,
@@ -297,15 +296,14 @@ export const MapSideBar = (props) => {
         setPoints([...items]);
       })
       .catch((error) => {
-        props.error();
-        console.error("There was an error!", error);
+        props.error(error);
       });
   };
 
   const updatePositionPointOfCrossing = (poc, result) => {
     API.put(`ItinaryPointOfCrossing/UpdatePosition`, poc)
       .then((res) => {
-        props.success();
+        props.success("Position updated !");
         const items = reorder(
           points,
           result.source.index,
@@ -314,19 +312,7 @@ export const MapSideBar = (props) => {
         setPoints([...items]);
       })
       .catch((error) => {
-        props.error();
-        console.error("There was an error!", error);
-      });
-  };
-
-  const fetchTripUserFavorite = () => {
-    API.get(`TripUserFavorite/${trip.id}/${user.sub}`)
-      .then((res) => {
-        console.log(res);
-        setTripUserFavorite(res.data);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
+        props.error(error);
       });
   };
 
@@ -336,24 +322,20 @@ export const MapSideBar = (props) => {
       userId: user.sub,
     })
       .then((res) => {
-        console.log("ADDDING SUCCESS", res);
         setTripUserFavorite((previous) => ({ ...previous, id: res.data }));
       })
       .catch((error) => {
-        props.error();
-        console.error("There was an error!", error);
+        props.error(error);
       });
   };
 
   const deleteTripUserFavorite = () => {
     API.delete(`TripUserFavorite/${tripUserFavorite.id}`)
       .then((res) => {
-        console.log("DELETION SUCCESS", res);
         setTripUserFavorite({});
       })
       .catch((error) => {
-        props.error();
-        console.error("There was an error!", error);
+        props.error(error);
       });
   };
 
@@ -501,7 +483,7 @@ export const MapSideBar = (props) => {
                     marginTop: "5px !important",
                     marginBottom: "2px !important",
                     marginLeft: "10px !important",
-                    color: itinary.id == p.id ? "#ffffff" : "#9fafce",
+                    color: itinary.id === p.id ? "#ffffff" : "#9fafce",
                     backgroundColor: "#10377a",
                     fontSize: "0.680rem",
                     height: "17px",
@@ -727,15 +709,6 @@ export const MapSideBar = (props) => {
         </Paper>
         {!props.readonly && (
           <>
-            <Button
-              variant="contained"
-              sx={styleButton}
-              onClick={(e) => {
-                handleOpenSearchPointModal();
-              }}
-            >
-              Add new step
-            </Button>
             <Box sx={{ flexGrow: 1 }}></Box>
             <Button
               onClick={() => props.generateRoute()}
@@ -750,15 +723,6 @@ export const MapSideBar = (props) => {
       </Drawer>
       {!props.readonly && (
         <>
-          <SearchPointModal
-            trip={trip}
-            itinary={itinary}
-            open={openSearchPointModal}
-            close={handleCloseSearchPointModal}
-            refreshTrip={props.refreshTrip}
-            success={props.success}
-            error={props.error}
-          />
           <ItinaryModal
             trip={trip}
             itinary={itinary}

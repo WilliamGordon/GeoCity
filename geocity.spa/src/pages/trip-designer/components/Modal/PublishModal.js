@@ -13,7 +13,7 @@ import API from "../../../../common/API/API";
 export const PublishModal = (props) => {
   const [trip, setTrip] = useState({});
   const [publishTrip, setPublishTrip] = useState(false);
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
 
   useEffect(() => {
     setTrip(props.trip);
@@ -42,12 +42,12 @@ export const PublishModal = (props) => {
         // NOTIF SUCCESS
         // REFRESH TRIP
         props.refreshTrip(trip.id);
-        props.success();
+        props.success("You trip was successfully published");
         props.close();
       })
       .catch((error) => {
         // NOTIF ERROR
-        props.error();
+        props.error(error);
         props.close();
       });
   };

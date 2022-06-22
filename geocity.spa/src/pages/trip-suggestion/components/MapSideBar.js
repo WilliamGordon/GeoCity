@@ -1,50 +1,15 @@
 import React, { useState, useEffect } from "react";
-import PushPinIcon from "@mui/icons-material/PushPin";
 import ExploreIcon from "@mui/icons-material/Explore";
-import EuroIcon from "@mui/icons-material/Euro";
-import StraightenIcon from "@mui/icons-material/Straighten";
-import WatchIcon from "@mui/icons-material/Watch";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
-  Box,
   Card,
-  CardContent,
-  Chip,
   Drawer,
   Toolbar,
   Typography,
-  Button,
-  List,
   Divider,
   ListItem,
   ListItemIcon,
   Paper,
-  Grid,
-  IconButton,
-  Rating,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ShareIcon from "@mui/icons-material/Share";
-import PublishIcon from "@mui/icons-material/Publish";
-import GroupIcon from "@mui/icons-material/Group";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import GradeIcon from "@mui/icons-material/Grade";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useAuth0 } from "@auth0/auth0-react";
-import API from "../../../common/API/API";
-
-const styleButtonEdit = {
-  marginTop: "5px",
-  marginLeft: "10px",
-  marginBottom: "15px !important",
-  color: "#9fafce",
-  backgroundColor: "#10377a",
-  "&:hover": {
-    backgroundColor: "#10377a",
-    color: "red",
-  },
-};
 
 const styleDrawer = {
   width: "33%",
@@ -67,20 +32,6 @@ const styleTypography = {
   margin: "0 auto",
 };
 
-const styleButton = {
-  marginBottom: "15px !important",
-  color: "#9fafce",
-  backgroundColor: "#10377a",
-  fontSize: "70%",
-  height: "30px",
-  width: "90%",
-  margin: "0 auto",
-  "&:hover": {
-    backgroundColor: "#10377a",
-    color: "#ffffff",
-  },
-};
-
 const styleBorder = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
@@ -89,37 +40,10 @@ const styleBorder = {
   marginBottom: "4px !important",
 };
 
-const styleItinaries = {
-  margin: "0 auto",
-  width: "90%",
-};
-
-const getListStyle = (isDraggingOver) => ({
-  width: "98%",
-});
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
-
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
-
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result;
-};
-
 export const MapSideBar = (props) => {
   // STATE FOR DATA
   const [city, setCity] = React.useState({});
   const [points, setPoints] = useState([]);
-
-  // OTHERS
-  const { user, isAuthenticated } = useAuth0();
 
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {

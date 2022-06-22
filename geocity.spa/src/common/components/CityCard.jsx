@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { red } from "@mui/material/colors";
 import {
   Card,
@@ -7,14 +6,9 @@ import {
   Chip,
   Box,
   Grid,
-  Rating,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import WatchIcon from "@mui/icons-material/Watch";
-import EuroIcon from "@mui/icons-material/Euro";
-import StraightenIcon from "@mui/icons-material/Straighten";
 import { getReadableDate, getReadableTime } from "../helpers/utils";
 
 const styleButton = {

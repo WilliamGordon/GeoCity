@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
 import { red } from "@mui/material/colors";
 import {
   Card,
-  CardHeader,
   Avatar,
   Button,
   Chip,

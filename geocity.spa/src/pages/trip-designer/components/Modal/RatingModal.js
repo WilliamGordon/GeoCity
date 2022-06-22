@@ -14,50 +14,45 @@ export const RatingModal = (props) => {
   }, [props.trip]);
 
   useEffect(() => {
+    const fetchTripUserRating = (id) => {
+      API.get(`TripUserRating/${id}/${user.sub}`)
+        .then((res) => {
+          setTripUserRating(res.data);
+          setRating(res.data.rating);
+        })
+        .catch((error) => {
+          console.error("There was an error!", error);
+        });
+    };
     if (isAuthenticated) {
       if (trip !== undefined) {
         fetchTripUserRating(trip.id);
       }
     }
-  }, [trip, user]);
-
-  const fetchTripUserRating = (id) => {
-    API.get(`TripUserRating/${id}/${user.sub}`)
-      .then((res) => {
-        setTripUserRating(res.data);
-        setRating(res.data.rating);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  };
+  }, [trip, user, isAuthenticated]);
 
   const postTripUserRating = (tur) => {
-    console.log(tur);
     API.post(`TripUserRating`, tur)
       .then((res) => {
         setRating(tur.rating);
         setTripUserRating((previous) => tur);
-        props.success();
+        props.success("Your rating has been added !");
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-        props.error();
+        props.error(error);
       });
   };
 
   const updateTripUserRating = (tur) => {
-    console.log(tur);
     API.put(`TripUserRating`, tur)
       .then((res) => {
         setRating(tur.rating);
         setTripUserRating((previous) => tur);
-        props.success();
+        props.success("Your rating has been added !");
         props.close();
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-        props.error();
+        props.error(error);
         props.close();
       });
   };

@@ -40,21 +40,12 @@ export const TripSubscriber = () => {
   let { linkId } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(isTripLoaded);
-  }, [isTripLoaded]);
-
-  useEffect(() => {
-    console.log(trip);
-  }, [trip]);
-
   // LIFE CYCLE USE EFFECT METHODS
   useEffect(() => {
     setOpenBuffer(true);
     fetch("https://localhost:44396/api/Trip/GetTripOverview/" + linkId)
       .then((response) => response.json())
       .then((tripData) => {
-        console.log(tripData);
         setTrip({ ...tripData });
         setIsTripLoaded(true);
         setOpenBuffer(false);
@@ -63,11 +54,10 @@ export const TripSubscriber = () => {
         setIsTripLoaded(true);
         setOpenBuffer(false);
       });
-  }, []);
+  }, [linkId]);
 
   const handleParticipation = (trip) => {
     // Call API to create PointOfCrossing
-    console.log(trip);
     fetch("https://localhost:44396/api/TripUser", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,12 +68,9 @@ export const TripSubscriber = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-        console.log("NAVIGATION TO ...");
         navigate("/trip-designer/" + trip.id);
       })
       .catch((rejected) => {
-        console.log(rejected);
       });
   };
 

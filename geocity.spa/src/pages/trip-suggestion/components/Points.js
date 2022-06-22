@@ -1,21 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Marker, Popup, Tooltip } from "react-leaflet";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "./Map.css";
-
-const styleButton = {
-  marginBottom: "15px !important",
-  color: "#9fafce",
-  backgroundColor: "#10377a",
-  margin: "0 auto",
-  "&:hover": {
-    backgroundColor: "#10377a",
-    color: "red",
-  },
-};
 
 function GetIcon(type) {
   return L.icon({

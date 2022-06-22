@@ -76,6 +76,7 @@ export const PointModal = (props) => {
         price: point.price,
         duration: point.duration,
         description: point.description,
+        modifiedDate: point.modifiedDate,
       })
         .then((res) => {
           props.refreshPoints();
@@ -86,11 +87,12 @@ export const PointModal = (props) => {
             .catch((error) => {
               console.error("There was an error!", error);
             });
-          props.success();
+          props.success("Point of Interest correctly updated !");
           props.close();
         })
         .catch((error) => {
-          props.error();
+          props.refreshPoints();
+          props.error(error);
           props.close();
         });
     } else {
@@ -98,6 +100,7 @@ export const PointModal = (props) => {
         userUpdateId: user.sub,
         id: point.id,
         description: point.description,
+        modifiedDate: point.modifiedDate,
       })
         .then((res) => {
           props.refreshPoints();
@@ -108,11 +111,12 @@ export const PointModal = (props) => {
             .catch((error) => {
               console.error("There was an error!", error);
             });
-          props.success();
+          props.success("Point of Crossing correctly updated !");
           props.close();
         })
         .catch((error) => {
-          props.error();
+          props.refreshPoints();
+          props.error(error);
           props.close();
         });
     }

@@ -4,10 +4,7 @@ import {
   Typography,
   Modal,
   Button,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
-import { useAuth0 } from "@auth0/auth0-react";
 import API from "../../../../common/API/API";
 
 export const ItinaryModal = (props) => {
@@ -28,12 +25,12 @@ export const ItinaryModal = (props) => {
         // NOTIF SUCCESS
         // REFRESH TRIP
         props.refreshTrip(trip.id);
-        props.success();
+        props.success("Itinary deleted !");
         props.close();
       })
       .catch((error) => {
         // NOTIF ERROR
-        props.error();
+        props.error(error);
         props.close();
       });
   };
