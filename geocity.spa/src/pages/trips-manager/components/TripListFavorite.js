@@ -40,7 +40,7 @@ export const TripListFavorite = (props) => {
           <CircularProgress />
         </Box>
       )}
-      {!loading && <TripsList data={trips} edit={true} />}
+      {!loading && <TripsList data={trips} edit={false} />}
     </>
   );
 };

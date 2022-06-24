@@ -199,8 +199,8 @@ export const Map = (props) => {
           itinaryId: itinary.id,
           pointOfCrossing: {
             cityId: trip.city.id,
-            latitude: POI.features[0].geometry.coordinates[1],
-            longitude: POI.features[0].geometry.coordinates[0],
+            latitude: point.latitude,
+            longitude: point.longitude,
             address: POI.features[0].properties.display_name,
           },
         });

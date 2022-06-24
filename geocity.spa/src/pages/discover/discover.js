@@ -18,6 +18,8 @@ import {
   MenuItem,
   Rating,
   CircularProgress,
+  Stack,
+  Alert,
 } from "@mui/material";
 import EuroIcon from "@mui/icons-material/Euro";
 import Slider from "@mui/material/Slider";
@@ -85,6 +87,7 @@ export const Discover = (props) => {
   // COMPONENT HIDE SHOW
   const [expanded, setExpanded] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [isListEmpty, setIsListEmpty] = React.useState(false);
 
   const submit = () => {
     if (day) {
@@ -96,6 +99,11 @@ export const Discover = (props) => {
       .then((tripsData) => {
         setLoading(false);
         setTrips([...tripsData]);
+        if(tripsData.length === 0) {
+          setIsListEmpty(true);
+        } else {
+          setIsListEmpty(false);
+        }
       })
       .catch((rejected) => {
         setLoading(false);
@@ -133,6 +141,7 @@ export const Discover = (props) => {
                 }
               }}
               onChange={(event) => {
+                setIsListEmpty(false)
                 setSearchValue(event.target.value);
               }}
             />
@@ -257,6 +266,13 @@ export const Discover = (props) => {
             </Box>
           )}
           <Trips data={trips} />
+          {
+            (loading === false && isListEmpty) && (
+              <Stack sx={{ width: '100%' }} spacing={2}>
+                <Alert severity="error">No Result was found for your search</Alert>
+              </Stack>
+            )
+          }
         </Grid>
       </Grid>
     </Box>

@@ -339,7 +339,7 @@ class _TripReaderScreenState extends State<TripReaderScreen> with TickerProvider
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 4, bottom: 14),
                                                       child: Text(
-                                                        (snapshot.data as Trip).city.name,
+                                                        (snapshot.data as Trip).city.name.split(",")[0],
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: FitnessAppTheme.fontName,

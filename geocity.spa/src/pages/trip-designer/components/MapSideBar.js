@@ -294,6 +294,7 @@ export const MapSideBar = (props) => {
           result.destination.index
         );
         setPoints([...items]);
+        props.refreshTrip(trip.id);
       })
       .catch((error) => {
         props.error(error);
@@ -310,6 +311,7 @@ export const MapSideBar = (props) => {
           result.destination.index
         );
         setPoints([...items]);
+        props.refreshTrip(trip.id);
       })
       .catch((error) => {
         props.error(error);

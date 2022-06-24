@@ -57,7 +57,6 @@ export const TripSubscriber = () => {
   }, [linkId]);
 
   const handleParticipation = (trip) => {
-    // Call API to create PointOfCrossing
     fetch("https://localhost:44396/api/TripUser", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,6 +70,7 @@ export const TripSubscriber = () => {
         navigate("/trip-designer/" + trip.id);
       })
       .catch((rejected) => {
+        console.log(rejected);
       });
   };
 
@@ -110,7 +110,8 @@ export const TripSubscriber = () => {
                           })}
                       </Stack>
                     </CardContent>
-                    <CardActions>
+                    {(trip.tripUsers.length < 5) && (
+                      <CardActions>
                       <Button
                         variant="contained"
                         sx={styleButton}
@@ -119,6 +120,13 @@ export const TripSubscriber = () => {
                         Confirm my participation
                       </Button>
                     </CardActions>
+                    )}
+                    {(trip.tripUsers.length >= 5) && (
+                      <Typography>
+                        The number of participants has been reached
+                      </Typography>
+                    )}
+                    
                   </Card>
                 </Grid>
               </Grid>

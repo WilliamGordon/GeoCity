@@ -7,13 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/trip_overview.dart';
 
 class TripListView extends StatelessWidget {
-  const TripListView(
-      {Key? key,
-      this.tripData,
-      this.animationController,
-      this.animation,
-      this.callback})
-      : super(key: key);
+  const TripListView({Key? key, this.tripData, this.animationController, this.animation, this.callback}) : super(key: key);
 
   final VoidCallback? callback;
   final TripOverview? tripData;
@@ -28,19 +22,13 @@ class TripListView extends StatelessWidget {
         return FadeTransition(
           opacity: animation!,
           child: Transform(
-            transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
+            transform: Matrix4.translationValues(0.0, 50 * (1.0 - animation!.value), 0.0),
             child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 24, right: 24, top: 8, bottom: 16),
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 16),
               child: InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              TripReaderScreen(tripData?.id)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TripReaderScreen(tripData?.id)));
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -60,8 +48,7 @@ class TripListView extends StatelessWidget {
                         Column(
                           children: <Widget>[
                             Container(
-                              color: HotelAppTheme.buildLightTheme()
-                                  .backgroundColor,
+                              color: HotelAppTheme.buildLightTheme().backgroundColor,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,13 +56,10 @@ class TripListView extends StatelessWidget {
                                   Expanded(
                                     child: Container(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 16, top: 8, bottom: 8),
+                                        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
                                               tripData!.name,
@@ -86,17 +70,12 @@ class TripListView extends StatelessWidget {
                                               ),
                                             ),
                                             Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(
-                                                  tripData!.city.name,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey
-                                                          .withOpacity(0.8)),
+                                                  tripData!.city.name.split(",")[0],
+                                                  style: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.8)),
                                                 ),
                                                 const SizedBox(
                                                   width: 4,
@@ -104,32 +83,23 @@ class TripListView extends StatelessWidget {
                                                 Icon(
                                                   FontAwesomeIcons.mapMarkerAlt,
                                                   size: 12,
-                                                  color: HotelAppTheme
-                                                          .buildLightTheme()
-                                                      .primaryColor,
+                                                  color: HotelAppTheme.buildLightTheme().primaryColor,
                                                 ),
                                                 Expanded(
                                                   child: Text(
                                                     '${tripData!.distance.toStringAsFixed(1)} km',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8)),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.8)),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 4),
+                                              padding: const EdgeInsets.only(top: 4),
                                               child: Row(
                                                 children: <Widget>[
                                                   RatingBar(
-                                                    initialRating: tripData!
-                                                        .rating
-                                                        .toDouble(),
+                                                    initialRating: tripData!.rating.toDouble(),
                                                     direction: Axis.horizontal,
                                                     allowHalfRating: true,
                                                     itemCount: 5,
@@ -137,36 +107,25 @@ class TripListView extends StatelessWidget {
                                                     ratingWidget: RatingWidget(
                                                       full: Icon(
                                                         Icons.star_rate_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
+                                                        color: HotelAppTheme.buildLightTheme().primaryColor,
                                                       ),
                                                       half: Icon(
                                                         Icons.star_half_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
+                                                        color: HotelAppTheme.buildLightTheme().primaryColor,
                                                       ),
                                                       empty: Icon(
-                                                        Icons
-                                                            .star_border_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
+                                                        Icons.star_border_rounded,
+                                                        color: HotelAppTheme.buildLightTheme().primaryColor,
                                                       ),
                                                     ),
-                                                    itemPadding:
-                                                        EdgeInsets.zero,
+                                                    itemPadding: EdgeInsets.zero,
                                                     onRatingUpdate: (rating) {
                                                       print(rating);
                                                     },
                                                   ),
                                                   Text(
                                                     ' ${tripData!.price} favorites',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8)),
+                                                    style: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.8)),
                                                   ),
                                                 ],
                                               ),
@@ -177,13 +136,10 @@ class TripListView extends StatelessWidget {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 16, top: 8),
+                                    padding: const EdgeInsets.only(right: 16, top: 8),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: <Widget>[
                                         Text(
                                           '${tripData!.price}\€',
@@ -195,10 +151,7 @@ class TripListView extends StatelessWidget {
                                         ),
                                         Text(
                                           '',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color:
-                                                  Colors.grey.withOpacity(0.8)),
+                                          style: TextStyle(fontSize: 14, color: Colors.grey.withOpacity(0.8)),
                                         ),
                                       ],
                                     ),

@@ -28,13 +28,41 @@ namespace geocity.application.TripUser.Commands.Create
 
         public async Task<Guid> Handle(CreateTripUserCommand request, CancellationToken cancellationToken)
         {
-            var entity = new geocity.domain.Entities.TripUser();
-            entity.Trip = await _context.Trips.SingleOrDefaultAsync(x => x.Id == request.TripId);
-            entity.UserId = request.UserId;
-            entity.IsOwner = request.IsOwner;
-            _context.TripUsers.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-            return entity.Id;
+            try
+            {
+                checkIfUserIsAlreadyParticipant(request);
+                checkIfMaxParticipant(request);
+                var entity = new geocity.domain.Entities.TripUser();
+                entity.Trip = await _context.Trips.SingleOrDefaultAsync(x => x.Id == request.TripId);
+                entity.UserId = request.UserId;
+                entity.IsOwner = request.IsOwner;
+                _context.TripUsers.Add(entity);
+                await _context.SaveChangesAsync(cancellationToken);
+                return entity.Id;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
+        }
+
+        public void checkIfUserIsAlreadyParticipant(CreateTripUserCommand request)
+        {
+            var nbTimeSubscribed = _context.TripUsers.Where(x => x.Trip.Id == request.TripId && x.User.Id == request.UserId).ToList().Count;
+            if(nbTimeSubscribed >= 1)
+            {
+                throw new Exception("You already subscribed to this trip");
+            }
+        }
+
+        public void checkIfMaxParticipant(CreateTripUserCommand request)
+        {
+            var nbSubscription = _context.TripUsers.Where(x => x.Trip.Id == request.TripId).ToList().Count;
+            if (nbSubscription > 5)
+            {
+                throw new Exception("The Trip is full you !");
+            }
         }
     }
 }

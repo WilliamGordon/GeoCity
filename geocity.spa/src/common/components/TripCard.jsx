@@ -139,6 +139,7 @@ export const TripCard = (props) => {
                   marginTop: "5px",
                 }}
               />
+              {props.edit}
               {!props.edit && (
                 <Button
                   variant="contained"
